@@ -1,17 +1,38 @@
 name: pages
-on: {push: {branches: [main]}, workflow_dispatch: {}}
-permissions: {pages: write, id-token: write, contents: write}
+on:
+  push: { branches: [ main ] }
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure site files
+      - uses: actions/configure-pages@v5
+      - name: Prepare site files
         run: |
-          mkdir -p .
           [ -f index.html ] || echo '<!doctype html><title>StegVerse</title><h1>StegVerse</h1><p>Sovereign, verifiable, resilient.</p><p><a href="status.html">Status</a></p>' > index.html
           echo '{"ok":true,"ts":"'$(date -u +%FT%TZ)'"}' > status.json
-          echo '<!doctype html><title>Status</title><h1>Status</h1><pre>'$(cat status.json)'</pre><p><a href="index.html">Home</a></p>' > status.html
+          printf '%s' '<!doctype html><title>Status</title><h1>Status</h1><pre>' > status.html
+          cat status.json >> status.html
+          printf '%s' '</pre><p><a href="index.html">Home</a></p>' >> status.html
       - uses: actions/upload-pages-artifact@v3
-        with: {path: "."}
-      - uses: actions/deploy-pages@v4
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

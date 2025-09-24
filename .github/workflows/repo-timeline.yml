@@ -1,0 +1,32 @@
+name: Repo Timeline
+on:
+  workflow_dispatch: {}
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tree with last-commit dates
+        run: |
+          echo "### Repository Timeline (Newest First)" > repo-timeline.md
+          echo "" >> repo-timeline.md
+          git log --pretty=format:"%ad %h %s" --date=short | head -n 50 >> repo-timeline.md
+
+          echo -e "\n### File Tree (3 levels)" >> repo-timeline.md
+          tree -L 3 -a -D -I '.git|node_modules|__pycache__' >> repo-timeline.md || find . -maxdepth 3 -type f -printf "%TY-%Tm-%Td %p\n" | sort -r >> repo-timeline.md
+
+          echo -e "\n### Key Files (Head 100 lines each)" >> repo-timeline.md
+          for f in api/app/main.py api/requirements.txt public/diag.html package.json vite.config.* next.config.* .github/workflows/*; do
+            if [ -f "$f" ]; then
+              echo -e "\n#### $f\n" >> repo-timeline.md
+              head -n 100 "$f" >> repo-timeline.md
+            fi
+          done
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-timeline
+          path: repo-timeline.md

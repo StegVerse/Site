@@ -1,0 +1,22 @@
+name: Install Self-Healing Pack
+on:
+  workflow_dispatch: {}
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pack (scanner + fixer + workflows)
+        run: |
+          echo "Installing self-healing pack..."
+          bash -s <<'SCRIPT'
+          # Paste entire contents of install_self_healing_pack.sh here
+          SCRIPT
+
+      - name: Push changes
+        run: |
+          git config user.name "automation-bot"
+          git config user.email "bot@stegverse.local"
+          git push origin HEAD:main

@@ -1,0 +1,54 @@
+name: Direct Apply Fixes (no PR)
+on: { workflow_dispatch: {} }
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+
+      - name: Neutralize secrets-if in all workflows
+        run: |
+          set -euo pipefail
+          changed=0
+          patch_file () {
+            local wf="$1"
+            awk '
+              {
+                if ($0 ~ /^[[:space:]]*if:[[:space:]]*\$\{\{[[:space:]]*secrets\.[^}]+\}\}[[:space:]]*$/) {
+                  indent = match($0, /^[[:space:]]*/)
+                  spaces = substr($0, 1, RLENGTH)
+                  print spaces "# TODO(auto): secrets-guard disabled to avoid parser error"
+                  print spaces "# " $0
+                  print spaces "if: ${{ false }}"
+                  next
+                }
+              }
+              { print }
+            ' "$wf" > "$wf.tmp" && mv "$wf.tmp" "$wf"
+          }
+          for wf in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$wf" ] || continue
+            if grep -nE '^[[:space:]]*if:[[:space:]]*\$\{\{[[:space:]]*secrets\.[^}]+' "$wf" >/dev/null 2>&1; then
+              patch_file "$wf"
+              git add "$wf"
+              changed=$((changed+1))
+            fi
+          done
+          # fix known collector typo if present
+          if [ -f scripts/collect_self_healing.py ]; then
+            sed -i 's/json.dumps(manifest "gaps"]\([^)]*\))/json.dumps(manifest["gaps"], indent=2), encoding="utf-8")/' scripts/collect_self_healing.py || true
+            git add scripts/collect_self_healing.py || true
+          fi
+          # ensure scripts executable
+          chmod +x scripts/*.sh 2>/dev/null || true
+          git add scripts/*.sh 2>/dev/null || true
+
+      - name: Commit & push to main
+        run: |
+          git config user.name "automation-bot"
+          git config user.email "bot@stegverse.local"
+          git commit -m "Direct apply: neutralize secrets-if and guardian hygiene" || echo "No changes"
+          git push origin HEAD:main

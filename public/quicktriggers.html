@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StegVerse Quick Triggers</title>
+<style>
+  body { font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; padding: 16px; background:#fafafa; color:#222; }
+  h1 { font-size: 22px; margin: 0 0 12px; }
+  .note { color:#666; font-size: 13px; margin-bottom: 16px; }
+  .grid { display: grid; gap: 12px; }
+  .card { background:#fff; border-radius:12px; padding:14px 14px; box-shadow:0 2px 10px rgba(0,0,0,0.06); }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .title { font-weight: 600; font-size:16px; }
+  .status { font-size: 18px; min-width: 24px; text-align:right; }
+  .btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  a.btn { display:inline-block; text-decoration:none; background:#111; color:#fff;
+          padding:10px 12px; border-radius:10px; font-weight:600; font-size:14px; }
+  a.btn.secondary { background:#3b82f6; }
+  a.btn.ghost { background:#e5e7eb; color:#111; }
+  .md { margin-top:10px; font-size:13px; color:#333; white-space:pre-wrap; background:#f7f7f7; padding:10px; border-radius:8px; }
+  footer { margin-top: 20px; font-size:12px; color:#666; }
+</style>
+</head>
+<body>
+  <h1>StegVerse Quick Triggers</h1>
+  <div class="note">Tap a trigger to open GitHub with the file path + content prefilled. Commit to run the workflow.<br>
+    Status shows the most recent run (✅ success / ❌ failure / ⏳ unknown).</div>
+
+  <div id="grid" class="grid"></div>
+
+  <footer>Last refreshed: <span id="ts"></span></footer>
+
+<script>
+/**
+ * Configure repos & workflows here.
+ * You can duplicate this file across repos; links are absolute.
+ */
+const CONFIG = [
+  {
+    repo: "StegVerse/StegVerse-SCW",
+    workflows: [
+      {
+        name: "Supercheck",
+        wf_filename: "one_button_supercheck.yml",
+        triggerPath: ".github/trigger/supercheck",
+        lastTwoMd: "https://raw.githubusercontent.com/StegVerse/StegVerse-SCW/main/self_healing_out/LAST_TWO_supercheck.md",
+        newFileUrl: "https://github.com/StegVerse/StegVerse-SCW/new/main?filename=.github/trigger/supercheck/run-%F0%9F%9A%80.txt&message=Trigger%20supercheck&value=go",
+        actionsUrl: "https://github.com/StegVerse/StegVerse-SCW/actions/workflows/one_button_supercheck.yml"
+      },
+      {
+        name: "Preflight",
+        wf_filename: "workflow_preflight.yml",
+        triggerPath: ".github/trigger/preflight",
+        lastTwoMd: "https://raw.githubusercontent.com/StegVerse/StegVerse-SCW/main/self_healing_out/LAST_TWO_preflight.md",
+        newFileUrl: "https://github.com/StegVerse/StegVerse-SCW/new/main?filename=.github/trigger/preflight/run-%F0%9F%9A%80.txt&message=Trigger%20preflight&value=go",
+        actionsUrl: "https://github.com/StegVerse/StegVerse-SCW/actions/workflows/workflow_preflight.yml"
+      },
+      {
+        name: "Rebuild Kit",
+        wf_filename: "rebuild_kit.yml",
+        triggerPath: ".github/trigger/rebuild",
+        lastTwoMd: "https://raw.githubusercontent.com/StegVerse/StegVerse-SCW/main/self_healing_out/LAST_TWO_rebuild.md",
+        newFileUrl: "https://github.com/StegVerse/StegVerse-SCW/new/main?filename=.github/trigger/rebuild/run-%F0%9F%9A%80.txt&message=Trigger%20rebuild%20kit&value=go",
+        actionsUrl: "https://github.com/StegVerse/StegVerse-SCW/actions/workflows/rebuild_kit.yml"
+      }
+    ]
+  },
+  // Duplicate this block for StegVerse/site once it’s enabled:
+  // {
+  //   repo: "StegVerse/site",
+  //   workflows: [ ... same structure, URLs with /site/ ... ]
+  // }
+];
+
+function el(tag, cls, txt){ const e=document.createElement(tag); if(cls) e.className=cls; if(txt) e.textContent=txt; return e; }
+
+async function fetchText(url){
+  try{
+    const r = await fetch(url, {cache: "no-store"});
+    if(!r.ok) throw new Error(r.status);
+    return await r.text();
+  }catch(e){ return ""; }
+}
+
+function parseStatus(md){
+  // expects lines like: "- **SUCCESS** — 2025-... (run) by actor"
+  const m = md.match(/\*\*(SUCCESS|FAILURE|CANCELLED|NEUTRAL|TIMED_OUT)\*\*/i);
+  if(!m) return "unknown";
+  const s = m[1].toUpperCase();
+  if(s==="SUCCESS") return "success";
+  if(s==="FAILURE"||s==="CANCELLED"||s==="TIMED_OUT") return "failure";
+  return "unknown";
+}
+
+function statusEmoji(s){
+  if(s==="success") return "✅";
+  if(s==="failure") return "❌";
+  return "⏳";
+}
+
+async function build(){
+  const grid = document.getElementById("grid");
+  for(const group of CONFIG){
+    const head = el("div","card");
+    head.appendChild(el("div","title",group.repo));
+    grid.appendChild(head);
+
+    for(const w of group.workflows){
+      const card = el("div","card");
+      const top = el("div","row");
+      const left = el("div","title", w.name);
+      const right = el("div","status","⏳");
+      top.appendChild(left); top.appendChild(right);
+      card.appendChild(top);
+
+      const btns = el("div","btns");
+      const runBtn = el("a","btn","Trigger (go)");
+      runBtn.href = w.newFileUrl; runBtn.target="_blank";
+
+      const runsBtn = el("a","btn secondary","View Runs");
+      runsBtn.href = w.actionsUrl; runsBtn.target="_blank";
+
+      const editBtn = el("a","btn ghost","Open Trigger Folder");
+      editBtn.href = `https://github.com/${group.repo}/tree/main/${w.triggerPath}`;
+      editBtn.target = "_blank";
+
+      btns.appendChild(runBtn);
+      btns.appendChild(runsBtn);
+      btns.appendChild(editBtn);
+      card.appendChild(btns);
+
+      const mdDiv = el("div","md","Loading last two outcomes...");
+      card.appendChild(mdDiv);
+
+      grid.appendChild(card);
+
+      // load last-two and set status
+      const md = await fetchText(w.lastTwoMd);
+      if(md.trim()){
+        mdDiv.textContent = md.trim();
+        right.textContent = statusEmoji(parseStatus(md));
+      }else{
+        mdDiv.textContent = "(no history yet)";
+        right.textContent = "⏳";
+      }
+    }
+  }
+  document.getElementById("ts").textContent = new Date().toISOString();
+}
+build();
+</script>
+</body>
+</html>

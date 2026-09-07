@@ -5,7 +5,7 @@
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
   "canonical_profile_ref": "StegVerse-Labs/.github/management/COSV_PROFILE_V1.json",
-  "observed_at": "2026-08-31T06:43:00-05:00",
+  "observed_at": "2026-09-07T09:21:00-05:00",
   "authority_effect": "NONE",
   "tasks": [
     {
@@ -28,13 +28,20 @@
       "vector_ref": "data/cosv/task-vectors/SITE-HOMEPAGE-GOVERNED-ECOSYSTEM-VALIDATOR-521.json",
       "vector": "71000000100100",
       "binding_mode": "SOURCE_BOUND"
+    },
+    {
+      "task_id": "SITE-CURRENT-NEWS-RELEASES-967",
+      "task_ref": "data/tasks/SITE-CURRENT-NEWS-RELEASES-967.json",
+      "vector_ref": "data/cosv/task-vectors/SITE-CURRENT-NEWS-RELEASES-967.json",
+      "vector": "40000100112000",
+      "binding_mode": "EXTERNAL_PROJECTION_SOURCE_BINDING_DEFERRED_ACTIVE_OWNER"
     }
   ],
   "coverage": {
-    "explicit_cosv_task_surfaces_discovered": 4,
-    "task_vectors_emitted": 3,
+    "explicit_cosv_task_surfaces_discovered": 5,
+    "task_vectors_emitted": 4,
     "source_bound_task_vectors": 1,
-    "active_owner_deferred_source_bindings": 2,
+    "active_owner_deferred_source_bindings": 3,
     "legacy_claim_deferred_tasks": 1,
     "explicit_cosv_surface_gap": 1,
     "repository_active_task_surface_audit_complete": false,

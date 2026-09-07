@@ -96,6 +96,8 @@ This proves that the CI execution consumed current-season supporting data. It do
 - distinguish an empty current event set from source failure;
 - never substitute stale rankings after a load/fetch failure.
 
+`cfp/bracket.html`, `cfp/bracket.js`, `js/cfp-data.js`, and `js/cfp-team-page.js` now fail closed against the schema `2.0.0` current-season contract. Before current committee rankings exist, bracket/team surfaces do not substitute 2025 rankings, supporting polls, projected seeds, or historical movement as current CFP state.
+
 ## Duplicate implementation inventory
 
 Historical/experimental CFP writers remain in the repository, including examples under `cfp/`, `scripts/`, `tools/`, and `ingest/`. Search still identifies legacy files such as:
@@ -112,17 +114,43 @@ Historical/experimental CFP writers remain in the repository, including examples
 
 No second active CFP workflow was observed in the current `.github/workflows/` inventory; the earlier `cfp_ingest_standings_polls.yml` path is already removed/disabled from the active workflow surface. These legacy scripts therefore remain inert implementation debt rather than parallel execution authority. They must not be reactivated as competing writers; later cleanup may delete or redirect them under a separately admitted claim if desired.
 
+## Current integration blocker — 2026-09-07
+
+Exact validated feature head before this handoff update:
+
+```text
+447af85d169afddad973af07bee77a11107d82ec
+```
+
+Observed state:
+
+```text
+PR #1060: OPEN
+mergeable: false
+exact-head checks: no failure observed; applicable validation and Cloudflare build checks completed successfully
+current main: be46e2ae367783741b0ee7786a82f2f3c15eaebe
+compare status: diverged
+feature ahead_by: 30
+feature behind_by: 299
+merge base: 43ce410ce7eb7b868b18c3c35cf8ec8325c497b8
+```
+
+This is a branch/base divergence blocker, not evidence that the CFP implementation failed validation. Do not force-merge, force-move the branch, or discard the 299 intervening main-branch commits merely to satisfy mergeability.
+
+Recovery must preserve the current CFP change set while reconciling it onto current `main` through an admitted collision-safe integration path. After reconciliation, rerun the complete applicable checks at the new exact head before merge. If repository orchestration requires a successor branch/claim, create that claim and preflight before functional mutation; do not silently transfer ownership.
+
 ## Remaining machine-executable work
 
 Destination `StegVerse-Labs/Site`:
 
-1. Re-run the complete applicable PR checks at the final head after handoff/metadata updates.
-2. Review bracket/team pages for assumptions incompatible with schema `2.0.0`; fail/degrade safely where current CFP rankings are absent.
-3. Merge only after current-head validation passes and the PR remains collision-free/mergeable.
-4. Execute the canonical main-branch ingestion after merge so `data/cfp-data.json` contains observed current supporting data rather than only the safe seed state.
-5. Verify deployed/public `/cfp/` behavior separately before describing the tracker as live.
-6. Official current-season CFP committee ranking ingestion remains intentionally unimplemented until an authoritative current-season source can be observed; until then `PRE_CFP_RANKINGS` is correct.
-7. Optional conference-standings ingestion remains future work after a suitable current source and contract are selected.
+1. Reconcile the CFP change set with current `main` without force-moving or bypassing repository ownership controls.
+2. Re-run the complete applicable PR checks at the reconciled final head.
+3. Confirm bracket/team surfaces remain schema-2.0-safe after reconciliation.
+4. Merge only after current-head validation passes and the PR/successor remains collision-free and mergeable.
+5. Execute the canonical main-branch ingestion after merge so `data/cfp-data.json` contains observed current supporting data rather than only the safe seed state.
+6. Verify deployed/public `/cfp/` behavior separately before describing the tracker as live.
+7. Official current-season CFP committee ranking ingestion remains intentionally unimplemented until an authoritative current-season source can be observed; until then `PRE_CFP_RANKINGS` is correct.
+8. Optional conference-standings ingestion remains future work after a suitable current source and contract are selected.
 
 Potential later integrations only after verified Site behavior:
 
@@ -139,7 +167,7 @@ This goal is complete only when:
 - current-season game/supporting-poll ingestion is machine-observed;
 - stale 2025 data cannot masquerade as current 2026 data;
 - official CFP ranking availability is represented accurately;
-- the canonical workflow and validators pass at the final change head;
+- the canonical workflow and validators pass at the final reconciled change head;
 - the primary UI and dependent bracket/team surfaces degrade safely;
 - repository validation passes;
 - merged main-branch ingestion materializes current data;

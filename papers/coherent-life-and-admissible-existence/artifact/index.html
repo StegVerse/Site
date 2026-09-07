@@ -51,9 +51,10 @@
   const status=document.getElementById('status');
   const openButton=document.getElementById('open');
   const download=document.getElementById('download');
-  const normalize=s=>s.replace(/\s+/g,'');
+  const normalize=s=>s.replace(/^\uFEFF/,'').replace(/-/g,'+').replace(/_/g,'/').replace(/[^A-Za-z0-9+/=]/g,'');
   const decodeOne=encoded=>{
-    if(!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) throw new Error('artifact part contains non-base64 data');
+    if(!encoded) throw new Error('artifact part is empty after base64 normalization');
+    if(!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) throw new Error('artifact part has invalid base64 padding');
     const remainder=encoded.length%4;
     const padded=remainder===0?encoded:encoded+'='.repeat(4-remainder);
     const binary=atob(padded);
@@ -79,9 +80,9 @@
     try{
       bytes=decodeOne(texts.join(''));
     }catch(joinError){
-      // Historical transport parts can contain independent base64 padding. Decode
-      // each immutable part independently, then concatenate decoded bytes. Exact
-      // byte length and SHA-256 below remain the acceptance authority.
+      // Transport parts can carry independent padding. Decoding each immutable
+      // part independently is safe because acceptance still requires the exact
+      // approved byte count and SHA-256 below.
       bytes=concat(texts.map(decodeOne));
     }
     const head=new TextDecoder('latin1').decode(bytes.slice(0,8));

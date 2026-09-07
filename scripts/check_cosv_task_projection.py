@@ -27,6 +27,8 @@ def main():
     assert idx["profile"]=="task.v1" and idx["notation"]=="L R U I V G O C M T B E A P" and idx["width"]==14
     assert idx["authority_effect"]=="NONE"
     ids=[]
+    source_bound=0
+    deferred=0
     for row in idx["tasks"]:
         ids.append(row["task_id"])
         task=json.loads((ROOT/row["task_ref"]).read_text())
@@ -36,23 +38,25 @@ def main():
         assert rec["exact_metrics"]["symbol_order"]==ORDER
         assert rec["vector"]==row["vector"]==enc(rec["exact_metrics"])
         if row["binding_mode"]=="SOURCE_BOUND":
+            source_bound += 1
             assert task["source_state_vector_ref"]==row["vector_ref"]
             assert task["machine_readable_state"]["cosv"]["vector"]==row["vector"]
             assert task["machine_readable_state"]["cosv"]["authority_effect"]=="NONE"
         else:
+            deferred += 1
             assert row["binding_mode"]=="EXTERNAL_PROJECTION_SOURCE_BINDING_DEFERRED_ACTIVE_OWNER"
         assert rec["authority_effect"]=="NONE"
     assert len(ids)==len(set(ids))
     cov=idx["coverage"]
-    assert cov["explicit_cosv_task_surfaces_discovered"]==4
-    assert cov["task_vectors_emitted"]==len(ids)==3
-    assert cov["source_bound_task_vectors"]==1
-    assert cov["active_owner_deferred_source_bindings"]==2
+    assert cov["explicit_cosv_task_surfaces_discovered"]==5
+    assert cov["task_vectors_emitted"]==len(ids)==4
+    assert cov["source_bound_task_vectors"]==source_bound==1
+    assert cov["active_owner_deferred_source_bindings"]==3
     assert cov["legacy_claim_deferred_tasks"]==1
     assert cov["explicit_cosv_surface_gap"]==1
     assert cov["repository_active_task_surface_audit_complete"] is False
     assert cov["repository_vector_present_claimed"] is False
-    print(f"SITE_COSV_TASK_PROJECTION_PASS emitted={len(ids)} source_bound=1 deferred=3 repository_vector_present=false")
+    print(f"SITE_COSV_TASK_PROJECTION_PASS emitted={len(ids)} source_bound={source_bound} deferred={deferred + cov['legacy_claim_deferred_tasks']} repository_vector_present=false")
 
 if __name__=="__main__":
     main()

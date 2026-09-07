@@ -51,17 +51,39 @@
   const status=document.getElementById('status');
   const openButton=document.getElementById('open');
   const download=document.getElementById('download');
+  const normalize=s=>s.replace(/\s+/g,'');
+  const decodeOne=encoded=>{
+    if(!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) throw new Error('artifact part contains non-base64 data');
+    const remainder=encoded.length%4;
+    const padded=remainder===0?encoded:encoded+'='.repeat(4-remainder);
+    const binary=atob(padded);
+    const out=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++) out[i]=binary.charCodeAt(i);
+    return out;
+  };
+  const concat=chunks=>{
+    const total=chunks.reduce((n,c)=>n+c.length,0);
+    const out=new Uint8Array(total);
+    let offset=0;
+    for(const chunk of chunks){out.set(chunk,offset);offset+=chunk.length;}
+    return out;
+  };
   try{
     const texts=[];
     for(const part of parts){
       const response=await fetch(part,{cache:'no-store'});
       if(!response.ok) throw new Error(`missing artifact part: ${part} (${response.status})`);
-      texts.push((await response.text()).replace(/\s+/g,''));
+      texts.push(normalize(await response.text()));
     }
-    const encoded=texts.join('');
-    const binary=atob(encoded);
-    const bytes=new Uint8Array(binary.length);
-    for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+    let bytes;
+    try{
+      bytes=decodeOne(texts.join(''));
+    }catch(joinError){
+      // Historical transport parts can contain independent base64 padding. Decode
+      // each immutable part independently, then concatenate decoded bytes. Exact
+      // byte length and SHA-256 below remain the acceptance authority.
+      bytes=concat(texts.map(decodeOne));
+    }
     const head=new TextDecoder('latin1').decode(bytes.slice(0,8));
     const tail=new TextDecoder('latin1').decode(bytes.slice(Math.max(0,bytes.length-2048)));
     const catalogSample=new TextDecoder('latin1').decode(bytes.slice(0,Math.min(bytes.length,65536)));

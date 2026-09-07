@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "preflight_id": "SITE-CFP-LIVE-2026-REVIVAL-PREFLIGHT-20260906",
+  "repository": "StegVerse-Labs/Site",
+  "branch": "goal/cfp-live-2026-revival",
+  "task_id": "SITE-CFP-LIVE-2026-REVIVAL-1060",
+  "canonical_handoff": "docs/SITE_MIRROR_HANDOFF.md",
+  "scoped_handoff": "docs/CFP_MIRROR_HANDOFF.md",
+  "task_registry": [
+    "data/session-work-claims.json",
+    "data/session-work-claims.d/site-cfp-live-2026-revival-20260906.json",
+    "data/tasks/",
+    "repository-task-observation.report.json"
+  ],
+  "cross_task_coordination": {
+    "site_orchestration_state": "data/site-orchestration-state.json",
+    "heartbeat_state": "data/ecosystem-heartbeat-state.json",
+    "coherent_transition_threshold_task": "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION",
+    "cfp_may_bypass_existing_machine_owner": false,
+    "duplicate_runtime_or_scheduler_allowed": false
+  },
+  "master_records": {
+    "canonical_owner": "master-records/orchestration",
+    "handoff": "MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "role_for_cfp_change": "NONE_REQUIRED_FOR_STATIC_SPORTS_DATA_RESTORATION",
+    "new_custody_or_reconstruction_lane_allowed": false
+  },
+  "collision_check": {
+    "cfp_branch": "goal/cfp-live-2026-revival",
+    "cfp_pull_request": 1060,
+    "machine_readable_claim_required": true,
+    "machine_readable_claim_installed": true,
+    "known_competing_cfp_claim": false,
+    "known_competing_cfp_pull_request": false,
+    "legacy_duplicate_ingestion_is_implementation_debt_not_execution_ownership": true
+  },
+  "readme_impact": {
+    "material": true,
+    "determination": "README_UPDATE_REQUIRED",
+    "reason": "The planned change materially changes canonical ingestion behavior, current-vs-historical data semantics, freshness/failure behavior, and the meaning of the CFP live-tracker capability.",
+    "required_same_change_set": [
+      "README.md",
+      "cfp/README_CFP.md",
+      "data/README-cfp-source.md"
+    ],
+    "no_readme_change_determination_admissible": false
+  },
+  "functional_mutation_gate": {
+    "required_before_mutation": [
+      "python scripts/site_handoff_orchestrator.py",
+      "python scripts/check_ecosystem_heartbeat_orchestration.py"
+    ],
+    "status": "PENDING_MACHINE_RECHECK_AFTER_CLAIM_INSTALLATION",
+    "fail_closed": true
+  },
+  "authority": {
+    "execution": false,
+    "activation": false,
+    "publication": false,
+    "runtime": false,
+    "credential": false
+  }
+}

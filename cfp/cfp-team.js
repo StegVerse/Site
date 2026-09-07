@@ -1,192 +1,97 @@
-// cfp/team.js
-// Generic team detail page: driven by ?team=<slug> and data/cfp-2025.json.
+// cfp/cfp-team.js
+// Current-season CFP team status. Historical/prototype files are not fallback sources.
+
+const CFP_DATA_URL = window.CFP_DATA_URL || "/data/cfp-data.json";
 
 function getQueryParam(name) {
   const url = new URL(window.location.href);
   return url.searchParams.get(name);
 }
 
-async function loadCFPData() {
-  try {
-    const res = await fetch("../data/cfp-2025.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error("Failed to load CFP data:", err);
-    return null;
-  }
+function normalize(value) {
+  return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function formatDate(str) {
-  if (!str) return "TBD";
-  try {
-    const d = new Date(str);
-    if (Number.isNaN(d.getTime())) return str;
-    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-  } catch {
-    return str;
-  }
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
 }
 
-function renderSchedule(schedule) {
-  const empty = document.getElementById("schedule-empty");
-  const wrapper = document.getElementById("schedule-table-wrapper");
-  const tbody = document.getElementById("schedule-body");
-
-  if (!tbody) return;
-
-  if (!Array.isArray(schedule) || schedule.length === 0) {
-    if (empty) empty.style.display = "block";
-    if (wrapper) wrapper.style.display = "none";
-    return;
-  }
-
-  if (empty) empty.style.display = "none";
-  if (wrapper) wrapper.style.display = "block";
-
-  tbody.innerHTML = "";
-
-  schedule.forEach((g) => {
-    const tr = document.createElement("tr");
-
-    const tdLabel = document.createElement("td");
-    tdLabel.textContent = g.label || "";
-    tr.appendChild(tdLabel);
-
-    const tdOpp = document.createElement("td");
-    tdOpp.textContent = g.opponent || "";
-    tr.appendChild(tdOpp);
-
-    const tdLoc = document.createElement("td");
-    tdLoc.textContent = g.location || "";
-    tr.appendChild(tdLoc);
-
-    const tdDate = document.createElement("td");
-    tdDate.textContent = formatDate(g.date);
-    tr.appendChild(tdDate);
-
-    const tdResult = document.createElement("td");
-    tdResult.textContent = g.result || "TBD";
-    tr.appendChild(tdResult);
-
-    const tdNote = document.createElement("td");
-    tdNote.textContent = g.note || "";
-    tr.appendChild(tdNote);
-
-    tbody.appendChild(tr);
-  });
+async function loadCurrentData() {
+  const response = await fetch(`${CFP_DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
 
-function applyTeamColors(team) {
-  if (!team || !team.primaryColor) return;
-  const root = document.documentElement;
-  root.style.setProperty("--team-primary", team.primaryColor);
-  if (team.secondaryColor) {
-    root.style.setProperty("--team-secondary", team.secondaryColor);
-  }
+function renderUnavailable(data, requested, reason) {
+  setText("team-title", "Current CFP team status unavailable");
+  setText(
+    "team-meta",
+    `Season ${data?.season || "?"} • ${data?.phase || "UNKNOWN"}. ${reason}`
+  );
+  setText(
+    "team-snapshot",
+    requested
+      ? `No current CFP committee ranking is available for “${requested}”.`
+      : "No team identifier was supplied and no current CFP ranking can be inferred."
+  );
+  setText(
+    "team-notes",
+    "Supporting polls, historical snapshots, and prototype projections are intentionally not used as current CFP evidence."
+  );
 }
 
-function renderTeam(team, season) {
-  const title = document.getElementById("team-title");
-  const meta = document.getElementById("team-meta");
-  const recEl = document.getElementById("team-record");
-  const confEl = document.getElementById("team-conference");
-  const seedEl = document.getElementById("team-seed");
-  const bestEl = document.getElementById("scenario-best");
-  const likelyEl = document.getElementById("scenario-likely");
-  const worstEl = document.getElementById("scenario-worst");
-
-  applyTeamColors(team);
-
-  if (title) {
-    title.textContent = `${team.name} – Road to the ${season} Title`;
-  }
-  if (meta) {
-    meta.textContent = `Current CFP seed #${team.seed} in the ${season} season. Projections are relative to the most recent CFP release.`;
-  }
-  if (recEl) {
-    recEl.textContent = `Record: ${team.record || "—"}`;
-  }
-  if (confEl) {
-    confEl.textContent = `Conference: ${team.conference || "—"}`;
-  }
-  if (seedEl) {
-    seedEl.textContent = `Seed: #${team.seed}`;
-  }
-
-  const scenarios = team.scenarios || {};
-  if (bestEl) bestEl.textContent = scenarios.bestCase || "No best-case scenario configured yet.";
-  if (likelyEl) likelyEl.textContent = scenarios.mostLikely || "No most-likely scenario configured yet.";
-  if (worstEl) worstEl.textContent = scenarios.worstCase || "No nightmare scenario configured yet.";
-
-  renderSchedule(team.schedule || []);
+function findTeam(rankings, requested) {
+  if (!requested) return null;
+  const normalizedRequested = normalize(requested);
+  return rankings.find((team) => normalize(team.team) === normalizedRequested) ||
+    rankings.find((team) => String(team.seed) === String(requested));
 }
 
-function renderNotFound(slug, data) {
-  const title = document.getElementById("team-title");
-  const meta = document.getElementById("team-meta");
-  const cards = document.querySelectorAll(".cfp-card");
+function renderTeam(team, data) {
+  setText("team-title", `${team.team} — Current CFP Status`);
+  setText(
+    "team-meta",
+    `Season ${data.season} • ${data.phase} • CFP committee rank/seed #${team.seed ?? "—"}`
+  );
+  setText(
+    "team-snapshot",
+    `Record: ${team.record || "—"} • Conference: ${team.conference || "—"} • Status: ${team.status || "—"}`
+  );
 
-  if (title) title.textContent = "Team not found in current CFP Top 12";
-  if (meta) meta.textContent = slug
-    ? `We couldn't find a team for identifier "${slug}".`
-    : "No team identifier was provided.";
-
-  const schedCard = cards[2];
-  if (schedCard) schedCard.style.display = "none";
-
-  // Optional: show a simple list of valid teams for quick copy/paste.
-  const list = document.createElement("ul");
-  list.className = "cfp-simple-list";
-
-  if (data && Array.isArray(data.teams)) {
-    data.teams
-      .slice()
-      .sort((a, b) => (a.seed || 999) - (b.seed || 999))
-      .forEach((t) => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.href = `team.html?team=${encodeURIComponent(t.slug)}`;
-        a.textContent = `#${t.seed} – ${t.name}`;
-        li.appendChild(a);
-        list.appendChild(li);
-      });
-  }
-
-  const main = document.querySelector("main");
-  if (main) {
-    const wrapper = document.createElement("section");
-    wrapper.className = "cfp-card";
-    const h2 = document.createElement("h2");
-    h2.className = "cfp-section-title";
-    h2.textContent = "Available CFP Teams";
-    wrapper.appendChild(h2);
-    wrapper.appendChild(list);
-    main.appendChild(wrapper);
-  }
+  const scenarioNotes = Array.isArray(team.spot_scenarios)
+    ? team.spot_scenarios.map((scenario) => `${scenario.team || team.team}: ${scenario.path || ""}`).filter(Boolean)
+    : [];
+  const notes = [team.lock_reason, ...scenarioNotes].filter(Boolean);
+  setText(
+    "team-notes",
+    notes.length ? notes.join(" | ") : "No evidence-bounded CFP scenario notes are available for this team."
+  );
 }
 
 async function initTeamPage() {
-  const slug = getQueryParam("team");
-  const data = await loadCFPData();
-
-  if (!data || !Array.isArray(data.teams)) {
-    renderNotFound(slug, data);
-    return;
+  const requested = getQueryParam("team");
+  try {
+    const data = await loadCurrentData();
+    if (!data || data.schema_version !== "2.0.0") {
+      renderUnavailable(data, requested, "The current CFP data contract is unavailable.");
+      return;
+    }
+    const rankings = Array.isArray(data.rankings) ? data.rankings : [];
+    if (data.phase === "PRE_CFP_RANKINGS" || rankings.length === 0) {
+      renderUnavailable(data, requested, "Current-season CFP committee rankings have not been published or observed yet.");
+      return;
+    }
+    const team = findTeam(rankings, requested);
+    if (!team) {
+      renderUnavailable(data, requested, "The requested team is not in the observed current CFP ranking set.");
+      return;
+    }
+    renderTeam(team, data);
+  } catch (error) {
+    console.error(error);
+    renderUnavailable(null, requested, "Current-season CFP data could not be loaded; stale data was not substituted.");
   }
-
-  const season = data.season || "2025";
-
-  const team =
-    data.teams.find((t) => String(t.slug) === String(slug)) ||
-    data.teams.find((t) => String(t.seed) === String(slug));
-
-  if (!team) {
-    renderNotFound(slug, data);
-    return;
-  }
-
-  renderTeam(team, season);
 }
 
 document.addEventListener("DOMContentLoaded", initTeamPage);

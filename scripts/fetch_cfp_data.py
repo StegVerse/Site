@@ -1,256 +1,256 @@
-#!/usr/bin/env python
-"""
-Fetch CFP-related data by scraping primary sources and write it to data/cfp-data.json.
+#!/usr/bin/env python3
+"""Build the current-season CFP/NCAAF public data projection.
 
-This is Phase 2 "plumbing": the script is structured so you can improve the
-HTML scraping later without changing the overall flow or the GitHub Action.
+The live file is fail-closed: historical CFP rankings are never carried forward
+merely because a fetch failed or a timestamp changed. Before current-season CFP
+committee rankings are actually observed, ``rankings`` remains empty and the
+tracker exposes ``PRE_CFP_RANKINGS`` while current games and separately labelled
+polls may still be shown.
 
-Right now:
-- It tries to scrape rankings / standings / games, but if scraping fails,
-  it will fall back to any existing cfp-data.json and update only timestamps.
+Current scoreboard/AP data comes from the public, credential-free henrygd/ncaa-api
+projection of NCAA data. That source is supporting NCAAF data only and is never
+promoted to CFP committee authority.
 """
+from __future__ import annotations
 
 import json
 import os
-import sys
-import time
+import re
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-import httpx
+ROOT = Path(__file__).resolve().parents[1]
+OUTPUT_PATH = ROOT / "data" / "cfp-data.json"
 
+NCAA_API_BASE = os.getenv("NCAA_API_BASE", "https://ncaa-api.henrygd.me").rstrip("/")
+NCAA_SCOREBOARD_URL = os.getenv("CFP_SCOREBOARD_URL", f"{NCAA_API_BASE}/scoreboard/football/fbs")
+NCAA_AP_URL = os.getenv("CFP_POLLS_URL", f"{NCAA_API_BASE}/rankings/football/fbs/associated-press")
+CFP_OFFICIAL_URL = "https://collegefootballplayoff.com/rankings.aspx"
+NCAA_ORIGIN_URL = "https://www.ncaa.com/scoreboard/football/fbs"
 
-# ---------------------------
-# Config
-# ---------------------------
-
-# You can tweak these later as you refine scraping logic
-CFP_RANKINGS_URL = os.getenv(
-    "CFP_RANKINGS_URL",
-    "https://collegefootballplayoff.com/sports/football/rankings"  # example; may need adjustment
-)
-STANDINGS_URL = os.getenv(
-    "CFP_STANDINGS_URL",
-    "https://www.espn.com/college-football/standings"  # example
-)
-SCOREBOARD_URL = os.getenv(
-    "CFP_SCOREBOARD_URL",
-    "https://www.espn.com/college-football/scoreboard"  # example
-)
-
-# Output path (relative to repo root)
-OUTPUT_PATH = Path("data/cfp-data.json")
-
-
-# ---------------------------
-# Helpers
-# ---------------------------
 
 def now_iso() -> str:
-    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def safe_get_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
+def fetch_json(url: str) -> dict[str, Any]:
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "StegVerse-CFP-Live-Tracker/2026 (+https://stegverse.org)",
+        },
+    )
+    with urlopen(request, timeout=25) as response:  # nosec B310 - HTTPS public-data endpoints only
+        value = json.loads(response.read().decode("utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("expected a JSON object")
+    return value
+
+
+def team_name(team: dict[str, Any]) -> str:
+    names = team.get("names") or {}
+    if isinstance(names, dict):
+        return str(names.get("full") or names.get("short") or names.get("seo") or "TBD")
+    return "TBD"
+
+
+def numeric_score(value: Any) -> int | None:
+    text = str(value or "").strip()
+    return int(text) if text.isdigit() else None
+
+
+def kickoff_from_epoch(value: Any) -> str | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+        epoch = float(value)
+    except (TypeError, ValueError):
+        return None
+    if epoch > 10_000_000_000:
+        epoch /= 1000.0
+    try:
+        return datetime.fromtimestamp(epoch, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+    except (OverflowError, OSError, ValueError):
+        return None
 
 
-def fetch_html(url: str) -> str:
-    """
-    Basic HTML fetch with httpx. No heavy parsing here yet.
-    """
-    print(f"[fetch] GET {url}")
-    with httpx.Client(timeout=20.0, follow_redirects=True) as client:
-        resp = client.get(url)
-        resp.raise_for_status()
-        return resp.text
+def conference_name(team: dict[str, Any]) -> str:
+    conferences = team.get("conferences") or []
+    if conferences and isinstance(conferences[0], dict):
+        return str(conferences[0].get("conferenceName") or conferences[0].get("conferenceSeo") or "")
+    return ""
 
 
-# ---------------------------
-# Scraping stubs (to be refined)
-# ---------------------------
-
-def scrape_cfp_rankings(html: str) -> List[Dict[str, Any]]:
-    """
-    TODO: Implement real scraping of the CFP rankings page.
-
-    For now returns an empty list so the pipeline is wired and safe.
-    You can later:
-      - Inspect the HTML
-      - Add proper parsing (e.g. regex or a small HTML parser)
-    """
-    # Placeholder: structure is correct, content is empty.
-    rankings: List[Dict[str, Any]] = []
-    # Example of the expected shape for each entry:
-    # rankings.append({
-    #     "seed": 1,
-    #     "team": "Example Team",
-    #     "record": "12-0",
-    #     "conference": "Big Ten",
-    #     "status": "locked",  # "locked" | "in_play" | "eliminated"
-    #     "lock_reason": "CFP #1",
-    #     "spot_scenarios": [
-    #         {"team": "Example Team", "path": "Already locked"}
-    #     ],
-    # })
-    return rankings
-
-
-def scrape_standings(html: str) -> List[Dict[str, Any]]:
-    """
-    TODO: Implement real scraping of conference standings from ESPN (or similar).
-
-    For now returns an empty list with the correct shape.
-    """
-    conferences: List[Dict[str, Any]] = []
-    # Example structure:
-    # conferences = [
-    #     {
-    #         "id": "big12",
-    #         "name": "Big 12",
-    #         "teams": [
-    #             {
-    #                 "team": "Texas Tech",
-    #                 "overall": "11-1",
-    #                 "conference_record": "8-1",
-    #                 "pf": 420,
-    #                 "pa": 260,
-    #             },
-    #         ],
-    #     }
-    # ]
-    return conferences
-
-
-def scrape_games(html: str) -> List[Dict[str, Any]]:
-    """
-    TODO: Implement real scraping of games / scoreboard.
-
-    For now returns an empty list with the correct shape.
-    """
-    games: List[Dict[str, Any]] = []
-    # Example structure:
-    # games = [
-    #     {
-    #         "id": "ttu-byu",
-    #         "home": "Texas Tech",
-    #         "away": "BYU",
-    #         "home_score": 38,
-#             "away_score": 21,
-    #         "status": "Final",
-    #         "kickoff": "2025-12-06T17:00:00Z",
-    #         "conference": "Big 12",
-    #         "note": "Big 12 Championship Game",
-    #     }
-    # ]
+def parse_ncaa_games(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    games: list[dict[str, Any]] = []
+    for wrapper in payload.get("games") or []:
+        if not isinstance(wrapper, dict):
+            continue
+        game = wrapper.get("game") if isinstance(wrapper.get("game"), dict) else wrapper
+        if not isinstance(game, dict):
+            continue
+        home = game.get("home") or {}
+        away = game.get("away") or {}
+        if not isinstance(home, dict) or not isinstance(away, dict):
+            continue
+        state = str(game.get("gameState") or "").lower()
+        final_message = str(game.get("finalMessage") or "").strip()
+        if state == "final":
+            status = final_message or "Final"
+        elif state == "live":
+            period = str(game.get("currentPeriod") or "").strip()
+            clock = str(game.get("contestClock") or "").strip()
+            status = " ".join(part for part in (period, clock) if part) or "Live"
+        else:
+            status = str(game.get("startTime") or "Scheduled")
+        kickoff = kickoff_from_epoch(game.get("startTimeEpoch"))
+        games.append(
+            {
+                "id": str(game.get("gameID") or game.get("id") or ""),
+                "home": team_name(home),
+                "away": team_name(away),
+                "home_score": numeric_score(home.get("score")),
+                "away_score": numeric_score(away.get("score")),
+                "home_record": "",
+                "away_record": "",
+                "status": status,
+                "kickoff": kickoff,
+                "conference": conference_name(home) or conference_name(away),
+                "note": str(game.get("title") or game.get("network") or ""),
+            }
+        )
     return games
 
 
-def build_sources_block() -> List[Dict[str, Any]]:
-    """
-    Keep this aligned with sources used in cfp.html; you can tweak as needed.
-    """
+def parse_rank(value: Any) -> int | None:
+    match = re.search(r"\d+", str(value or ""))
+    return int(match.group(0)) if match else None
+
+
+def strip_first_place_votes(value: Any) -> str:
+    text = str(value or "").strip()
+    return re.sub(r"\s+\(\d+\)\s*$", "", text).strip()
+
+
+def parse_ncaa_ap_poll(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    teams: list[dict[str, Any]] = []
+    for row in payload.get("data") or []:
+        if not isinstance(row, dict):
+            continue
+        rank = parse_rank(row.get("RANK"))
+        team = strip_first_place_votes(row.get("SCHOOL (1ST VOTES)"))
+        if rank is None or not team:
+            continue
+        teams.append({"rank": rank, "team": team, "record": "", "conference": ""})
+    if not teams:
+        return []
     return [
-        {"id": "1", "label": "College Football Playoff", "url": "https://collegefootballplayoff.com"},
-        {"id": "2", "label": "AP Top 25", "url": "https://apnews.com"},
-        {"id": "3", "label": "Coaches Poll", "url": "https://sports.usatoday.com"},
-        {"id": "4", "label": "ESPN Standings", "url": "https://www.espn.com/college-football/standings"},
+        {
+            "name": str(payload.get("title") or "Associated Press Top 25"),
+            "source_id": "2",
+            "updated": payload.get("updated"),
+            "teams": teams,
+        }
     ]
 
 
-def build_polls_stub() -> List[Dict[str, Any]]:
-    """
-    Placeholder polls – you can later scrape AP / Coaches polls here.
-    """
-    polls: List[Dict[str, Any]] = []
-    # Example structure:
-    # polls = [
-    #     {
-    #         "name": "CFP Rankings",
-    #         "source_id": "1",
-    #         "teams": [
-    #             {"rank": 1, "team": "Ohio State", "record": "12-0", "conference": "Big Ten"},
-    #         ],
-    #     }
-    # ]
-    return polls
+def source_state(source_id: str, label: str, url: str, status: str, error: str | None = None, origin: str | None = None) -> dict[str, Any]:
+    result: dict[str, Any] = {"id": source_id, "label": label, "url": url, "status": status, "error": error}
+    if origin:
+        result["origin"] = origin
+    return result
 
-
-# ---------------------------
-# Main assembly
-# ---------------------------
 
 def main() -> int:
-    repo_root = Path(__file__).resolve().parents[1]  # from scripts/ -> repo root
-    out_path = repo_root / OUTPUT_PATH
+    fetched_at = now_iso()
+    current_year = datetime.now(timezone.utc).year
+    source_errors: dict[str, str] = {}
+    scoreboard: dict[str, Any] = {}
+    ap_payload: dict[str, Any] = {}
 
-    existing = safe_get_json(out_path)
-    print(f"[info] Existing cfp-data.json present: {bool(existing)}")
-
-    rankings: List[Dict[str, Any]] = []
-    conferences: List[Dict[str, Any]] = []
-    games: List[Dict[str, Any]] = []
-
-    # Try scraping rankings
     try:
-        html = fetch_html(CFP_RANKINGS_URL)
-        rankings = scrape_cfp_rankings(html)
-        print(f"[ok] rankings scraped: {len(rankings)} entries")
-    except Exception as e:
-        print(f"[warn] rankings scrape failed: {e!r}")
+        scoreboard = fetch_json(NCAA_SCOREBOARD_URL)
+    except (HTTPError, URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
+        source_errors["scoreboard"] = f"{type(exc).__name__}: {exc}"
 
-    # Try scraping standings
     try:
-        html = fetch_html(STANDINGS_URL)
-        conferences = scrape_standings(html)
-        print(f"[ok] conferences scraped: {len(conferences)} entries")
-    except Exception as e:
-        print(f"[warn] standings scrape failed: {e!r}")
+        ap_payload = fetch_json(NCAA_AP_URL)
+    except (HTTPError, URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
+        source_errors["polls"] = f"{type(exc).__name__}: {exc}"
 
-    # Try scraping games / scoreboard
-    try:
-        html = fetch_html(SCOREBOARD_URL)
-        games = scrape_games(html)
-        print(f"[ok] games scraped: {len(games)} entries")
-    except Exception as e:
-        print(f"[warn] scoreboard scrape failed: {e!r}")
+    games = parse_ncaa_games(scoreboard)
+    polls = parse_ncaa_ap_poll(ap_payload)
 
-    # If scraping gave us nothing, keep existing data to avoid wiping page
-    if not rankings and "rankings" in existing:
-        print("[info] Using existing rankings (scrape empty)")
-        rankings = existing.get("rankings", [])
+    # No supporting poll may become a CFP committee ranking. A future current-season
+    # CFP parser must populate this only from an observed CFP-authority source.
+    rankings: list[dict[str, Any]] = []
+    phase = "PRE_CFP_RANKINGS"
+    rankings_state = "NOT_YET_PUBLISHED_OR_NOT_OBSERVED"
 
-    if not conferences and "conferences" in existing:
-        print("[info] Using existing conferences (scrape empty)")
-        conferences = existing.get("conferences", [])
-
-    if not games and "games" in existing:
-        print("[info] Using existing games (scrape empty)")
-        games = existing.get("games", [])
-
-    data: Dict[str, Any] = {
-        "last_updated": now_iso(),
-        "sources": build_sources_block(),
+    data: dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "season": current_year,
+        "phase": phase,
+        "last_updated": fetched_at,
+        "freshness": {
+            "generated_at": fetched_at,
+            "current_season_only": True,
+            "historical_rankings_carried_forward": False,
+            "rankings_state": rankings_state,
+            "source_errors": source_errors,
+            "supporting_source_observed": bool(games or polls),
+        },
+        "sources": [
+            source_state("1", "College Football Playoff", CFP_OFFICIAL_URL, "NOT_YET_OBSERVED_FOR_CURRENT_SEASON"),
+            source_state(
+                "2",
+                "NCAA-derived AP Top 25 JSON (henrygd/ncaa-api)",
+                NCAA_AP_URL,
+                "AVAILABLE" if polls else ("UNAVAILABLE" if "polls" in source_errors else "NO_CURRENT_DATA_OBSERVED"),
+                source_errors.get("polls"),
+                "https://www.ncaa.com/rankings/football/fbs/associated-press",
+            ),
+            source_state(
+                "3",
+                "NCAA-derived FBS scoreboard JSON (henrygd/ncaa-api)",
+                NCAA_SCOREBOARD_URL,
+                "AVAILABLE" if games else ("UNAVAILABLE" if "scoreboard" in source_errors else "NO_CURRENT_EVENTS_OBSERVED"),
+                source_errors.get("scoreboard"),
+                NCAA_ORIGIN_URL,
+            ),
+        ],
         "cfp_source_id": "1",
-        "conf_source_id": "4",
+        "conf_source_id": None,
         "rankings": rankings,
-        "polls": build_polls_stub() if "polls" not in existing else existing["polls"],
-        "conferences": conferences,
+        "polls": polls,
+        "conferences": [],
         "games": games,
+        "availability": {
+            "cfp_rankings": rankings_state,
+            "games": "AVAILABLE" if games else ("SOURCE_UNAVAILABLE" if "scoreboard" in source_errors else "NO_CURRENT_EVENTS_OBSERVED"),
+            "polls": "AVAILABLE" if polls else ("SOURCE_UNAVAILABLE" if "polls" in source_errors else "NO_CURRENT_POLLS_OBSERVED"),
+            "conference_standings": "NOT_YET_CANONICALLY_INGESTED",
+        },
+        "historical_reference": {
+            "season": 2025,
+            "path": "/sports/ncaaf/2025/",
+            "included_in_current_rankings": False,
+        },
+        "authority": {
+            "sports_officiating": False,
+            "wagering": False,
+            "ticketing": False,
+            "governance": False,
+            "publication": False,
+        },
     }
 
-    # Merge in any extra fields from existing file (so we don't lose custom bits)
-    for key, value in existing.items():
-        if key not in data:
-            data[key] = value
-
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(data, indent=2, sort_keys=False), encoding="utf-8")
-    print(f"[done] wrote {out_path.relative_to(repo_root)}")
+    OUTPUT_PATH.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    print(f"CFP_INGESTION=PASS season={current_year} phase={phase} games={len(games)} polls={len(polls)} rankings=0")
+    if source_errors:
+        print("CFP_SOURCE_WARNINGS=" + json.dumps(source_errors, sort_keys=True))
     return 0
 
 

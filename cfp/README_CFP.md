@@ -1,187 +1,89 @@
-# 🏈 StegVerse NCAAF CFP Live Tracker
+# StegVerse CFP / NCAAF current-season tracker
 
-The **StegVerse CFP Live Tracker** is an automatically updating, fully client-side
-NCAAF data viewer designed to:
+The CFP surface is a **current-season public data projection**. It must never make a historical College Football Playoff ranking look current merely because a file or deployment timestamp changed.
 
-- Display **live CFP Top 12 rankings**
-- Identify **locked spots** and **in-play seeds**
-- Provide **scenario paths** for all teams still eligible for movement
-- Show **results & upcoming games**
-- Display **AP, Coaches, and CFP polls side-by-side**
-- Show live **conference standings** (all conferences)
-- Provide **ticket links** through multiple major ticket sellers/resellers
-- Support **config-driven affiliate URLs** (no code changes needed)
+## Current contract
 
-This system is fully modular and built around JSON data files so it can operate
-on any static hosting environment (GitHub Pages, Vercel, Netlify, Render, etc.).
+`data/cfp-data.json` uses schema `2.0.0` and carries explicit season and phase metadata.
 
----
+Supported phases:
 
-## 📁 File Structure
+- `PRE_CFP_RANKINGS` — current-season games and non-CFP polls may be displayed, but `rankings` MUST be empty. The page says that CFP committee rankings have not yet been published or observed.
+- `CFP_RANKINGS` — current-season CFP committee rankings have been observed and may populate `rankings`.
+- `SELECTION` — the selection-state projection may be shown only from current-season authoritative source data.
+- `PLAYOFF` — playoff-state data may be shown only after current-season playoff data is observed.
 
-/cfp
-├── cfp.html             # Main live page
-├── cfp.css              # Stylesheet
-├── cfp.js               # Client JS for rendering & data integration
-├── cfp-data.json        # Rankings, standings, polls, game results
-├── cfp-tickets.json     # Ticket provider config + affiliate patterns
-└── README.md            # (this document)
+AP, Coaches, ESPN, NCAA-derived, or other supporting polls are never silently promoted into CFP committee rankings. Historical rankings are never carried forward into the current file.
 
----
+## Canonical ingestion
 
-## 🔧 Config-Driven Architecture
+The canonical ingestion entry point is:
 
-The Live Tracker requires **zero code changes** when:
+```bash
+python scripts/fetch_cfp_data.py
+python scripts/check_cfp_data_freshness.py
+```
 
-- CFP rankings update  
-- Polls update  
-- Conference data updates  
-- Affiliate links change  
-- New ticket providers are added  
+`scripts/fetch_cfp_data.py` retrieves credential-free current-season FBS scoreboard and AP poll JSON through the public `henrygd/ncaa-api` projection of NCAA data. That supporting source does not become CFP authority. CFP committee rankings remain empty until a current-season CFP-authority observation is implemented and succeeds.
 
-All dynamic data is read from:
+The scheduled/manual workflow is `.github/workflows/cfp_ingest.yml`. It invokes the same canonical script and validator rather than maintaining a second scraper. Pull-request and scheduled ingestion additionally run:
 
-### **`cfp-data.json`**
-- CFP Top 12 rankings  
-- Lock status and scenario paths  
-- AP / Coaches / CFP polls  
-- Conference standings  
-- Games (results + scheduled)  
-- Timestamps & data source references  
+```bash
+python scripts/check_cfp_data_freshness.py --require-live-source
+```
 
-### **`cfp-tickets.json`**
-Controls ticket seller integrations:
+That mode fails when the ingestion execution observes neither current games nor a current supporting poll, preventing an all-sources-unavailable run from being mistaken for a healthy live tracker.
 
-- Default ticket providers  
-- Conference-specific providers  
-- Team-specific providers  
-- URL patterns for each seller  
-- Affiliate query string parameters (optional now; you can add later)
+Legacy files such as `cfp/cfp_ingest.py`, `scripts/cfp_ingest_standings_polls.py`, `scripts/ingest_sports.py`, and `ingest/ingest_config.yml` are not additional authorities for the live CFP contract. They remain legacy implementation debt until explicitly retired or redirected to the canonical path.
 
-Example:
+## Data semantics
 
-```json
-"patterns": {
-  "seatgeek": "https://seatgeek.com/search?search={QUERY}&aid=YOUR_ID",
-  "stubhub": "https://www.stubhub.com/find/s/?q={QUERY}&publisher_id=YOUR_ID"
-}
+Important fields in `data/cfp-data.json`:
 
-🔗 Live Ticket Links (Config-Driven)
+- `season` — current UTC season year for this projection.
+- `phase` — one of the supported phase values above.
+- `last_updated` — time the projection was generated; it does **not** prove that every upstream source changed at that time.
+- `freshness.current_season_only` — must be `true`.
+- `freshness.historical_rankings_carried_forward` — must be `false`.
+- `freshness.rankings_state` — explains whether current CFP rankings were actually observed.
+- `freshness.supporting_source_observed` — true only when this ingestion observed at least one current supporting poll or game result set.
+- `availability` — per-surface availability/degraded-state information.
+- `historical_reference` — pointer to retained historical material; `included_in_current_rankings` must remain `false`.
 
-Each game automatically receives “Find Tickets” options based on:
-	•	Home/away team
-	•	Conference of the game
-	•	Default providers
-	•	Team-specific overrides
-	•	Conference-specific overrides
+A source fetch failure is represented as unavailable/degraded data. It is not repaired by copying an old ranking forward.
 
-Rendered buttons include:
-	•	SeatGeek
-	•	StubHub
-	•	Ticketmaster
-	•	Vivid Seats
-	•		•	any others you add in cfp-tickets.json
+## Public rendering
 
-⸻
+`cfp/cfp.js` consumes `/data/cfp-data.json`. The UI must distinguish “no current CFP rankings yet” from an ingestion failure and from a legitimately empty current event set. The 2025 historical lane remains available separately under `/sports/ncaaf/2025/` and is not the live 2026 ranking source.
 
-🧩 Key Modules
+## Sources
 
-Rankings Renderer
-	•	CFP Top 12 table
-	•	Status badges (Locked / In Play / Eliminated)
-	•	Lock reasoning text
-	•	Source marker (linked to the bottom of page)
+The College Football Playoff site remains the CFP authority reference. Current supporting AP/scoreboard data is obtained through the public `henrygd/ncaa-api` service, which projects NCAA data and requires no credential. The data file records both the JSON endpoint and the NCAA origin reference so the proxy is not misrepresented as the governing CFP source.
 
-Spot Details
-	•	Shows all seeds not yet locked
-	•	Lists eligible teams
-	•	Lists scenarios required to secure each spot
+No provider credential, API key, TV/TVC credential material, GitHub token runtime authority, wagering authority, ticketing authority, or sports-officiating authority is created by this tracker.
 
-Polls (CFP / AP / Coaches)
-	•	Three poll cards
-	•	Ranked tables
-	•	Source markers [1] [2] [3]
+## Validation
 
-Conference Standings
-	•	Conference dropdown
-	•	Loads standings dynamically
-	•	PF/PA, conference record, overall record
-	•	Source marker [4]
+Run:
 
-Games
-	•	Final scores
-	•	Scheduled games
-	•	Notes
-	•	Kickoff times
-	•	Ticket provider buttons (from config)
+```bash
+python scripts/check_cfp_data_freshness.py
+```
 
-⸻
+For an execution that must prove at least one supporting source was actually observed, run:
 
-📜 Data Sources
+```bash
+python scripts/check_cfp_data_freshness.py --require-live-source
+```
 
-All tables include numbered markers ([1], [2]) linking to the footer.
+The validator fails if, among other things:
 
-Examples:
-[1] CFP Rankings – https://collegefootballplayoff.com  
-[2] AP Top 25 – https://apnews.com  
-[3] Coaches Poll – https://sports.usatoday.com  
-[4] Conference standings – https://espn.com/college-football/standings
+- the live season is not the current UTC year;
+- `PRE_CFP_RANKINGS` contains CFP rankings;
+- a ranking phase lacks current rankings;
+- historical rankings are marked as carried forward;
+- a current source points at a 2025 snapshot;
+- live-source-required validation observes neither games nor a supporting poll;
+- the required README completeness markers are missing.
 
-You can add or remove sources by editing the sources array in cfp-data.json.
-
-⸻
-
-🚀 Deploying the CFP Tracker
-	1.	Upload all files to your repository (e.g., StegVerse/site under /cfp).
-	2.	Deploy via:
-	•	GitHub Pages
-	•	Netlify
-	•	Render static site
-	•	Vercel
-	3.	Open:
-https://yourdomain.com/cfp/cfp.html
-
-All updates happen automatically whenever cfp-data.json changes.
-
-⸻
-
-🛠 Development / Editor Notes
-	•	Editing from iPhone is supported — the entire system is JSON-driven.
-	•	No build pipeline required.
-	•	No backend required.
-	•	No rate limits or API keys required (unless you add an API backend on purpose).
-
-⸻
-
-🧭 Future Enhancements (internal)
-
-These features are planned as StegVerse expands:
-	•	StegTickets
-Real-time price comparisons across all sellers, updated continuously.
-	•	StegOdds
-Live odds + movement history for each CFP slot & game.
-	•	StegSim CFP
-Model-driven projections & chaos simulations based on remaining games.
-	•	StegStats API
-Exposes all CFP, poll, and standings data as an API endpoint.
-	•	CFP Narrative Engine
-AI-written stories, summaries, and automated social posts (via StegSocial).
-	•	Affiliate Router Service
-tickets.stegverse.com/<slug> redirects → affiliate URLs (rotatable).
-
-⸻
-
-🎉 Coming Soon (public-facing)
-
-You can embed this in the public CFP page (near footer):
-
-<div class="cfp-coming-soon">
-  <h3>Coming Soon to StegVerse Sports</h3>
-  <ul>
-    <li>🔮 Live CFP probability forecasts</li>
-    <li>📊 Real-time playoff path simulations</li>
-    <li>🎟 Smart ticket finder with multi-site price tracking</li>
-    <li>📢 Automated game summaries sent to your socials</li>
-    <li>📈 Expanded analytics for every conference and team</li>
-  </ul>
-</div>
+Source, CI, merge, workflow success, or deployment alone does not prove a current public data observation. Public verification remains a separate completion predicate.

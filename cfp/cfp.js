@@ -1,4 +1,4 @@
-// cfp.js – StegVerse CFP Live Tracker (full production version)
+// StegVerse CFP / NCAAF current-season public projection.
 
 const CFP_DATA_URL = window.CFP_DATA_URL || "/data/cfp-data.json";
 const CFP_TICKETS_URL = window.CFP_TICKETS_URL || "/data/cfp-tickets.json";
@@ -19,310 +19,204 @@ const elSources = document.getElementById("cfp-sources");
 const elTop12SourceMarker = document.getElementById("cfp-top12-source-marker");
 const elConfSourceMarker = document.getElementById("cfp-conf-source-marker");
 
-function setStatus(txt, err=false) {
-  elStatus.textContent = txt;
-  elStatus.style.color = err ? "#ff8080" : "#b0ffa8";
-}
-function formatDateTime(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return d.toLocaleString();
-}
-function sourceMarker(id){
-  if (!id) return "";
-  const s = sourcesIndex[id];
-  if (!s) return "";
-  return `<sup><a href="#cfp-source-${id}" style="color:#ffcc66;">[${id}]</a></sup>`;
+function setStatus(text, error = false) {
+  if (!elStatus) return;
+  elStatus.textContent = text;
+  elStatus.style.color = error ? "#ff8080" : "#b0ffa8";
 }
 
-function statusBadge(status){
-  const s = (status||"").toLowerCase();
-  if (s==="locked") return `<span class="cfp-badge cfp-badge-locked">Locked</span>`;
-  if (s==="in_play") return `<span class="cfp-badge cfp-badge-inplay">In Play</span>`;
-  if (s==="eliminated") return `<span class="cfp-badge cfp-badge-elim">Eliminated</span>`;
+function formatDateTime(iso) {
+  if (!iso) return "unknown";
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? String(iso) : date.toLocaleString();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function sourceMarker(id) {
+  if (!id || !sourcesIndex[id]) return "";
+  return `<sup><a href="#cfp-source-${escapeHtml(id)}" style="color:#ffcc66;">[${escapeHtml(id)}]</a></sup>`;
+}
+
+function statusBadge(status) {
+  const normalized = String(status || "").toLowerCase();
+  if (normalized === "locked") return '<span class="cfp-badge cfp-badge-locked">Locked</span>';
+  if (normalized === "in_play") return '<span class="cfp-badge cfp-badge-inplay">In Play</span>';
+  if (normalized === "eliminated") return '<span class="cfp-badge cfp-badge-elim">Eliminated</span>';
   return "";
 }
 
+function rankingEmptyMessage(data) {
+  if (data.phase === "PRE_CFP_RANKINGS") {
+    return `No current ${escapeHtml(data.season)} CFP committee rankings have been published or observed yet. AP/other polls below remain separate and are not CFP rankings.`;
+  }
+  const state = data.availability?.cfp_rankings || data.freshness?.rankings_state;
+  if (state && state !== "PUBLISHED_CURRENT_SEASON") {
+    return `Current CFP rankings unavailable: ${escapeHtml(state)}.`;
+  }
+  return "No current CFP rankings available.";
+}
 
-/* ---------------------------------------------------------
-   RENDER: CFP Top 12
---------------------------------------------------------- */
-function renderRankings(rankings, sourceId){
-  if (!rankings.length){
-    elRankings.innerHTML="<p>No rankings.</p>";
+function renderRankings(rankings, sourceId, data) {
+  if (!Array.isArray(rankings) || !rankings.length) {
+    elRankings.innerHTML = `<p>${rankingEmptyMessage(data)}</p>`;
+    if (elTop12SourceMarker) elTop12SourceMarker.innerHTML = sourceMarker(sourceId);
     return;
   }
 
-  const rows = rankings.map(r=>`
+  const rows = rankings.map((r) => `
     <tr>
-      <td class="cfp-seed">#${r.seed}</td>
-      <td>${r.team}</td>
-      <td>${r.record}</td>
-      <td>${r.conference}</td>
-      <td>${statusBadge(r.status)}<div style="font-size:0.7rem;opacity:0.7;">${r.lock_reason || ""}</div></td>
-    </tr>`
-  ).join("");
+      <td class="cfp-seed">#${escapeHtml(r.seed)}</td>
+      <td>${escapeHtml(r.team)}</td>
+      <td>${escapeHtml(r.record)}</td>
+      <td>${escapeHtml(r.conference)}</td>
+      <td>${statusBadge(r.status)}<div style="font-size:0.7rem;opacity:0.7;">${escapeHtml(r.lock_reason || "")}</div></td>
+    </tr>`).join("");
 
   elRankings.innerHTML = `
     <table class="cfp-rankings-table">
-      <thead><tr><th>Seed</th><th>Team</th><th>Record</th><th>Conf</th><th>Status</th></tr></thead>
+      <thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>Conf</th><th>Status</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>
-  `;
-
-  elTop12SourceMarker.innerHTML = sourceMarker(sourceId);
+    </table>`;
+  if (elTop12SourceMarker) elTop12SourceMarker.innerHTML = sourceMarker(sourceId);
 }
 
-
-/* ---------------------------------------------------------
-   RENDER: Spot Details (not locked)
---------------------------------------------------------- */
-function renderSpotDetails(rankings){
-  const items = rankings.filter(r=>r.status!=="locked");
-  if (!items.length){
-    elSpotDetails.innerHTML="<p>All seeds are locked.</p>";
+function renderSpotDetails(rankings, data) {
+  if (data.phase === "PRE_CFP_RANKINGS") {
+    elSpotDetails.innerHTML = "<p>Playoff spot scenarios are withheld until current-season CFP committee rankings are observed.</p>";
     return;
   }
-
-  elSpotDetails.innerHTML = items.map(r=>{
-    const scenarios = (r.spot_scenarios || []).map(
-      s=>`<li><strong>${s.team}:</strong> ${s.path}</li>`
-    ).join("");
-
-    return `
-      <div class="cfp-spot-card">
-        <div class="cfp-spot-card-header">
-          <div class="cfp-spot-card-title">Seed #${r.seed}</div>
-          <div>${statusBadge(r.status)}</div>
-        </div>
-        <div><strong>Current:</strong> ${r.team}</div>
-        <ul>${scenarios}</ul>
-      </div>
-    `;
+  const items = (rankings || []).filter((r) => r.status !== "locked");
+  if (!items.length) {
+    elSpotDetails.innerHTML = "<p>No current spot-scenario data available.</p>";
+    return;
+  }
+  elSpotDetails.innerHTML = items.map((r) => {
+    const scenarios = (r.spot_scenarios || []).map((s) => `<li><strong>${escapeHtml(s.team)}:</strong> ${escapeHtml(s.path)}</li>`).join("");
+    return `<div class="cfp-spot-card">
+      <div class="cfp-spot-card-header"><div class="cfp-spot-card-title">Rank #${escapeHtml(r.seed)}</div><div>${statusBadge(r.status)}</div></div>
+      <div><strong>Current:</strong> ${escapeHtml(r.team)}</div><ul>${scenarios}</ul>
+    </div>`;
   }).join("");
 }
 
-
-/* ---------------------------------------------------------
-   TICKET CONFIG HANDLING
---------------------------------------------------------- */
-function getTicketProfile(game){
+function getTicketProfile(game) {
   if (!ticketsConfig) return null;
-
   const base = ticketsConfig.defaults || {};
-  const confMap = ticketsConfig.conferences || {};
-  const teamMap = ticketsConfig.teams || {};
-
-  const conf = game.conference;
-  const home = game.home;
-  const away = game.away;
-
-  const confOverride = (conf && confMap[conf]) ? confMap[conf] : {};
-  const teamOverride = teamMap[home] || teamMap[away] || {};
-
-  const providers =
-    teamOverride.providers ||
-    confOverride.providers ||
-    base.providers || [];
-
-  const patterns = {
-    ...(base.patterns||{}),
-    ...(confOverride.patterns||{}),
-    ...(teamOverride.patterns||{})
+  const confOverride = (game.conference && ticketsConfig.conferences?.[game.conference]) || {};
+  const teamOverride = ticketsConfig.teams?.[game.home] || ticketsConfig.teams?.[game.away] || {};
+  return {
+    providers: teamOverride.providers || confOverride.providers || base.providers || [],
+    patterns: {...(base.patterns || {}), ...(confOverride.patterns || {}), ...(teamOverride.patterns || {})},
   };
-
-  return { providers, patterns };
 }
 
-function buildTicketButtons(game){
-  if (!ticketsConfig) return "";
+function buildTicketButtons(game) {
   const profile = getTicketProfile(game);
-  if (!profile || !profile.providers.length) return "";
-
+  if (!profile?.providers?.length) return "";
   const labels = ticketsConfig.labels || {};
   const query = encodeURIComponent(`${game.away} at ${game.home} tickets`);
-
-  const links = profile.providers.map(key=>{
-    const url = profile.patterns[key]?.replace("{QUERY}", query);
-    if (!url) return null;
-    const label = labels[key] || key;
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
-  }).filter(Boolean).join(' • ');
-
-  return `
-    <div style="margin-top:0.4rem;font-size:0.8rem;">
-      <span>Tickets: </span>${links}
-      <span style="margin-left:0.25rem;opacity:0.6;">(partners)</span>
-    </div>
-  `;
+  const links = profile.providers.map((key) => {
+    const pattern = profile.patterns[key];
+    if (!pattern) return null;
+    const url = pattern.replace("{QUERY}", query);
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(labels[key] || key)}</a>`;
+  }).filter(Boolean).join(" • ");
+  return links ? `<div style="margin-top:0.4rem;font-size:0.8rem;"><span>Tickets: </span>${links}<span style="margin-left:0.25rem;opacity:0.6;">(partners)</span></div>` : "";
 }
 
-
-/* ---------------------------------------------------------
-   RENDER: Games
---------------------------------------------------------- */
-function renderGames(games){
-  if (!games.length){
-    elGames.innerHTML="<p>No games.</p>";
+function renderGames(games, availability) {
+  if (!Array.isArray(games) || !games.length) {
+    const state = availability?.games || "NO_CURRENT_EVENTS_OBSERVED";
+    elGames.innerHTML = `<p>No current games to display (${escapeHtml(state)}).</p>`;
     return;
   }
-
-  elGames.innerHTML = `<ul class="cfp-games-list">` +
-    games.map(g=>`
-      <li class="cfp-game">
-        <div class="cfp-game-header">
-          <span>${g.away} @ ${g.home}</span>
-          <span>${g.away_score ?? "-"} – ${g.home_score ?? "-"}</span>
-        </div>
-        <div class="cfp-game-meta">
-          ${g.status ? `Status: ${g.status}` : ""}
-          ${g.kickoff ? ` | Kickoff: ${formatDateTime(g.kickoff)}` : ""}
-          ${g.note ? ` | ${g.note}` : ""}
-          ${buildTicketButtons(g)}
-        </div>
-      </li>
-    `).join("") +
-  `</ul>`;
-}
-
-
-/* ---------------------------------------------------------
-   RENDER: Polls
---------------------------------------------------------- */
-function renderPolls(polls){
-  if (!polls.length){
-    elPolls.innerHTML="<p>No polls available.</p>";
-    return;
-  }
-
-  elPolls.innerHTML = polls.map(p=>{
-    const rows = p.teams.map(t=>`
-      <tr>
-        <td>${t.rank}</td>
-        <td>${t.team}</td>
-        <td>${t.record}</td>
-        <td>${t.conference}</td>
-      </tr>
-    `).join("");
-
-    return `
-      <div class="cfp-poll-card">
-        <div class="cfp-poll-header">
-          <div class="cfp-poll-title">${p.name} ${sourceMarker(p.source_id)}</div>
-        </div>
-        <table class="cfp-poll-table">
-          <thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>Conf</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+  elGames.innerHTML = `<ul class="cfp-games-list">${games.map((g) => `
+    <li class="cfp-game">
+      <div class="cfp-game-header"><span>${escapeHtml(g.away)} @ ${escapeHtml(g.home)}</span><span>${g.away_score ?? "-"} – ${g.home_score ?? "-"}</span></div>
+      <div class="cfp-game-meta">
+        ${g.status ? `Status: ${escapeHtml(g.status)}` : ""}
+        ${g.kickoff ? ` | Kickoff: ${escapeHtml(formatDateTime(g.kickoff))}` : ""}
+        ${g.note ? ` | ${escapeHtml(g.note)}` : ""}
+        ${buildTicketButtons(g)}
       </div>
-    `;
+    </li>`).join("")}</ul>`;
+}
+
+function renderPolls(polls, availability) {
+  if (!Array.isArray(polls) || !polls.length) {
+    elPolls.innerHTML = `<p>No current polls available (${escapeHtml(availability?.polls || "NO_CURRENT_POLLS_OBSERVED")}).</p>`;
+    return;
+  }
+  elPolls.innerHTML = polls.map((poll) => {
+    const rows = (poll.teams || []).map((team) => `<tr><td>${escapeHtml(team.rank)}</td><td>${escapeHtml(team.team)}</td><td>${escapeHtml(team.record)}</td><td>${escapeHtml(team.conference)}</td></tr>`).join("");
+    return `<div class="cfp-poll-card"><div class="cfp-poll-header"><div class="cfp-poll-title">${escapeHtml(poll.name)} ${sourceMarker(poll.source_id)}</div></div>
+      <table class="cfp-poll-table"><thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }).join("");
 }
 
-
-/* ---------------------------------------------------------
-   RENDER: Conferences
---------------------------------------------------------- */
-function renderConferences(confs, sourceId){
-  if (!confs.length){
-    elConfSelect.innerHTML="<option>No data</option>";
-    elConfStandings.innerHTML="<p>No standings.</p>";
-    return;
-  }
-
-  elConfSourceMarker.innerHTML = sourceMarker(sourceId);
-
-  elConfSelect.innerHTML = confs.map(c=>`
-    <option value="${c.id}">${c.name}</option>
-  `).join("");
-
-  renderConferenceStandings(confs[0]);
-
-  elConfSelect.onchange = () => {
-    const id = elConfSelect.value;
-    const conf = confs.find(c=>c.id===id);
-    renderConferenceStandings(conf);
-  };
-}
-
-function renderConferenceStandings(conf){
+function renderConferenceStandings(conf) {
   if (!conf) return;
-
-  const rows = conf.teams.map(t=>`
-    <tr>
-      <td>${t.team}</td>
-      <td>${t.overall}</td>
-      <td>${t.conference_record}</td>
-      <td>${t.pf}</td>
-      <td>${t.pa}</td>
-    </tr>
-  `).join("");
-
-  elConfStandings.innerHTML = `
-    <table class="cfp-conf-table">
-      <thead><tr><th>Team</th><th>Overall</th><th>Conf</th><th>PF</th><th>PA</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
+  const rows = (conf.teams || []).map((team) => `<tr><td>${escapeHtml(team.team)}</td><td>${escapeHtml(team.overall)}</td><td>${escapeHtml(team.conference_record)}</td><td>${escapeHtml(team.pf)}</td><td>${escapeHtml(team.pa)}</td></tr>`).join("");
+  elConfStandings.innerHTML = `<table class="cfp-conf-table"><thead><tr><th>Team</th><th>Overall</th><th>Conf</th><th>PF</th><th>PA</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-
-/* ---------------------------------------------------------
-   RENDER: Data Sources
---------------------------------------------------------- */
-function renderSources(list){
-  if (!list.length){
-    elSources.innerHTML="<p>No sources.</p>";
+function renderConferences(conferences, sourceId, availability) {
+  if (!Array.isArray(conferences) || !conferences.length) {
+    elConfSelect.innerHTML = "<option>No current data</option>";
+    elConfStandings.innerHTML = `<p>Conference standings unavailable (${escapeHtml(availability?.conference_standings || "NOT_AVAILABLE")}).</p>`;
     return;
   }
-
-  elSources.innerHTML = `
-    <ul class="cfp-sources-list">
-      ${list.map(s=>`
-        <li id="cfp-source-${s.id}">[${s.id}] 
-          <a href="${s.url}" target="_blank">${s.label}</a>
-        </li>
-      `).join("")}
-    </ul>
-  `;
+  if (elConfSourceMarker) elConfSourceMarker.innerHTML = sourceMarker(sourceId);
+  elConfSelect.innerHTML = conferences.map((conf) => `<option value="${escapeHtml(conf.id)}">${escapeHtml(conf.name)}</option>`).join("");
+  renderConferenceStandings(conferences[0]);
+  elConfSelect.onchange = () => renderConferenceStandings(conferences.find((conf) => conf.id === elConfSelect.value));
 }
 
+function renderSources(sources) {
+  if (!Array.isArray(sources) || !sources.length) {
+    elSources.innerHTML = "<p>No sources declared.</p>";
+    return;
+  }
+  elSources.innerHTML = `<ul class="cfp-sources-list">${sources.map((source) => `<li id="cfp-source-${escapeHtml(source.id)}">[${escapeHtml(source.id)}] <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a> — ${escapeHtml(source.status || "UNKNOWN")}</li>`).join("")}</ul>`;
+}
 
-/* ---------------------------------------------------------
-   LOAD EVERYTHING
---------------------------------------------------------- */
-async function loadCfpData(){
+async function loadCfpData() {
   setStatus("Refreshing…");
-
   try {
     const [dataRes, ticketRes] = await Promise.all([
-      fetch(CFP_DATA_URL + "?t="+Date.now()),
-      fetch(CFP_TICKETS_URL + "?t="+Date.now()).catch(()=>null)
+      fetch(`${CFP_DATA_URL}?t=${Date.now()}`),
+      fetch(`${CFP_TICKETS_URL}?t=${Date.now()}`).catch(() => null),
     ]);
-
+    if (!dataRes.ok) throw new Error(`CFP data HTTP ${dataRes.status}`);
     const data = await dataRes.json();
     ticketsConfig = ticketRes && ticketRes.ok ? await ticketRes.json() : null;
 
     sourcesIndex = {};
-    (data.sources||[]).forEach(s=>sourcesIndex[s.id]=s);
+    (data.sources || []).forEach((source) => { sourcesIndex[source.id] = source; });
 
-    renderSources(data.sources||[]);
-    renderRankings(data.rankings||[], data.cfp_source_id);
-    renderSpotDetails(data.rankings||[]);
-    renderGames(data.games||[]);
-    renderPolls(data.polls||[]);
-    renderConferences(data.conferences||[], data.conf_source_id);
+    renderSources(data.sources || []);
+    renderRankings(data.rankings || [], data.cfp_source_id, data);
+    renderSpotDetails(data.rankings || [], data);
+    renderGames(data.games || [], data.availability || {});
+    renderPolls(data.polls || [], data.availability || {});
+    renderConferences(data.conferences || [], data.conf_source_id, data.availability || {});
 
-    elLastUpdated.textContent = "Last updated: " + formatDateTime(data.last_updated);
-    setStatus("Updated.");
-
-  } catch (err){
-    console.error(err);
-    setStatus("Load failed.", true);
+    elLastUpdated.textContent = `Season ${data.season || "?"} • ${data.phase || "UNKNOWN"} • Projection generated: ${formatDateTime(data.last_updated)}`;
+    const sourceErrors = Object.keys(data.freshness?.source_errors || {});
+    setStatus(sourceErrors.length ? `Updated with ${sourceErrors.length} source warning(s).` : "Updated.", false);
+  } catch (error) {
+    console.error(error);
+    setStatus("Current-season data load failed; stale rankings are not substituted.", true);
   }
 }
 
-elRefreshBtn.onclick = loadCfpData;
-
-// Initial load
+if (elRefreshBtn) elRefreshBtn.onclick = loadCfpData;
 loadCfpData();

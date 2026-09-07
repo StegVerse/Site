@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>StegVerse CFP • Current Top 12 & Bracket</title>
+  <title>StegVerse CFP • Current-Season Bracket Status</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="cfp.css" />
   <script defer src="bracket.js"></script>
@@ -11,21 +11,21 @@
   <header class="cfp-header">
     <div class="cfp-logo">STEGVERSE<br /><span>• CFP</span></div>
     <nav class="cfp-nav">
-      <a href="bracket.html" class="active">Bracket</a>
-      <a href="../sports/ncaaf/2025/championship.html">Championship Weekend</a>
+      <a href="cfp.html">Current-Season Tracker</a>
+      <a href="bracket.html" class="active">Bracket Status</a>
+      <a href="../sports/ncaaf/2025/championship.html">2025 Archive</a>
       <a href="../providers.html">Rankings Providers</a>
     </nav>
   </header>
 
   <main class="cfp-main">
     <section class="cfp-card">
-      <h1 class="cfp-title">Current CFP Top 12 &amp; Bracket</h1>
+      <h1 class="cfp-title">Current-Season CFP Bracket Status</h1>
       <p class="cfp-subtitle" id="cfp-release-note">
-        Rankings below are synced to the most recent official CFP release. Movement and projections are
-        relative to that release.
+        Loading current-season CFP availability…
       </p>
 
-      <h2 class="cfp-section-title">CFP Rankings 1–12</h2>
+      <h2 class="cfp-section-title">Current CFP Committee Rankings / Seeds</h2>
       <div class="cfp-table-wrapper">
         <table class="cfp-table">
           <thead>
@@ -34,41 +34,37 @@
               <th>Team</th>
               <th>Record</th>
               <th>Conf</th>
-              <th>Since Last</th>
-              <th>Projection (Next Ranking)</th>
+              <th>Status</th>
+              <th>Evidence note</th>
             </tr>
           </thead>
           <tbody id="cfp-table-body">
-            <!-- Populated by bracket.js -->
+            <tr><td colspan="6">Loading current-season CFP state…</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="cfp-note">
         <p>
-          Tap any team name to open its <strong>Road to the National Championship</strong> page with
-          best case, most likely, and nightmare paths plus remaining schedule.
+          This page uses <code>data/cfp-data.json</code>, the same current-season contract as the main tracker.
+          AP or other supporting polls are not substituted for CFP committee rankings.
         </p>
       </div>
     </section>
 
     <section class="cfp-card">
-      <h2 class="cfp-section-title">Standings &amp; Summary</h2>
+      <h2 class="cfp-section-title">Freshness Boundary</h2>
       <div id="cfp-standings-summary" class="cfp-summary">
-        <!-- Optional: you can inject high-level commentary here later, or keep it static. -->
         <p>
-          Prototype build – data model powered by <code>data/cfp-2025.json</code>. Update that file
-          weekly and this page will reflect the new CFP release automatically.
+          Before current-season CFP rankings are observed, this page intentionally shows no bracket seeds.
+          Prototype or historical files cannot be promoted into current status by a new timestamp or deployment.
         </p>
       </div>
     </section>
   </main>
 
   <footer class="cfp-footer">
-    <p>
-      Data source: official CFP rankings + StegVerse model notes. Prototype build – rankings are
-      placeholders until wired to live feeds.
-    </p>
+    <p>Experimental current-season projection — not an official CFP product.</p>
   </footer>
 </body>
 </html>

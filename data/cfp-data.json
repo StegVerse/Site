@@ -1,242 +1,63 @@
 {
-  "last_updated": "2026-09-03T13:57:31.653160+00:00",
+  "schema_version": "2.0.0",
+  "season": 2026,
+  "phase": "PRE_CFP_RANKINGS",
+  "last_updated": "2026-09-06T06:32:00Z",
+  "freshness": {
+    "generated_at": "2026-09-06T06:32:00Z",
+    "current_season_only": true,
+    "historical_rankings_carried_forward": false,
+    "rankings_state": "NOT_YET_PUBLISHED_OR_NOT_OBSERVED",
+    "source_errors": {},
+    "supporting_source_observed": false
+  },
   "sources": [
     {
       "id": "1",
       "label": "College Football Playoff",
-      "url": "https://collegefootballplayoff.com/news/2025/12/7/cfp-rankings.aspx"
+      "url": "https://collegefootballplayoff.com/rankings.aspx",
+      "status": "NOT_YET_OBSERVED_FOR_CURRENT_SEASON",
+      "error": null
+    },
+    {
+      "id": "2",
+      "label": "NCAA-derived AP Top 25 JSON (henrygd/ncaa-api)",
+      "url": "https://ncaa-api.henrygd.me/rankings/football/fbs/associated-press",
+      "status": "PENDING_CANONICAL_INGESTION_RUN",
+      "error": null,
+      "origin": "https://www.ncaa.com/rankings/football/fbs/associated-press"
+    },
+    {
+      "id": "3",
+      "label": "NCAA-derived FBS scoreboard JSON (henrygd/ncaa-api)",
+      "url": "https://ncaa-api.henrygd.me/scoreboard/football/fbs",
+      "status": "PENDING_CANONICAL_INGESTION_RUN",
+      "error": null,
+      "origin": "https://www.ncaa.com/scoreboard/football/fbs"
     }
   ],
   "cfp_source_id": "1",
   "conf_source_id": null,
-  "rankings": [
-    {
-      "seed": 1,
-      "team": "Indiana",
-      "record": "13-0",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 2,
-      "team": "Ohio State",
-      "record": "12-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 3,
-      "team": "Georgia",
-      "record": "12-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 4,
-      "team": "Texas Tech",
-      "record": "12-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 5,
-      "team": "Oregon",
-      "record": "11-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 6,
-      "team": "Ole Miss",
-      "record": "11-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 7,
-      "team": "Texas A&M",
-      "record": "11-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 8,
-      "team": "Oklahoma",
-      "record": "10-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 9,
-      "team": "Alabama",
-      "record": "10-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 10,
-      "team": "Miami",
-      "record": "10-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 11,
-      "team": "Notre Dame",
-      "record": "10-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 12,
-      "team": "BYU",
-      "record": "11-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 13,
-      "team": "Texas",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 14,
-      "team": "Vanderbilt",
-      "record": "10-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 15,
-      "team": "Utah",
-      "record": "10-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 16,
-      "team": "Southern California",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 17,
-      "team": "Arizona",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 18,
-      "team": "Michigan",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 19,
-      "team": "Virginia",
-      "record": "10-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 20,
-      "team": "Tulane",
-      "record": "11-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 21,
-      "team": "Houston",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 22,
-      "team": "Georgia Tech",
-      "record": "9-3",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 23,
-      "team": "Iowa",
-      "record": "8-4",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 24,
-      "team": "James Madison",
-      "record": "12-1",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    },
-    {
-      "seed": 25,
-      "team": "North Texas",
-      "record": "11-2",
-      "conference": "",
-      "status": "in_play",
-      "lock_reason": "",
-      "spot_scenarios": []
-    }
-  ],
-  "games": [],
+  "rankings": [],
   "polls": [],
-  "conferences": []
+  "conferences": [],
+  "games": [],
+  "availability": {
+    "cfp_rankings": "NOT_YET_PUBLISHED_OR_NOT_OBSERVED",
+    "games": "PENDING_CANONICAL_INGESTION_RUN",
+    "polls": "PENDING_CANONICAL_INGESTION_RUN",
+    "conference_standings": "NOT_YET_CANONICALLY_INGESTED"
+  },
+  "historical_reference": {
+    "season": 2025,
+    "path": "/sports/ncaaf/2025/",
+    "included_in_current_rankings": false
+  },
+  "authority": {
+    "sports_officiating": false,
+    "wagering": false,
+    "ticketing": false,
+    "governance": false,
+    "publication": false
+  }
 }

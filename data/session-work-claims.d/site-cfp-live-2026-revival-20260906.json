@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-CFP-LIVE-2026-REVIVAL-20260906",
+      "session_worker_id": "chatgpt:site-cfp-live-2026-revival-20260906",
+      "task_id": "SITE-CFP-LIVE-2026-REVIVAL-1060",
+      "cosv_profile": "task.v1",
+      "cosv_task_vector": "20010000110000",
+      "cosv_source_state_vector_ref": "StegVerse-Labs/.github:control/task-vectors/SITE-CFP-LIVE-2026-REVIVAL-1060.json",
+      "originating_goal": "Restore the existing CFP/NCAAF Site surface as a current-season, freshness-aware tracker without allowing historical 2025 CFP data to masquerade as current 2026 data.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "goal/cfp-live-2026-revival",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-cfp-live-2026-revival-20260906",
+      "dependency_surface_keys": [
+        "site:cfp-live-tracker",
+        "site:ncaaf-canonical-ingestion",
+        "site:cfp-data-freshness"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-cfp-live-2026-revival-20260906.json",
+        "data/preflight/cfp-live-2026-revival-20260906.json",
+        "docs/CFP_MIRROR_HANDOFF.md",
+        "data/cfp-data.json",
+        "data/README-cfp-source.md",
+        "cfp/cfp.html",
+        "cfp/cfp.js",
+        "cfp/bracket.html",
+        "cfp/bracket.js",
+        "cfp/team.html",
+        "cfp/cfp-team.js",
+        "cfp/README_CFP.md",
+        "README.md",
+        "scripts/fetch_cfp_data.py",
+        "scripts/check_cfp_data_freshness.py",
+        ".github/workflows/cfp_ingest.yml"
+      ],
+      "handoff": "docs/CFP_MIRROR_HANDOFF.md",
+      "handoff_revision": "3d6f38fc32f66bb0d61c9c02e354ad42b409abdb",
+      "claim_created_at": "2026-09-06T01:32:00-05:00",
+      "claim_expires_when": "Release only after the CFP restoration is merged or explicitly superseded, repository preflight and CFP-specific validation pass, required README changes are included, and deployed/public behavior is observed without stale historical data being presented as current.",
+      "expected_evidence": [
+        "Site Handoff Orchestrator PASS for goal/cfp-live-2026-revival",
+        "Ecosystem Heartbeat Orchestration admission compatible with the claimed workload",
+        "season-aware CFP/NCAAF data contract and freshness validator",
+        "one canonical ingestion path and scheduled/manual workflow",
+        "current-season games and clearly labeled non-CFP polls when available",
+        "official CFP rankings represented as not yet released until authoritative publication",
+        "historical bracket/team pages explicitly labeled historical rather than current",
+        "README.md, cfp/README_CFP.md, and data/README-cfp-source.md updated with changed freshness/ingestion semantics",
+        "browser/static validation and deployed public observation"
+      ],
+      "collision_boundaries": [
+        "Do not modify HIL live-execution, coherent-transition-threshold, heartbeat, SV001 custody, InTr, TV/TVC, LLM-adapter, Master Records, or resident-runtime ownership surfaces.",
+        "Do not create a second sports scheduler or parallel live CFP data contract; consolidate existing CFP ingestion implementations into one canonical path.",
+        "Do not infer current CFP committee rankings from AP, Coaches, historical CFP, source timestamps, or deployment timestamps.",
+        "Historical cfp-2025 consumers may remain only when explicitly labeled historical and must not claim current CFP status.",
+        "Do not introduce provider credentials, GitHub-token runtime authority, wagering authority, ticketing authority, or publication authority.",
+        "Do not claim activation or live behavior from source, CI, merge, or deployment alone."
+      ],
+      "next_task_after_release": "Verify public CFP behavior and, only if the sports lane becomes a governed publication source, evaluate existing Publisher/admissibility/StegGuardian propagation contracts without creating duplicate downstream lanes.",
+      "governing_dependency_keys": [
+        "site:cfp-live-tracker",
+        "site:ncaaf-canonical-ingestion",
+        "site:cfp-data-freshness"
+      ],
+      "incidental_dependency_keys": [
+        "external:college-football-source-availability"
+      ],
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

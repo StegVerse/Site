@@ -2,68 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CFP Team Road | StegVerse</title>
+  <title>CFP Team Status | StegVerse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/cfp/cfp.css" />
 </head>
 <body>
   <header class="cfp-header">
-    <h1 id="team-title">CFP Team Road</h1>
+    <h1 id="team-title">Current-Season CFP Team Status</h1>
     <p class="cfp-subtitle">
-      Best case • Worst case • Most likely path to the National Championship
+      Current CFP committee evidence only • no historical or supporting-poll substitution
     </p>
   </header>
 
   <main class="cfp-main">
-
     <section class="cfp-section">
-      <button onclick="history.back()" style="margin-bottom:0.75rem;">⬅ Back</button>
-      <div id="team-meta">Loading team data…</div>
+      <a href="/cfp/bracket.html">⬅ CFP bracket status</a>
+      <div id="team-meta" style="margin-top:0.75rem;">Loading current-season CFP data…</div>
     </section>
 
     <section class="cfp-section">
-      <h2>Snapshot</h2>
-      <div id="team-snapshot"></div>
+      <h2>Current CFP Snapshot</h2>
+      <div id="team-snapshot">Loading…</div>
     </section>
 
     <section class="cfp-section">
-      <h2>Since Last CFP Release</h2>
-      <div id="team-since-last"></div>
+      <h2>Evidence / Scenario Notes</h2>
+      <div id="team-notes">No current notes loaded.</div>
     </section>
 
     <section class="cfp-section">
-      <h2>Best Case Scenario</h2>
-      <div id="team-best"></div>
+      <h2>Availability Boundary</h2>
+      <p>
+        This page is intentionally unavailable for a team until current-season CFP committee rankings are observed.
+        AP rankings, prototype data, and historical snapshots do not create a current CFP seed or playoff path.
+      </p>
     </section>
-
-    <section class="cfp-section">
-      <h2>Worst Case Scenario</h2>
-      <div id="team-worst"></div>
-    </section>
-
-    <section class="cfp-section">
-      <h2>Most Likely Case</h2>
-      <div id="team-likely"></div>
-    </section>
-
-    <section class="cfp-section">
-      <h2>Remaining Games</h2>
-      <div id="team-remaining"></div>
-    </section>
-
-    <section class="cfp-section">
-      <h2>Notes</h2>
-      <div id="team-notes"></div>
-    </section>
-
   </main>
 
   <footer class="cfp-footer">
-    <small>StegVerse CFP Tracker – Team Road Module.</small>
+    <small>StegVerse CFP/NCAAF Tracker — experimental projection — not an official CFP product.</small>
   </footer>
 
   <script>
-    window.CFP_TEAMS_URL = "/data/cfp-teams.json";
+    window.CFP_DATA_URL = "/data/cfp-data.json";
   </script>
   <script src="/cfp/cfp-team.js"></script>
 </body>

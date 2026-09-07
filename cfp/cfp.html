@@ -2,51 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NCAAF CFP Live Tracker | StegVerse</title>
+  <title>NCAAF CFP Current-Season Tracker | StegVerse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/cfp/cfp.css" />
 </head>
 <body>
   <header class="cfp-header">
-    <h1>NCAAF CFP Live Tracker</h1>
+    <h1>NCAAF CFP Current-Season Tracker</h1>
     <p class="cfp-subtitle">
-      Live CFP Top 12 • Polls • Standings • Tickets • Scenarios
+      Current-season CFP status • National polls • Games • Standings • Sources
     </p>
   </header>
 
   <main class="cfp-main">
-
     <section class="cfp-controls">
       <button id="cfp-refresh-btn">🔄 Refresh Now</button>
-      <span id="cfp-last-updated" class="cfp-last-updated">Last updated: —</span>
+      <span id="cfp-last-updated" class="cfp-last-updated">Projection generated: —</span>
       <span id="cfp-status" class="cfp-status"></span>
     </section>
 
     <section class="cfp-section cfp-legend">
-      <h3>Legend</h3>
+      <h3>CFP status model</h3>
       <div class="cfp-badges-row">
         <span class="cfp-badge cfp-badge-locked">Locked</span>
         <span class="cfp-badge cfp-badge-inplay">In Play</span>
         <span class="cfp-badge cfp-badge-elim">Eliminated</span>
       </div>
       <p class="cfp-legend-text">
-        “Locked” seeds are guaranteed; “In Play” seeds list all eligible teams and required scenarios.
+        Status badges and playoff scenarios appear only when supported by current-season CFP data. Before committee rankings are observed, the tracker remains explicitly in PRE_CFP_RANKINGS.
       </p>
     </section>
 
     <section class="cfp-section">
-      <h2>CFP Top 12 Rankings <span id="cfp-top12-source-marker"></span></h2>
-      <div id="cfp-rankings" class="cfp-rankings">Loading rankings…</div>
+      <h2>CFP Committee Rankings <span id="cfp-top12-source-marker"></span></h2>
+      <div id="cfp-rankings" class="cfp-rankings">Loading current-season CFP status…</div>
     </section>
 
     <section class="cfp-section">
-      <h2>Spot Details (Seeds Not Locked)</h2>
-      <div id="cfp-spot-details" class="cfp-spot-details">Loading…</div>
+      <h2>Playoff Spot Details</h2>
+      <div id="cfp-spot-details" class="cfp-spot-details">Loading current-season status…</div>
     </section>
 
     <section class="cfp-section">
-      <h2>National Polls – CFP / AP / Coaches</h2>
-      <div id="cfp-polls" class="cfp-polls">Loading…</div>
+      <h2>National Polls</h2>
+      <p>Supporting polls remain separately labeled and are not CFP committee rankings.</p>
+      <div id="cfp-polls" class="cfp-polls">Loading current-season polls…</div>
     </section>
 
     <section class="cfp-section">
@@ -55,35 +55,33 @@
         <label for="cfp-conf-select">Conference:</label>
         <select id="cfp-conf-select"></select>
       </div>
-      <div id="cfp-conf-standings">Select a conference to view standings.</div>
+      <div id="cfp-conf-standings">Loading current-season standings availability…</div>
     </section>
 
     <section class="cfp-section">
       <h2>Games & Results</h2>
-      <div id="cfp-games" class="cfp-games">Loading…</div>
+      <div id="cfp-games" class="cfp-games">Loading current-season games…</div>
     </section>
 
-    <!-- Coming Soon block -->
     <section class="cfp-section">
       <h2>Coming Soon to StegVerse Sports</h2>
       <ul>
-        <li>🔮 Live CFP probability engine</li>
-        <li>📊 Real-time playoff simulations & chaos paths</li>
-        <li>🎟 Smart multi-site ticket price tracking</li>
-        <li>📣 Automated summaries to social platforms</li>
-        <li>📈 Full analytics for every CFP-eligible program</li>
+        <li>🔮 CFP probability analysis after an evidence-bounded model is available</li>
+        <li>📊 Playoff simulations with explicit source and uncertainty boundaries</li>
+        <li>🎟 Multi-site ticket price comparison</li>
+        <li>📣 Source-grounded game summaries</li>
+        <li>📈 Expanded conference and team analytics</li>
       </ul>
     </section>
 
     <section class="cfp-section">
       <h2>Data Sources</h2>
-      <div id="cfp-sources">Loading…</div>
+      <div id="cfp-sources">Loading source status…</div>
     </section>
-
   </main>
 
   <footer class="cfp-footer">
-    <small>StegVerse CFP Tracker – Experimental – Not an official CFP product.</small>
+    <small>StegVerse CFP/NCAAF Tracker — experimental public data projection — not an official CFP product.</small>
   </footer>
 
   <script>
@@ -91,6 +89,5 @@
     window.CFP_TICKETS_URL = "/data/cfp-tickets.json";
   </script>
   <script src="/cfp/cfp.js"></script>
-
 </body>
 </html>

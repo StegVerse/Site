@@ -1,0 +1,67 @@
+name: CFP Current-Season Ingestion
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  pull_request:
+    paths:
+      - "scripts/fetch_cfp_data.py"
+      - "scripts/check_cfp_data_freshness.py"
+      - "data/cfp-data.json"
+      - "cfp/**"
+      - "data/README-cfp-source.md"
+      - "README.md"
+      - ".github/workflows/cfp_ingest.yml"
+
+concurrency:
+  group: cfp-current-season-ingestion
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate checked-in freshness contract
+        run: python scripts/check_cfp_data_freshness.py
+      - name: Exercise canonical ingestion without repository write authority
+        if: github.event_name == 'pull_request'
+        run: |
+          python scripts/fetch_cfp_data.py
+          python scripts/check_cfp_data_freshness.py --require-live-source
+
+  ingest:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build current-season projection
+        run: python scripts/fetch_cfp_data.py
+      - name: Enforce fail-closed freshness semantics and live-source observation
+        run: python scripts/check_cfp_data_freshness.py --require-live-source
+      - name: Commit projection only when data changed
+        shell: bash
+        run: |
+          if git diff --quiet -- data/cfp-data.json; then
+            echo "No CFP projection change."
+            exit 0
+          fi
+          git config user.name "stegverse-cfp-data"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/cfp-data.json
+          git commit -m "data(cfp): refresh current-season projection"
+          git push origin HEAD:main

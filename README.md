@@ -83,6 +83,15 @@ activation, or a real external render receipt has already been observed.
 | [`about.html`](about.html) | About StegVerse |
 | [`support.html`](support.html) | Support StegVerse Research |
 | [`Papers.html`](Papers.html) | Papers and research |
+| [`cfp/cfp.html`](cfp/cfp.html) | CFP/NCAAF current-season projection with explicit season, phase, freshness, and degraded-state semantics |
+
+### CFP/NCAAF current-season projection
+
+The CFP tracker uses `data/cfp-data.json` schema `2.0.0` and must distinguish current-season observations from historical material. During `PRE_CFP_RANKINGS`, current games and non-CFP polls may be shown while the CFP `rankings` array remains empty. AP, Coaches, ESPN, or historical CFP rankings are never silently promoted into current CFP committee rankings.
+
+The canonical path is `scripts/fetch_cfp_data.py` → `scripts/check_cfp_data_freshness.py` → `data/cfp-data.json` → `cfp/cfp.js`. Historical rankings are never carried forward merely because a source fetch fails or a timestamp changes. The 2025 lane remains historical reference only under `sports/ncaaf/2025/`.
+
+The scheduled/manual carrier is `.github/workflows/cfp_ingest.yml`; it reuses the same canonical ingestion and validator rather than creating a second data contract. No CFP source secret or provider API key is required. Source, CI, merge, workflow success, generated timestamps, and deployment are not equivalent to a current public source observation or public-site verification.
 
 ### NVIDIA–Hugging Face living analysis
 

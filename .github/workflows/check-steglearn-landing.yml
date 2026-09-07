@@ -1,0 +1,33 @@
+name: Check StegLearn Landing
+
+on:
+  push:
+    paths:
+      - 'steglearn/index.html'
+      - 'scripts/check_steglearn_landing.py'
+      - 'docs/STEGLEARN_SITE_MIRROR_HANDOFF.md'
+      - '.github/workflows/check-steglearn-landing.yml'
+  pull_request:
+    paths:
+      - 'steglearn/index.html'
+      - 'scripts/check_steglearn_landing.py'
+      - 'docs/STEGLEARN_SITE_MIRROR_HANDOFF.md'
+      - '.github/workflows/check-steglearn-landing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.11', '3.12']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate StegLearn public landing contract
+        run: python scripts/check_steglearn_landing.py

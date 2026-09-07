@@ -7,7 +7,10 @@ on:
     paths:
       - 'scripts/check_entity_economy_volume_ii_public.py'
       - '.github/workflows/entity-economy-volume-ii-public-observation.yml'
-      - 'papers/stegverse-entity-economy-volume-ii/artifact/**'
+      - 'papers/stegverse-entity-economy/**'
+      - 'papers/stegverse-entity-economy-volume-ii/**'
+      - 'papers/coherent-life-and-admissible-existence/artifact/**'
+      - 'papers/coherent-life-companion/**'
       - 'data/session-work-claims.d/site-current-news-releases-967-20260903.json'
       - 'data/tasks/SITE-CURRENT-NEWS-RELEASES-967.json'
 
@@ -32,8 +35,8 @@ jobs:
               exit 1
             fi
           done
-          echo 'ENTITY_ECONOMY_VOLUME_II_OBSERVER_CREDENTIAL_REQUIREMENT=NONE'
-          echo 'ENTITY_ECONOMY_VOLUME_II_OBSERVER_AUTHORITY_EFFECT=NONE'
+          echo 'CURRENT_NEWS_PAPER_OBSERVER_CREDENTIAL_REQUIREMENT=NONE'
+          echo 'CURRENT_NEWS_PAPER_OBSERVER_AUTHORITY_EFFECT=NONE'
 
       - name: Fetch exact Site source anonymously
         shell: bash
@@ -52,7 +55,7 @@ jobs:
           python -m pip install --disable-pip-version-check playwright==1.52.0
           python -m playwright install --with-deps chromium
 
-      - name: Execute deployed Volume II loader in Chromium
+      - name: Execute deployed bounded paper routes in Chromium
         shell: bash
         run: |
           set -euo pipefail
@@ -76,8 +79,9 @@ jobs:
           source = Path('scripts/check_entity_economy_volume_ii_public.py').read_text(encoding='utf-8')
           required = [
               '129accea04dcef0c5b063ae5799d9952e97462859fb36842c93a3ca7776fe95f',
-              '132330',
-              'ENTITY_ECONOMY_VOLUME_II_PUBLIC_BROWSER_OBSERVATION=PASS',
+              '9fa7ec36c10ee1c97e71b0ef9245326fab209b3046cc7a83773f4bdf6316e4b0',
+              '6afed983e236b260718df548f40cac2e1a8c12cd9c8f82a28c7a5f757eefe918',
+              'CURRENT_NEWS_PAPER_PUBLIC_OBSERVATION=PASS',
               'AUTHORITY_EFFECT=NONE',
               'publication_authority_granted',
               'release_authority_granted',
@@ -85,8 +89,8 @@ jobs:
           missing = [item for item in required if item not in source]
           if missing:
               raise SystemExit('missing observer boundary marker(s): ' + ', '.join(missing))
-          print('ENTITY_ECONOMY_VOLUME_II_PUBLIC_OBSERVER_BOUNDARY=PASS')
-          print('ENTITY_ECONOMY_VOLUME_II_PUBLIC_OBSERVER_AUTHORITY_EFFECT=NONE')
+          print('CURRENT_NEWS_PAPER_PUBLIC_OBSERVER_BOUNDARY=PASS')
+          print('CURRENT_NEWS_PAPER_PUBLIC_OBSERVER_AUTHORITY_EFFECT=NONE')
           PY
 
       - name: Upload non-authorizing observation receipt

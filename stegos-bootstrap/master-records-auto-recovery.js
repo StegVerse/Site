@@ -5,6 +5,7 @@
   var DB_VERSION = 1;
   var RECEIPT_STORE = "receipts";
   var PACKAGE_URL = "./master-records-sv001-custody-package.json";
+  var SV002_CONTINUATION_URL = "./sv001-evidence-chain/continue";
   var CANONICAL_G23_SHA = "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35";
   var CANONICAL_G23_TRANSITION = "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED";
   var MAX_HYDRATION_ATTEMPTS = 80;
@@ -147,6 +148,72 @@
     return result;
   }
 
+  function publishSv002Continuation(custodyResult, continuation) {
+    var state = byId("mr-sv001-state");
+    var output = byId("mr-sv001-output");
+    if (state) { state.textContent = "PASS — MASTER RECORDS CUSTODY / SV002 DISPOSITION"; }
+    if (output) {
+      output.textContent = JSON.stringify({
+        schema: "stegverse.site.sv001-post-custody-continuation/v1",
+        state: "PASS",
+        master_records_result: custodyResult,
+        sv002_continuation: continuation,
+        custody_state_preserved: true,
+        sv001_rerun_performed: false,
+        prior_receipt_authorizes_next_transition: false,
+        human_approval_required: false,
+        heartbeat_authority_effect: "NONE_CARRIER_ONLY",
+        authority_effect: "NONE_OBSERVATION_AND_DISPOSITION_ONLY"
+      }, null, 2);
+    }
+    dispatchPersistenceSignals();
+    document.dispatchEvent(new CustomEvent("stegverse:sv001-evidence-chain-continuation-complete", { detail: continuation }));
+    return continuation;
+  }
+
+  function publishSv002FailClosed(custodyResult, error) {
+    var state = byId("mr-sv001-state");
+    var output = byId("mr-sv001-output");
+    if (state) { state.textContent = "PASS — MASTER RECORDS CUSTODY / SV002 CONTINUATION FAIL_CLOSED"; }
+    if (output) {
+      output.textContent = JSON.stringify({
+        schema: "stegverse.site.sv001-post-custody-continuation/v1",
+        state: "SV002_CONTINUATION_FAIL_CLOSED",
+        master_records_result: custodyResult,
+        reason: String(error && error.message ? error.message : error),
+        custody_state_preserved: true,
+        sv001_rerun_performed: false,
+        prior_receipt_authorizes_next_transition: false,
+        historical_state_retroactively_authorized: false,
+        human_approval_required: false,
+        heartbeat_authority_effect: "NONE_CARRIER_ONLY",
+        authority_effect: "NONE_FAIL_CLOSED"
+      }, null, 2);
+    }
+    dispatchPersistenceSignals();
+    return null;
+  }
+
+  function continueToSv002(cycleReceipt, custodyResult) {
+    return fetch(SV002_CONTINUATION_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      credentials: "same-origin",
+      body: JSON.stringify({ cycle_receipt: cycleReceipt, custody_proof: custodyResult })
+    }).then(function (response) {
+      return response.json().then(function (body) {
+        if (!response.ok || !body || body.state !== "PASS") {
+          throw new Error(body && body.reason ? body.reason : "same-device SV002 continuation failed closed");
+        }
+        return publishSv002Continuation(custodyResult, body);
+      });
+    }).catch(function (error) {
+      publishSv002FailClosed(custodyResult, error);
+      return null;
+    });
+  }
+
   function publishGovernanceFailClosed(error, cycleReceipt, source) {
     var state = byId("mr-sv001-state");
     var output = byId("mr-sv001-output");
@@ -183,7 +250,8 @@
       if (!result || result.state !== "PASS" || result.reconstruction_state !== "PASS") {
         fail("Master Records custody/reconstruction did not return PASS");
       }
-      return publishGovernedPass(cycleReceipt, source, result);
+      publishGovernedPass(cycleReceipt, source, result);
+      return continueToSv002(cycleReceipt, result).then(function () { return result; });
     }).catch(function (error) {
       return publishGovernanceFailClosed(error, cycleReceipt, source);
     });
@@ -248,6 +316,7 @@
     authorityEffect: "NONE_CARRIER_ONLY",
     custodyExecutedByRecovery: false,
     custodyExecutedOnlyAfterCurrentGovernance: true,
+    postCustodySv002DispositionAutomatic: true,
     heartbeatGrantsExecutionAuthority: false,
     newSchedulerCreated: false
   };

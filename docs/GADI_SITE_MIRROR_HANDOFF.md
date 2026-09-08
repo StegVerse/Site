@@ -8,8 +8,9 @@ Canonical parent handoff: `StegVerse-Labs/.github/docs/GADI_MIRROR_HANDOFF.md`
 Canonical task record: `StegVerse-Labs/.github/data/canonical-task-records/GADI-001.json`
 COSV ID: `10100000100000`
 Branch: `gadi-001-site-external-ai-boundary-ingress`
-Base observed: `5977b53c8ac43099b4d2cecf27cdc4c78e4c4882`
-STATUS: `NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / VALIDATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
+Base observed: `f928ca203a89566c6862c7b93b9f204ab36ba6c6`
+Reconciliation commit: `377ef0010065db3fd13280e6df69b8b192856d4d`
+STATUS: `NOT_RETIRED / NATIVE_STEGOS_BOUNDARY_DEFENSE_VALIDATED_AND_MERGED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / FOCUSED_VALIDATION_PASS / SITE-WIDE_REVALIDATION_IN_PROGRESS / AUTHENTIC_ACTIVATION_PENDING`
 ARCHIVE_READY: `false`
 
 ## Continuity rule
@@ -78,6 +79,12 @@ This slice intentionally does not modify `src/worker.js`; it binds the GADI cont
 
 The Site contract preserves the organizational strategy that StegOS can provide an organization-controlled governed AI layer in the ingress path through which external AI interactions enter a protected governed environment when that network placement is actually deployed. It explicitly records `absolute_safety_guarantee=false` and does not claim deployment from source.
 
+## Revalidation state — current Site main reconciliation
+
+The original Site source head `728adc24b2c7f6f5a8b7d0acb5218525463f8b43` passed focused GADI validation, general validation, heartbeat-contract validation, and the Cloudflare Worker build. Site `main` then advanced to `f928ca203a89566c6862c7b93b9f204ab36ba6c6`, so the earlier exact-head evidence was no longer sufficient for merge.
+
+Current `main` was merged into the GADI branch as `377ef0010065db3fd13280e6df69b8b192856d4d` while preserving the five GADI branch files. Site-wide revalidation is required on the reconciled branch head before merge. No authentic runtime/network-placement claim is promoted by this reconciliation.
+
 ## Current proof boundary
 
 ```text
@@ -85,7 +92,9 @@ SITE_GADI_LOCAL_HANDOFF: ESTABLISHED
 STEGOS_NATIVE_BOUNDARY_SOURCE: VALIDATED_AND_MERGED
 SITE_EXTERNAL_AI_BOUNDARY_INGRESS_CONTRACT: SOURCE_IMPLEMENTED
 SITE_EXISTING_HIL_READINESS_BINDING: SOURCE_BOUND
-SITE_GADI_VALIDATION: PENDING
+SITE_GADI_FOCUSED_VALIDATION_ON_PRE_RECONCILIATION_HEAD: PASS
+SITE_MAIN_RECONCILIATION: COMPLETE
+SITE_WIDE_REVALIDATION_ON_RECONCILED_HEAD: IN_PROGRESS
 AUTHENTIC_NETWORK_PLACEMENT: NOT_OBSERVED
 AUTHENTIC_EXTERNAL_AI_INGRESS: NOT_OBSERVED
 AUTHENTIC_INTR_ADMISSION: NOT_OBSERVED
@@ -95,9 +104,9 @@ GADI_ACTIVATION_PROOF_COMPLETE: FALSE
 
 ## Next bounded work
 
-1. validate this exact Site source head and existing Site regression surfaces;
-2. merge only on exact-head green evidence;
-3. reconcile the Site source result into canonical `.github` GADI state;
+1. complete exact-head Site-wide validation on the reconciled branch;
+2. merge only on current-head green evidence;
+3. reconcile the merged Site source result into canonical `.github` GADI state;
 4. resolve the canonical transport seam for authentic external-AI boundary observations before adding a live Site ingress route;
 5. pursue network-placement and authentic ingress evidence separately from source validation.
 
@@ -106,8 +115,8 @@ GADI_ACTIVATION_PROOF_COMPLETE: FALSE
 ```text
 GOAL TASK ID: GADI-001
 TASK ID: GADI-001
-HANDOFF TASK ID: docs/GADI_SITE_MIRROR_HANDOFF.md
+HANDOFF TASK ID: docs/GADI_MIRROR_HANDOFF.md — active Site projection: docs/GADI_SITE_MIRROR_HANDOFF.md
 COSV ID: 10100000100000
-STATUS: NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / VALIDATION_PENDING / AUTHENTIC_ACTIVATION_PENDING
+STATUS: NOT_RETIRED / NATIVE_STEGOS_BOUNDARY_DEFENSE_VALIDATED_AND_MERGED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / FOCUSED_VALIDATION_PASS / SITE-WIDE_REVALIDATION_IN_PROGRESS / AUTHENTIC_ACTIVATION_PENDING
 MANUAL WORK: None
 ```

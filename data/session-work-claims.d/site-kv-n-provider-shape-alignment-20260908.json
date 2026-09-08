@@ -10,51 +10,25 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "kv-n-provider-shape-alignment",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED_COMPLETE",
       "normalized_work_key": "site-kv-n-provider-shape-alignment",
       "dependency_surface_keys": ["site:my-kv-provider-projection-rendering","site:my-kv-provider-projection-validation","kv:my-kv-provider-status-projection"],
-      "claimed_paths": [
-        "assets/my-kv-instance-manager.js",
-        "assets/my-kv-instance-ui.js",
-        "my-kv-instances.html",
-        "tests/my-kv-instance-manager.test.cjs",
-        "tests/my-kv-instance-ui.test.cjs",
-        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-        "data/session-work-claims.d/site-kv-n-provider-shape-alignment-20260908.json",
-        "data/session-work-claims.d/site-kv-n-ui-binding-20260908.json"
-      ],
+      "claimed_paths": ["assets/my-kv-instance-manager.js","assets/my-kv-instance-ui.js","my-kv-instances.html","tests/my-kv-instance-manager.test.cjs","tests/my-kv-instance-ui.test.cjs","docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md","data/session-work-claims.d/site-kv-n-provider-shape-alignment-20260908.json","data/session-work-claims.d/site-kv-n-ui-binding-20260908.json"],
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-      "handoff_revision": "PROVIDER_SHAPE_ALIGNMENT_PENDING_20260908",
+      "handoff_revision": "PROVIDER_SHAPE_ALIGNMENT_MERGED_20260908",
       "claim_created_at": "2026-09-08T17:45:00-05:00",
-      "claim_expires_when": "Release after canonical plural provider projection validation/rendering passes MyKV and Site-wide validation and merges.",
-      "expected_evidence": [
-        "canonical instance.providers.items consumed",
-        "canonical instance.providers.pending_requests consumed",
-        "provider_mutation_authorized=false preserved",
-        "credential_material_included=false preserved",
-        "singular instance.provider projection rejected",
-        "MY_KV_MULTI_INSTANCE_UI=PASS",
-        "SESSION_WORK_CLAIMS_PASS",
-        "SITE_HANDOFF_ORCHESTRATION_PASS",
-        "Site Bootstrap Validate PASS",
-        "Ecosystem Heartbeat Orchestration PASS"
-      ],
-      "collision_boundaries": [
-        "Do not modify upstream provider state semantics",
-        "Do not infer provider connection state when provider items are empty",
-        "Do not expose raw credentials, SKAP refs, Interlock/InTr receipt refs, or private content",
-        "Do not authorize provider operations from rendering",
-        "Do not activate public navigation/README in this alignment-only slice",
-        "Do not create or infer KV #2",
-        "No NON-TV/TVC secret/token",
-        "No GitHub-token runtime authority"
-      ],
+      "claim_expires_when": "RELEASED",
+      "expected_evidence": ["canonical instance.providers.items consumed","canonical instance.providers.pending_requests consumed","provider_mutation_authorized=false preserved","credential_material_included=false preserved","singular instance.provider projection rejected","MY_KV_MULTI_INSTANCE_UI=PASS","SESSION_WORK_CLAIMS_PASS","SITE_HANDOFF_ORCHESTRATION_PASS","Site Bootstrap Validate PASS","Ecosystem Heartbeat Orchestration PASS"],
+      "validation_evidence": {"pull_request":1113,"merge_commit":"774ce092ab00a3eaee337eb4a0a7f168cbecc6a0","my_kv_manager":"PASS","site_handoff":"PASS","site_bootstrap":"PASS","ecosystem_heartbeat":"PASS"},
+      "collision_boundaries": ["Do not modify upstream provider state semantics","Do not infer provider connection state when provider items are empty","Do not expose raw credentials, SKAP refs, Interlock/InTr receipt refs, or private content","Do not authorize provider operations from rendering","Do not activate public navigation/README in this alignment-only slice","Do not create or infer KV #2","No NON-TV/TVC secret/token","No GitHub-token runtime authority"],
       "next_task_after_release": "Admit the authentic adopted KV #1 set projection into DEVICE_KV and verify exact MyKV readback, then proceed to public integration and real KV #2 authorization.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_PROJECTION_ALIGNMENT",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "claim_released_at": "2026-09-08T18:31:00-05:00",
+      "archive_eligible": true
     }
   ]
 }

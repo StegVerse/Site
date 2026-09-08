@@ -1,0 +1,37 @@
+name: GADI Site boundary ingress validation
+
+on:
+  push:
+    branches:
+      - gadi-001-site-external-ai-boundary-ingress
+    paths:
+      - 'data/gadi-site-boundary-ingress-contract.json'
+      - 'scripts/check_gadi_site_boundary_ingress.py'
+      - 'docs/GADI_SITE_MIRROR_HANDOFF.md'
+      - 'src/worker.js'
+      - '.github/workflows/gadi-site-boundary-ingress-validation.yml'
+  pull_request:
+    paths:
+      - 'data/gadi-site-boundary-ingress-contract.json'
+      - 'scripts/check_gadi_site_boundary_ingress.py'
+      - 'docs/GADI_SITE_MIRROR_HANDOFF.md'
+      - 'src/worker.js'
+      - '.github/workflows/gadi-site-boundary-ingress-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-gadi-site-boundary-ingress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate GADI Site boundary ingress contract
+        run: python scripts/check_gadi_site_boundary_ingress.py
+      - name: Compile validator
+        run: python -m py_compile scripts/check_gadi_site_boundary_ingress.py

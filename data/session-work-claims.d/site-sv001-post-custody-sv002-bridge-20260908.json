@@ -38,6 +38,7 @@
         "scripts/check_mr_sv001_intr_governance.py",
         "scripts/check_stegos_ipod_bootstrap_projection.py",
         "scripts/validate_stegos_persistent_card_ux.py",
+        ".github/workflows/validate-stegos-persistent-card-ux.yml",
         "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
         "data/preflight/sv001-post-custody-sv002-bridge-20260908.json",
         "data/session-work-claims.d/site-sv001-post-custody-sv002-bridge-20260908.json"
@@ -52,6 +53,7 @@
         "later retries are idempotent and do not duplicate the terminal disposition",
         "SV002 disposition is retained in the existing current-device receipt journal",
         "journal replay PASS binds retained downstream evidence",
+        "focused validation script and regression tests pass in the existing credential-free validation workflow",
         "no filesystem export or second machine is required",
         "no new scheduler, WorkerCoordinator, heartbeat, oscillator, InTr runtime, or credential path is created",
         "README documents the post-custody automatic continuation and failure semantics"
@@ -63,6 +65,7 @@
         "Do not infer authority from custody proof, prior receipts, HB32, or reconstruction",
         "Do not require a filesystem bridge or second user-operated machine",
         "Do not create another scheduler, WorkerCoordinator, heartbeat, oscillator, InTr runtime, or custody executor",
+        "GitHub Actions remains validation-only and has no runtime authority",
         "No NON-TV/TVC secret/token"
       ],
       "next_task_after_release": "Continue canonical STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001 through the existing current-device v15 lifecycle and retain authentic root-InTr, Master Records custody/reconstruction, same-journal SV002 disposition, and final replay evidence when produced; do not rerun SV001 or create another runtime.",

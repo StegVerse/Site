@@ -17,6 +17,7 @@
         "assets/my-kv-instance-manager.js",
         "assets/my-kv-instance-ui.js",
         "my-kv-instances.html",
+        "tests/my-kv-instance-manager.test.cjs",
         "tests/my-kv-instance-ui.test.cjs",
         "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
         "data/session-work-claims.d/site-kv-n-provider-shape-alignment-20260908.json",

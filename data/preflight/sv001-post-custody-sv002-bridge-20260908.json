@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.site.machine-preflight/v1",
+  "preflight_id": "SITE-SV001-POST-CUSTODY-SV002-BRIDGE-20260908",
+  "goal_task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "handoff_task_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
+  "cosv_id": "50000000100000",
+  "evaluated_at": "2026-09-08T17:16:00-05:00",
+  "verdict": "PASS_ADMIT_REUSE_EXISTING_CURRENT_DEVICE_RUNTIME",
+  "canonical_state_resolved": {
+    "task_registry_ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
+    "canonical_handoff_ref": "StegVerse-Labs/.github:docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+    "site_handoff_ref": "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
+    "master_records_ref": "master-records/orchestration:tasks/MR-STEGVERSE001-BOUNDED-AUTONOMY-001.json",
+    "cross_task_coordination_ref": "StegVerse-Labs/.github:control/cross-task-coordination.json",
+    "hb_runtime_solution_ref": "StegVerse-Labs/.github:docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md"
+  },
+  "reused_predicates": {
+    "canonical_g23_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+    "terminal_sv001_rerun_allowed": false,
+    "hb32_authority_effect": "NONE",
+    "current_device_custody_executor": "StegOSWebBootstrap.executeMasterRecordsSv001Custody",
+    "current_transition_governance": "root Universal InTr MasterRecords:SV001Custody",
+    "master_records_authority": "master-records/orchestration",
+    "sv002_evaluator_source": "StegVerse-Labs/.github:scripts/evaluate_sv002_adversarial_observation.py",
+    "sv002_fixture_source": "StegVerse-Labs/.github:fixtures/sv002-adversarial-observation/cases.v1.json"
+  },
+  "defect": {
+    "class": "CURRENT_DEVICE_POST_CUSTODY_CONTINUATION_SEAM_MISSING",
+    "evidence": [
+      "Site retains the governed custody proof in the current-device browser/service-worker journal and emits stegverse:sv001-master-records-custody-complete.",
+      ".github continuation expects ~/.stegverse/state/stegverse001-evidence-chain/site-master-records-custody.latest.json.",
+      "No Site producer exists for that filesystem path on CURRENT_USER_IPHONE.",
+      "Therefore authentic browser custody can complete while downstream SV002 disposition remains unreachable on the same execution surface."
+    ],
+    "duplicate_runtime_required": false,
+    "new_scheduler_required": false,
+    "new_workercoordinator_required": false,
+    "new_heartbeat_or_oscillator_required": false
+  },
+  "admitted_change": {
+    "strategy": "REUSE_SITE_CURRENT_DEVICE_RUNTIME_AND_FROZEN_SV002_EVALUATOR_SEMANTICS",
+    "scope": [
+      "stegos-bootstrap/sv001-evidence-chain-continuation.js",
+      "stegos-bootstrap/sv002-adversarial-observation-cases.v1.json",
+      "stegos-bootstrap/index.html",
+      "stegos-bootstrap/service-worker-v13-runtime.js",
+      "stegos-bootstrap/service-worker.js",
+      "scripts/check_mr_sv001_intr_governance.py",
+      "scripts/check_stegos_ipod_bootstrap_projection.py",
+      "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
+      "README.md"
+    ],
+    "authority_effect": "NONE_OBSERVATION_AND_DISPOSITION_ONLY",
+    "current_root_intr_still_required_for_custody": true,
+    "prior_receipt_authorizes_next_transition": false,
+    "historical_state_retroactively_authorized": false
+  },
+  "readme_completeness": {
+    "impact": "MATERIAL",
+    "reason": "The change extends current-device runtime semantics after governed custody by automatically producing and retaining the bounded SV002 observation/disposition. This changes runtime behavior, evidence semantics, and capability meaning.",
+    "required_in_same_change_set": true,
+    "satisfied_before_functional_merge": false
+  },
+  "human_action_required": false,
+  "second_user_operated_machine_required": false,
+  "github_actions_runtime_authority": "NONE",
+  "credential_authority": "TV/TVC"
+}

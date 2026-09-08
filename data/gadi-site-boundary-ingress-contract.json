@@ -1,0 +1,89 @@
+{
+  "schema_version": "stegverse.gadi-site-boundary-ingress/v1",
+  "goal_task_id": "GADI-001",
+  "task_id": "GADI-001",
+  "cosv_id": "10100000100000",
+  "canonical_parent_handoff": "StegVerse-Labs/.github/docs/GADI_MIRROR_HANDOFF.md",
+  "stegos_boundary_source": {
+    "repository": "StegVerse-Labs/StegOS",
+    "pull_request": 227,
+    "merge_commit": "d0a9703725c6169f23ab55d4bce8a0b035a3a450",
+    "contract_document": "docs/GADI_NATIVE_BOUNDARY_DEFENSE.md",
+    "implementation": "stegos/gadi_boundary_defense.py"
+  },
+  "site_binding": {
+    "mode": "HIL_BOUNDARY_INGRESS_PROJECTION",
+    "existing_readiness_path": "/api/hil/readiness",
+    "existing_probe_path": "/api/hil/probes",
+    "creates_parallel_receiver": false,
+    "creates_parallel_evaluator": false,
+    "creates_parallel_intr_authority": false,
+    "creates_parallel_credential_authority": false,
+    "creates_parallel_runtime": false
+  },
+  "required_external_ai_observation_fields": [
+    "interaction_id",
+    "requested_target",
+    "requested_action",
+    "authenticated",
+    "authority_established",
+    "expected_scope_match",
+    "consequential",
+    "observed_semantic_integrity"
+  ],
+  "optional_external_ai_observation_fields": [
+    "principal_ref",
+    "source_ref",
+    "declared_purpose",
+    "provenance_refs"
+  ],
+  "accepted_semantic_integrity_states": [
+    "PASS",
+    "DRIFT",
+    "MATERIAL_DRIFT",
+    "UNOBSERVABLE"
+  ],
+  "defensive_disposition_vocabulary": [
+    "OBSERVE",
+    "CHALLENGE",
+    "CONSTRAIN",
+    "QUARANTINE",
+    "INTERCEPT",
+    "CONTAIN"
+  ],
+  "boundary_path": [
+    "EXTERNAL_AI",
+    "STEGOS_BOUNDARY_OBSERVATION",
+    "GADI_ASSESSMENT",
+    "INTR_ADMISSION",
+    "PROTECTED_GOVERNED_ENVIRONMENT"
+  ],
+  "authority": {
+    "site_authority_effect": "NONE_INGRESS_PROJECTION_ONLY",
+    "consequential_defensive_effect_requires_intr_admission": true,
+    "capability_authority": "TV/TVC",
+    "threat_reasoning_owner": "StegVerse-Labs/StegCore",
+    "boundary_observation_owner": "StegVerse-Labs/StegOS",
+    "resident_execution_owner": "StegVerse-002/micro-node-runtime",
+    "reconstruction_owner": "StegVerse-Labs/Continuity",
+    "observed_reality_owner": "master-records/orchestration"
+  },
+  "product_claim_boundary": {
+    "organization_controlled_boundary_layer": true,
+    "absolute_safety_guarantee": false,
+    "network_placement_proven_by_source": false,
+    "external_ai_ingress_proven_by_source": false,
+    "gadi_activation_proven_by_source": false
+  },
+  "runtime_evidence_required": [
+    "stegos_boundary_network_placement",
+    "external_ai_ingress_observation",
+    "canonical_intr_admission_for_consequential_effect",
+    "runtime_capability_binding",
+    "resident_defensive_action",
+    "effect_observation",
+    "continuity_reconstruction",
+    "master_records_reconciliation"
+  ],
+  "status": "SOURCE_CONTRACT_ONLY_RUNTIME_UNPROVEN"
+}

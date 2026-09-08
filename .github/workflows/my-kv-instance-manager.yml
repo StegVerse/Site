@@ -1,0 +1,55 @@
+name: My KV Multi-Instance Provider Manager
+
+on:
+  pull_request:
+    paths:
+      - "assets/my-kv-instance-manager.js"
+      - "tests/my-kv-instance-manager.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+      - ".github/workflows/my-kv-instance-manager.yml"
+  push:
+    paths:
+      - "assets/my-kv-instance-manager.js"
+      - "tests/my-kv-instance-manager.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+      - ".github/workflows/my-kv-instance-manager.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate bounded KV set/provider request contract
+        run: node tests/my-kv-instance-manager.test.cjs
+      - name: Prove source-only authority boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src = Path('assets/my-kv-instance-manager.js').read_text(encoding='utf-8')
+          required = [
+              'provider_mutation_authorized===false',
+              'relationship_mutation_authorized===false',
+              'PENDING_INTERLOCK_INTR',
+              'credential_destination:"SKAP_VAULT"',
+              'data_moved:false',
+              'replication_started:false',
+              'ai_corpus_exposed:false',
+              'NONE_REQUEST_ONLY',
+          ]
+          missing = [x for x in required if x not in src]
+          if missing:
+              raise SystemExit('missing fail-closed markers: ' + ', '.join(missing))
+          print('MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER=PASS')
+          print('MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE')
+          print('MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE')
+          print('MY_KV_CREDENTIAL_MATERIAL=PROHIBITED')
+          PY

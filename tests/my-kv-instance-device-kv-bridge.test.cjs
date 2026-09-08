@@ -37,7 +37,13 @@ for(const key of ["data_moved","replication_started","ai_corpus_exposed","relati
   assert.throws(()=>t.validateInput(t.classes.relationship,{...relationship,[key]:true}),/FAIL_CLOSED/);
 }
 
+assert.strictEqual(api.bridge_kind,"DEVICE_KV_MY_KV_N_RESIDENT_TRANSPORT");
+assert.strictEqual(t.classes.set,"MY_KV_INSTANCE_SET_PROJECTION");
+assert.strictEqual(t.classes.provider,"MY_KV_PROVIDER_OPERATION_REQUEST");
+assert.strictEqual(t.classes.relationship,"MY_KV_RELATIONSHIP_TRANSITION_REQUEST");
+
 console.log("MY_KV_DEVICE_KV_TRANSPORT_CLIENT=PASS");
+console.log("MY_KV_RESIDENT_TRIGGER_BINDING=PASS");
 console.log("MY_KV_SET_PROJECTION_TRANSPORT=BOUNDED_ALREADY_ADMITTED_ONLY");
 console.log("MY_KV_PROVIDER_REQUEST_EXECUTION_AUTHORITY=NONE");
 console.log("MY_KV_RELATIONSHIP_REQUEST_EXECUTION_AUTHORITY=NONE");

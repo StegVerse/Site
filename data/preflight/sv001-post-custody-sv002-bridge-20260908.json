@@ -42,6 +42,7 @@
     "scope": [
       "stegos-bootstrap/sv001-evidence-chain-continuation.js",
       "stegos-bootstrap/sv002-adversarial-observation-cases.v1.json",
+      "stegos-bootstrap/master-records-auto-recovery.js",
       "stegos-bootstrap/index.html",
       "stegos-bootstrap/service-worker-v13-runtime.js",
       "stegos-bootstrap/service-worker.js",

@@ -65,6 +65,7 @@
         "Do not create another scheduler, WorkerCoordinator, heartbeat, oscillator, InTr runtime, or custody executor",
         "No NON-TV/TVC secret/token"
       ],
+      "next_task_after_release": "Continue canonical STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001 through the existing current-device v15 lifecycle and retain authentic root-InTr, Master Records custody/reconstruction, same-journal SV002 disposition, and final replay evidence when produced; do not rerun SV001 or create another runtime.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE",
       "github_token_runtime_authority": "NONE",

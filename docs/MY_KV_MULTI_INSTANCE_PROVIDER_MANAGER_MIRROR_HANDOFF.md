@@ -62,9 +62,9 @@ This avoids widening the global `/intr-service-worker.js` registry or changing H
 
 ## Validation
 
-`tests/my-kv-instance-device-kv-bridge.test.cjs` validates the client-side request boundaries.
+`tests/my-kv-instance-device-kv-bridge.test.cjs` validates the client-side request boundaries and the dedicated resident transport class/trigger contract.
 
-`.github/workflows/my-kv-instance-manager.yml` now also:
+`.github/workflows/my-kv-instance-manager.yml` also:
 
 - syntax-checks `assets/my-kv-n-device-kv-receiver.js`;
 - verifies the three MyKV #n classes and resident trigger binding;
@@ -78,7 +78,7 @@ This slice does not broaden or replace `assets/my-kv-directory.js`, `window.Steg
 
 ## README impact preflight determination
 
-No existing public My KV page loads `assets/my-kv-instance-manager.js` or `assets/my-kv-instance-device-kv-bridge.js` in this receiver-only slice. The dedicated receiver has no fetch handler and no page scope behavior; it runs only when explicitly registered and messaged by the bridge. Therefore this slice does not yet change ordinary public Site behavior. Repository README mutation is deferred to, and required in, the same change set that loads the MyKV #n manager/bridge from a user-visible Site page.
+No existing public My KV page loads `assets/my-kv-instance-manager.js` or `assets/my-kv-instance-device-kv-bridge.js` in this receiver-only slice. The dedicated receiver has no fetch handler and no page-scope behavior; it runs only when explicitly registered and messaged by the bridge. Therefore this slice does not yet change ordinary public Site behavior. Repository README mutation is deferred to, and required in, the same change set that loads the MyKV #n manager/bridge from a user-visible Site page.
 
 ## Completion predicates reached
 

@@ -9,8 +9,8 @@
       "originating_goal": "Bind Site/MyKV to the canonical KV #1/#2/#n bounded instance/provider projection and governed request surfaces without moving provider, credential, relationship, or governance authority into Site.",
       "repository": "StegVerse-Labs/Site",
       "branch": "kv-n-provider-manager",
-      "role": "IMPLEMENTATION",
-      "state": "CLAIMED",
+      "role": "COMPLETE",
+      "state": "RELEASED_COMPLETE",
       "normalized_work_key": "site-kv-n-provider-manager",
       "dependency_surface_keys": [
         "site:my-kv-kv-set-projection",
@@ -27,7 +27,7 @@
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
       "handoff_revision": "0c4faa59f23bfe6ff51cee83f9da7a9ec8af49a7",
       "claim_created_at": "2026-09-08T16:26:00-05:00",
-      "claim_expires_when": "Release after source validation passes, the source-contract PR is merged, and the next DEVICE_KV/UI integration slice is explicitly handed off.",
+      "claim_expires_when": "Released after PR #1107 validation passed and the branch merged.",
       "expected_evidence": [
         "SESSION_WORK_CLAIMS_PASS",
         "SITE_HANDOFF_ORCHESTRATION_PASS",
@@ -54,7 +54,11 @@
       "credential_requirement": "NONE_FOR_SOURCE_IMPLEMENTATION",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1107,
+      "release_commit": "d25800416582959c2268fa22ce1f60bd2cb309ad",
+      "claim_released_at": "2026-09-08T16:29:30-05:00",
+      "archive_eligible": true
     }
   ]
 }

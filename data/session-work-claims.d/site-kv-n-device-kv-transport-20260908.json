@@ -1,0 +1,64 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-KV-N-DEVICE-KV-TRANSPORT-20260908",
+      "session_worker_id": "chatgpt:site-kv-n-device-kv-transport-20260908",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "originating_goal": "Transport the canonical bounded KV #1/#2/#n set projection and governed provider/relationship requests through the registered Node and a fail-closed resident DEVICE_KV receiver without inventing KV #2, provider state, credentials, data movement, replication, or relationship authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "kv-n-device-kv-transport",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-kv-n-device-kv-transport",
+      "dependency_surface_keys": [
+        "site:my-kv-device-kv-resident-transport",
+        "site:my-kv-kv-set-projection-transport",
+        "site:my-kv-provider-request-transport",
+        "site:my-kv-relationship-request-transport"
+      ],
+      "claimed_paths": [
+        "assets/my-kv-instance-device-kv-bridge.js",
+        "assets/my-kv-n-device-kv-receiver.js",
+        "tests/my-kv-instance-device-kv-bridge.test.cjs",
+        ".github/workflows/my-kv-instance-manager.yml",
+        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json",
+        "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+      ],
+      "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+      "handoff_revision": "4990af3b9291cabc2fe1083b15a77dc223d38ce2",
+      "claim_created_at": "2026-09-08T17:28:00-05:00",
+      "claim_expires_when": "Release after PR #1109 passes MyKV-specific and Site-wide claim/handoff/bootstrap/heartbeat validation and merges; user-visible UI binding remains a separately claimed successor slice.",
+      "expected_evidence": [
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "My KV Multi-Instance Provider Manager PASS",
+        "MY_KV_DEVICE_KV_RESIDENT_TRANSPORT=PASS",
+        "MY_KV_SET_PROJECTION_SOURCE=ALREADY_ADMITTED_ONLY",
+        "MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE",
+        "MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE"
+      ],
+      "collision_boundaries": [
+        "Own only the bounded Site MyKV resident DEVICE_KV transport/client/receiver slice",
+        "Do not redefine continuity-vault-kit KV instance/provider/relationship authority",
+        "Do not widen root intr-service-worker.js HIL/SV001/directory/profile semantics",
+        "Do not fabricate KV #2 or provider state in Site or browser runtime",
+        "Do not execute provider operations or relationship transitions",
+        "Do not move or replicate data and do not expose an AI corpus",
+        "Do not persist or expose credentials, tokens, private keys, SKAP credential references, or governance receipt references in public projection state",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Wire user-visible MyKV #1/#2/#n UI and README to the merged resident transport, then admit the authentic canonical set projection before any provider authorization.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_BOUNDED_RESIDENT_TRANSPORT",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

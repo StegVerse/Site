@@ -1,0 +1,59 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-GADI-BOUNDARY-INGRESS-20260908",
+      "session_worker_id": "chatgpt:site-gadi-boundary-ingress-20260908",
+      "task_id": "GADI-001",
+      "originating_goal": "Bind Site to the merged native StegOS organizational external-AI boundary strategy while preserving the existing HIL receiver/readiness authority surfaces and without promoting source presence into network-placement, ingress, execution, effect, or activation proof.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "gadi-001-site-external-ai-boundary-ingress",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-gadi-boundary-ingress",
+      "dependency_surface_keys": [
+        "site:gadi-external-ai-boundary-ingress-contract",
+        "site:hil-readiness-reuse",
+        "stegos:gadi-native-boundary-defense"
+      ],
+      "claimed_paths": [
+        "docs/GADI_SITE_MIRROR_HANDOFF.md",
+        "data/gadi-site-boundary-ingress-contract.json",
+        "scripts/check_gadi_site_boundary_ingress.py",
+        ".github/workflows/gadi-site-boundary-ingress-validation.yml",
+        "data/session-work-claims.d/site-gadi-boundary-ingress-20260908.json"
+      ],
+      "handoff": "docs/GADI_SITE_MIRROR_HANDOFF.md",
+      "handoff_revision": "10029d823e3c3880fa1800104734ce630f12956e",
+      "claim_created_at": "2026-09-08T18:09:00-05:00",
+      "claim_expires_when": "Release after the Site boundary-ingress source contract is exact-head validated, Site-wide validation passes, and the source slice merges; authentic network placement, external-AI ingress, canonical InTr admission, resident effect, reconstruction, and GADI activation remain successor evidence gates.",
+      "expected_evidence": [
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "GADI Site boundary ingress validation PASS",
+        "source does not claim network placement or external-AI ingress",
+        "existing HIL readiness and probe surfaces remain reused",
+        "consequential defensive effect remains canonical InTr/capability bound"
+      ],
+      "collision_boundaries": [
+        "Own only the bounded Site GADI external-AI boundary ingress contract and validation slice",
+        "Do not create a competing HIL receiver or readiness authority",
+        "Do not create a parallel GADI evaluator, InTr authority, credential authority, WorkerCoordinator, or resident runtime",
+        "Do not claim StegOS network placement from source",
+        "Do not claim authentic external-AI ingress from source",
+        "Do not claim execution, external effect, reconstruction, Master Records reconciliation, activation, or retirement",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Resolve and implement the canonical live transport seam for authentic external-AI boundary observations, then prove StegOS network placement and authentic ingress separately from source validation.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_SOURCE_CONTRACT",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

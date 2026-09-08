@@ -4,14 +4,18 @@ on:
   pull_request:
     paths:
       - "assets/my-kv-instance-manager.js"
+      - "assets/my-kv-instance-device-kv-bridge.js"
       - "tests/my-kv-instance-manager.test.cjs"
+      - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
       - ".github/workflows/my-kv-instance-manager.yml"
   push:
     paths:
       - "assets/my-kv-instance-manager.js"
+      - "assets/my-kv-instance-device-kv-bridge.js"
       - "tests/my-kv-instance-manager.test.cjs"
+      - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
       - ".github/workflows/my-kv-instance-manager.yml"
@@ -30,11 +34,14 @@ jobs:
           node-version: "22"
       - name: Validate bounded KV set/provider request contract
         run: node tests/my-kv-instance-manager.test.cjs
+      - name: Validate bounded DEVICE_KV transport client
+        run: node tests/my-kv-instance-device-kv-bridge.test.cjs
       - name: Prove source-only authority boundary
         run: |
           python3 - <<'PY'
           from pathlib import Path
           src = Path('assets/my-kv-instance-manager.js').read_text(encoding='utf-8')
+          transport = Path('assets/my-kv-instance-device-kv-bridge.js').read_text(encoding='utf-8')
           required = [
               'provider_mutation_authorized===false',
               'relationship_mutation_authorized===false',
@@ -48,7 +55,20 @@ jobs:
           missing = [x for x in required if x not in src]
           if missing:
               raise SystemExit('missing fail-closed markers: ' + ', '.join(missing))
+          transport_required = [
+              'MY_KV_INSTANCE_SET_PROJECTION',
+              'MY_KV_PROVIDER_OPERATION_REQUEST',
+              'MY_KV_RELATIONSHIP_TRANSITION_REQUEST',
+              'credential_material_present:false',
+              'provider_operation_authorized:false',
+              'relationship_mutation_authorized:false',
+              'NONE_REQUEST_ONLY',
+          ]
+          transport_missing = [x for x in transport_required if x not in transport]
+          if transport_missing:
+              raise SystemExit('missing DEVICE_KV transport markers: ' + ', '.join(transport_missing))
           print('MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER=PASS')
+          print('MY_KV_DEVICE_KV_TRANSPORT_CLIENT=PASS')
           print('MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_CREDENTIAL_MATERIAL=PROHIBITED')

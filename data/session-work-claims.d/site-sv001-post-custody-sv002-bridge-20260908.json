@@ -33,8 +33,11 @@
         "stegos-bootstrap/sv001-evidence-chain-continuation.js",
         "stegos-bootstrap/master-records-auto-recovery.js",
         "stegos-bootstrap/service-worker.js",
+        "scripts/check_sv001_post_custody_sv002_bridge.py",
+        "tests/test_sv001_post_custody_sv002_bridge.py",
         "scripts/check_mr_sv001_intr_governance.py",
         "scripts/check_stegos_ipod_bootstrap_projection.py",
+        "scripts/validate_stegos_persistent_card_ux.py",
         "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
         "data/preflight/sv001-post-custody-sv002-bridge-20260908.json",
         "data/session-work-claims.d/site-sv001-post-custody-sv002-bridge-20260908.json"
@@ -45,6 +48,8 @@
         "governed custody proof remains produced only after fresh root-InTr ALLOW",
         "post-custody continuation validates exact canonical G23 and custody proof",
         "frozen SV002 v0.3 evaluator semantics and 12-case adversarial suite are preserved",
+        "first SV002 disposition entry is directly chained to governed custody replay tail",
+        "later retries are idempotent and do not duplicate the terminal disposition",
         "SV002 disposition is retained in the existing current-device receipt journal",
         "journal replay PASS binds retained downstream evidence",
         "no filesystem export or second machine is required",
@@ -57,6 +62,7 @@
         "Do not make SV002 observation/disposition an authority source",
         "Do not infer authority from custody proof, prior receipts, HB32, or reconstruction",
         "Do not require a filesystem bridge or second user-operated machine",
+        "Do not create another scheduler, WorkerCoordinator, heartbeat, oscillator, InTr runtime, or custody executor",
         "No NON-TV/TVC secret/token"
       ],
       "credential_authority": "TV/TVC",
@@ -69,7 +75,7 @@
       "readme_impact_required": true,
       "material_function_change": true,
       "readme_path": "README.md",
-      "readme_updated_in_change_set": false,
+      "readme_updated_in_change_set": true,
       "archive_eligible": false
     }
   ]

@@ -6,6 +6,7 @@ INDEX = ROOT / "stegos-bootstrap" / "index.html"
 HELPER = ROOT / "stegos-bootstrap" / "persistent-card-ux.js"
 RECOVERY = ROOT / "stegos-bootstrap" / "master-records-sv001-recovery.js"
 AUTO_RECOVERY = ROOT / "stegos-bootstrap" / "master-records-auto-recovery.js"
+SV002_CONTINUATION = ROOT / "stegos-bootstrap" / "sv001-evidence-chain-continuation.js"
 PACKAGE = ROOT / "stegos-bootstrap" / "master-records-sv001-custody-package.json"
 HANDOFF = ROOT / "docs" / "STEGOS_PERSISTENT_CARD_UX_MIRROR_HANDOFF.md"
 HELP = ROOT / "stegos-bootstrap" / "help"
@@ -31,6 +32,7 @@ index = INDEX.read_text(encoding="utf-8")
 helper = HELPER.read_text(encoding="utf-8")
 recovery = RECOVERY.read_text(encoding="utf-8")
 auto_recovery = AUTO_RECOVERY.read_text(encoding="utf-8")
+sv002_continuation = SV002_CONTINUATION.read_text(encoding="utf-8")
 package = PACKAGE.read_text(encoding="utf-8")
 handoff = HANDOFF.read_text(encoding="utf-8")
 service_worker = SERVICE_WORKER.read_text(encoding="utf-8")
@@ -63,27 +65,34 @@ checks = {
     "authority effect none": 'authority_effect: "NONE"' in helper,
     "handoff present": "SITE-STEGOS-PERSISTENT-CARD-UX-1000" in handoff,
     "help pages complete": required_help.issubset({p.name for p in HELP.glob("*.html")}),
-    "offline shell wrapper generation v14": 'CACHE_NAME = "stegos-web-bootstrap-v14";' in service_worker,
-    "v14 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js")' in service_worker,
+    "offline shell wrapper generation v15": 'CACHE_NAME = "stegos-web-bootstrap-v15";' in service_worker,
+    "v15 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js", "./sv001-evidence-chain-continuation.js")' in service_worker,
     "v13 predecessor retained": 'var CACHE_NAME = "stegos-web-bootstrap-v13";' in predecessor,
+    "post-custody continuation extension present": '/stegos-bootstrap/sv001-evidence-chain/continue' in sv002_continuation,
     "persistent helper explicitly cached": '"./persistent-card-ux.js"' in predecessor,
     "canonical recovery explicitly cached": '"./master-records-sv001-recovery.js"' in predecessor,
     "automatic recovery explicitly cached": '"./master-records-auto-recovery.js"' in predecessor,
     "all help routes explicitly cached": all(('"./help/' + name + '"') in predecessor for name in required_help),
-    "canonical G23 recovery target": target in package and target in auto_recovery,
+    "canonical G23 recovery target": target in package and target in auto_recovery and target in sv002_continuation,
     "canonical G23 claim fence": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23" in package and '"target_fencing_token": 23' in package,
     "unique hash verified recovery": "RECOVERED_HASH_VERIFIED" in recovery and "unique_match_count: 1" in recovery,
     "automatic continuation uses existing governed executor": "StegOSWebBootstrap.executeMasterRecordsSv001Custody" in auto_recovery,
     "exact retained proof auto-continues": "EXACT_RETAINED_SAME_DEVICE_PROOF" in auto_recovery and "continueToGovernedCustody(retainedCycle" in auto_recovery,
     "recovered G23 auto-continues": "CANONICAL_RETAINED_JOURNAL_RECOVERY" in auto_recovery and "continueToGovernedCustody(recoveredCycle" in auto_recovery,
+    "governed custody automatically continues to SV002": "continueToSv002(cycleReceipt, result)" in auto_recovery,
+    "SV002 continuation preserves custody success on failure": "PASS — MASTER RECORDS CUSTODY / SV002 CONTINUATION FAIL_CLOSED" in auto_recovery and "custody_state_preserved: true" in auto_recovery,
+    "SV002 continuation directly binds custody replay tail": "entry.previous_entry_sha256 !== custody.final_replay_tail_sha256" in sv002_continuation,
+    "SV002 continuation preserves frozen v0.3 semantics": 'OPERATIVE_CONDITION = "v0.3 FROZEN"' in sv002_continuation and sv002_continuation.count('"AO-') == 12,
+    "SV002 continuation idempotent": "existingContinuation()" in sv002_continuation and "already_completed: true" in sv002_continuation,
     "recovery remains non-authorizing": "successful_recovery_authorizes_transition: false" in auto_recovery and "prior_receipt_authorizes_transition: false" in auto_recovery,
     "fresh governance remains required": "current_root_intr_governance_required: true" in auto_recovery,
     "machine governance failure stays fail closed": "EXACT_G23_PRESENT_MACHINE_GOVERNANCE_FAIL_CLOSED" in auto_recovery,
-    "no new scheduler": 'newSchedulerCreated: false' in auto_recovery and 'retry_surface: "EXISTING_PAGE_RESUME_LIFECYCLE_ONLY"' in auto_recovery,
+    "no new scheduler": 'newSchedulerCreated: false' in auto_recovery and 'retry_surface: "EXISTING_PAGE_RESUME_LIFECYCLE_ONLY"' in auto_recovery and "setInterval(" not in sv002_continuation,
     "manual fallback remains fail closed": "Manual exact-proof import remains a fail-closed fallback. SV001 must not be rerun." in auto_recovery,
     "root InTr custody gate preserved": "contemporaneous InTr admission required before Master Records custody" in predecessor,
     "historical retroactive authorization prohibited": "retroactive authorization forbidden" in predecessor,
-    "README documents v14 auto progression": "stegos-web-bootstrap-v14" in readme and "automatic machine-governed continuation" in readme_normalized,
+    "README documents v15 auto progression": "stegos-web-bootstrap-v15" in readme and "automatic machine-governed continuation" in readme_normalized and "post-custody" in readme_normalized,
+    "README documents same-journal SV002 disposition": "same local journal" in readme_normalized and "sv002" in readme_normalized and "no filesystem export" in readme_normalized,
     "README preserves non-authority boundary": "recovery does not grant custody authority" in readme_normalized and "source/ci/merge" in readme_normalized,
 }
 
@@ -98,4 +107,4 @@ for asset in sorted(required_shell_assets):
 if failed:
     raise SystemExit("FAIL: " + ", ".join(sorted(set(failed))))
 
-print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, automatic current-governance continuation, and v14 propagation contract")
+print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, governed custody, same-journal SV002 disposition, and v15 propagation contract")

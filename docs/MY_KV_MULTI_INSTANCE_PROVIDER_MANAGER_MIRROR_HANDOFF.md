@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/Site`
 Branch: `kv-n-device-kv-transport`
-State: SOURCE_CONTRACT_IMPLEMENTED / DEVICE_KV_CLIENT_TRANSPORT_IMPLEMENTED / RESIDENT_RECEIVER_BINDING_PENDING / SITE_UI_BINDING_PENDING / RUNTIME_ACTIVATION_PENDING
+State: SOURCE_CONTRACT_IMPLEMENTED / DEVICE_KV_RESIDENT_TRANSPORT_IMPLEMENTED / SITE_UI_BINDING_PENDING / AUTHENTIC_SET_PROJECTION_PENDING / PROVIDER_ACTIVATION_PENDING
 Updated: 2026-09-08
 Authority effect: NONE
 Activation effect: false
@@ -33,9 +33,11 @@ The manager rejects private-content projection, credential-material projection, 
 
 Provider and relationship actions are emitted only as `PENDING_INTERLOCK_INTR` requests. Pending relationship requests explicitly preserve `data_moved=false`, `replication_started=false`, and `ai_corpus_exposed=false`.
 
-## DEVICE_KV client transport — implemented
+## DEVICE_KV resident transport — implemented
 
-`assets/my-kv-instance-device-kv-bridge.js` binds the manager contract to the existing registered-Node / generated-InTr / HB-derived-carrier / DEVICE_KV synchronization stack using:
+`assets/my-kv-instance-device-kv-bridge.js` binds the manager contract to the registered StegVerse Node, generated InTr materialization request, HB-derived carrier binding, and a dedicated resident MyKV #n service-worker receiver.
+
+The bridge transports:
 
 ```text
 MY_KV_INSTANCE_SET_PROJECTION
@@ -43,23 +45,40 @@ MY_KV_PROVIDER_OPERATION_REQUEST
 MY_KV_RELATIONSHIP_TRANSITION_REQUEST
 ```
 
-It exposes `getKVSetProjection`, `requestProviderOperation`, and `requestRelationshipTransition` and remains fail-closed. The set projection may only be returned from an already-admitted source; the browser does not synthesize KV #2, provider identity/state, or relationship state. Provider requests retain `credential_material_present=false`, `provider_operation_authorized=false`, `authority_effect=NONE_REQUEST_ONLY`, and `activation_effect=false`. Relationship requests retain no movement/replication/AI-corpus effects and no mutation authority.
+It exposes `getKVSetProjection`, `requestProviderOperation`, and `requestRelationshipTransition` and remains fail-closed. The browser queues the exact materialization in the registered Node outbox, derives a hash-bound `STEGVERSE_MY_KV_N_LOCAL_TRIGGER`, and sends that trigger to the dedicated resident receiver.
 
-`tests/my-kv-instance-device-kv-bridge.test.cjs` plus the MyKV workflow validate these source boundaries.
+`assets/my-kv-n-device-kv-receiver.js` is intentionally narrow. It consumes only valid registered-Node outbox triggers whose materialization destination remains `KV / KnowledgeVault:Interlock` with downstream owner `StegVerse-Labs/continuity-vault-kit#79`.
 
-## Resident receiver boundary — pending
+The receiver:
 
-The current `intr-service-worker.js` local query registry advertises only the previously implemented MyKV directory/connection/installation classes plus personal-profile classes. It does not yet advertise or materialize the three new multi-instance classes.
+- returns `MY_KV_INSTANCE_SET_PROJECTION` only from an already-admitted `_System/my-kv-set-projection.json` row in the resident DEVICE_KV store;
+- fails closed with `my_kv_set_projection_not_admitted` when no authentic projection is present;
+- accepts provider operations only as pending governance records and preserves `provider_execution_attempted=false` and `provider_operation_authorized=false`;
+- accepts relationship transitions only as pending governance records and preserves `relationship_mutation_attempted=false`, `data_moved=false`, `replication_started=false`, and `ai_corpus_exposed=false`;
+- writes its result receipt write-once in `stegverse-my-kv-n-device-kv-v1`;
+- grants no credential, provider, relationship, transition, execution, or activation authority.
 
-Therefore this branch must not claim end-to-end DEVICE_KV runtime availability. Until resident receiver binding is added, the current local receiver must fail closed rather than fabricate KV/provider/relationship state.
+This avoids widening the global `/intr-service-worker.js` registry or changing HIL, SV001, MyKV directory, installation, or personal-profile receiver semantics.
+
+## Validation
+
+`tests/my-kv-instance-device-kv-bridge.test.cjs` validates the client-side request boundaries.
+
+`.github/workflows/my-kv-instance-manager.yml` now also:
+
+- syntax-checks `assets/my-kv-n-device-kv-receiver.js`;
+- verifies the three MyKV #n classes and resident trigger binding;
+- requires the already-admitted set-projection source path;
+- requires all provider/relationship runtime-effect fields to remain false;
+- rejects explicit true-valued provider execution, relationship mutation, data movement, replication, AI-corpus exposure, or provider/relationship authorization markers in the receiver.
 
 ## Existing boundary preservation
 
-This slice does not broaden or replace `assets/my-kv-directory.js`, `window.StegVerseKVConnectionHealthBridge`, direct-source SKAP mediation, the existing DEVICE_KV query/return classes, or continuity-vault-kit provider/relationship authority.
+This slice does not broaden or replace `assets/my-kv-directory.js`, `window.StegVerseKVConnectionHealthBridge`, direct-source SKAP mediation, the existing general DEVICE_KV query/return classes, `intr-service-worker.js`, or continuity-vault-kit provider/relationship authority.
 
 ## README impact preflight determination
 
-No public page behavior changes in this client-only transport slice because the new bridge is not yet loaded by MyKV UI and the resident receiver does not yet materialize the new record classes. The later behavior-changing UI/receiver binding change must update README in the same change set.
+No public page behavior changes yet because the new bridge is not loaded by MyKV UI. README mutation becomes required in the same change set that exposes the MyKV #n manager/receiver in user-visible Site behavior.
 
 ## Completion predicates reached
 
@@ -68,20 +87,22 @@ No public page behavior changes in this client-only transport slice because the 
 3. provider operations remain request-only;
 4. relationship transitions remain request-only;
 5. request schemas bind KV set/instance participants and preserve no-authority fields;
-6. DEVICE_KV client transport binds requests to the registered Node, generated InTr, and HB-derived carrier stack;
-7. tests prove pending requests claim no provider/relationship runtime effects.
+6. DEVICE_KV transport binds exact requests to the registered Node, generated InTr materialization, and HB-derived carrier;
+7. a dedicated resident receiver consumes hash-bound Node outbox triggers;
+8. the resident receiver can return only an already-admitted KV-set projection;
+9. provider/relationship receiver acknowledgements remain governance-pending and claim zero runtime effects;
+10. validation rejects provider execution, relationship mutation, data movement, replication, AI-corpus exposure, or credential authority in this Site receiver lane.
 
 ## Next machine work
 
-- extend the resident DEVICE_KV receiver to recognize and validate the three new record classes without inventing source state;
-- persist/read only an authentic already-admitted `stegverse.kv.my-kv-set-projection/v1` source for `MY_KV_INSTANCE_SET_PROJECTION`;
-- return provider/relationship request acknowledgements that preserve `PENDING_INTERLOCK_INTR` until an authentic governance/provider executor acts;
-- add receiver-side exact-request/result tests;
-- wire MyKV UI to render KV instances/providers and call only these request surfaces;
-- update README when the behavior becomes user-visible;
-- validate/merge Site changes;
-- then proceed to authentic owner/provider authorization and real KV #2 materialization.
+- wire MyKV UI to load `assets/my-kv-instance-manager.js` and `assets/my-kv-instance-device-kv-bridge.js`;
+- render KV #1/#2/#n status from authentic `MY_KV_INSTANCE_SET_PROJECTION` only;
+- expose provider-operation and relationship-transition request controls without direct mutation authority;
+- update README in that user-visible behavior change;
+- validate and merge Site PR #1109;
+- then establish an authentic admitted `_System/my-kv-set-projection.json` from the canonical continuity-vault-kit projection path;
+- only after that, invoke user-controlled provider authorization to materialize real KV #2 and verify an end-to-end provider request/receipt.
 
 ## Manual work
 
-None yet. User-controlled provider authorization/install is expected only after the Site + DEVICE_KV request/return path is ready and authentic provider execution is intentionally invoked.
+None at this exact point. Do **not** create or authorize KV #2 yet. Manual provider authorization becomes appropriate only after the Site UI is wired and the authentic set projection is admitted. At that point the handoff must name the exact provider, account/folder choice, authorization scope, expected receipt, and return-to-chat evidence before asking the user to act.

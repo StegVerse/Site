@@ -17,6 +17,7 @@ def main() -> int:
     bootstrap_wrapper = (ROOT / "stegos-bootstrap/service-worker.js").read_text(encoding="utf-8")
     bootstrap_sw = (ROOT / "stegos-bootstrap/service-worker-v13-runtime.js").read_text(encoding="utf-8")
     auto_recovery = (ROOT / "stegos-bootstrap/master-records-auto-recovery.js").read_text(encoding="utf-8")
+    post_custody = (ROOT / "stegos-bootstrap/sv001-evidence-chain-continuation.js").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_normalized = readme.replace("-\n", "-").replace("\n", " ")
     handoff = (ROOT / "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md").read_text(encoding="utf-8")
@@ -62,10 +63,10 @@ def main() -> int:
     require(browser.index("admitMasterRecordsSv001Custody(cycleReceipt)") < browser.index('new URL("./master-records/sv001"'),
             "browser must obtain root InTr admission before nested custody POST")
 
-    require('importScripts("./service-worker-v13-runtime.js")' in bootstrap_wrapper,
-            "v14 service worker wrapper must import exact v13 runtime predecessor")
-    require('CACHE_NAME = "stegos-web-bootstrap-v14"' in bootstrap_wrapper,
-            "v14 wrapper must advance cache generation so installed clients refresh continuation source")
+    require('importScripts("./service-worker-v13-runtime.js", "./sv001-evidence-chain-continuation.js")' in bootstrap_wrapper,
+            "v15 service worker wrapper must import exact v13 runtime predecessor plus bounded post-custody extension")
+    require('CACHE_NAME = "stegos-web-bootstrap-v15"' in bootstrap_wrapper,
+            "v15 wrapper must advance cache generation so installed clients refresh post-custody continuation source")
 
     for marker in [
         'var CACHE_NAME = "stegos-web-bootstrap-v13"',
@@ -109,20 +110,41 @@ def main() -> int:
         'retry_surface: "EXISTING_PAGE_RESUME_LIFECYCLE_ONLY"',
         "newSchedulerCreated: false",
         "heartbeatGrantsExecutionAuthority: false",
+        "continueToSv002(cycleReceipt, result)",
+        "PASS — MASTER RECORDS CUSTODY / SV002 CONTINUATION FAIL_CLOSED",
+        "custody_state_preserved: true",
     ]:
         require(marker in auto_recovery, f"automatic governed continuation marker missing: {marker}")
     require(CANONICAL_G23 in auto_recovery, "automatic continuation not bound to canonical G23")
     require("USER_ONLY" not in auto_recovery and "HUMAN_ONLY" not in auto_recovery,
             "automatic machine-owned continuation reintroduced a human authority gate")
 
+    for marker in [
+        '/stegos-bootstrap/sv001-evidence-chain/continue',
+        'stegos.master-records.portable-sv001-custody-proof/v1',
+        'entry.previous_entry_sha256 !== custody.final_replay_tail_sha256',
+        'prior_receipt_authorizes_next_transition:false',
+        'historical_state_retroactively_authorized:false',
+        'heartbeat_granted_authority:false',
+        'OPERATIVE_CONDITION = "v0.3 FROZEN"',
+        'existingContinuation()',
+        'target_property_established:true',
+    ]:
+        require(marker in post_custody, f"post-custody continuation marker missing: {marker}")
+    require(post_custody.count('"AO-') == 12, "post-custody continuation must preserve exactly 12 frozen adversarial cases")
+    require("WorkerCoordinator" not in post_custody and "setInterval(" not in post_custody,
+            "post-custody continuation must not implement another WorkerCoordinator/scheduler")
+
     require("machine-owned transition" in readme_normalized and "write-once admission" in readme_normalized,
             "README does not describe material governance/failure behavior")
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
             "README does not document no-retroactive-authorization and partial-admission failure semantics")
-    require("stegos-web-bootstrap-v14" in readme_normalized,
-            "README must describe the v14 propagation successor")
+    require("stegos-web-bootstrap-v15" in readme_normalized,
+            "README must describe the v15 propagation successor")
     require("automatic machine-governed continuation" in readme_normalized.lower(),
             "README must describe automatic continuation after exact G23 source availability")
+    require("post-custody" in readme_normalized.lower() and "same local journal" in readme_normalized.lower() and "no filesystem export" in readme_normalized.lower(),
+            "README must describe same-device post-custody SV002 retention without filesystem export")
     require("current governance" in handoff.lower() or "contemporaneous" in handoff.lower(), "handoff lacks contemporaneous governance")
     require("stegos-bootstrap/stegos-bootstrap.js" in claim, "browser carrier omitted from canonical governance claim")
     require("stegos-bootstrap/stegos-bootstrap.js" in preflight, "browser carrier omitted from canonical governance preflight mutation scope")

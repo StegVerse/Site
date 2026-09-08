@@ -21,21 +21,17 @@ EXPECTED = {
     "stegos-bootstrap/tvc-sovereign-local-model-route.js": "3ca841310b904c2e09390512043f30f301976b1d",
     "stegos-bootstrap/manifest.webmanifest": "a223ec9454f46d0e9b91d4862f11de701792144a",
 }
-
 ALLOWED_SUCCESSORS = {
     "stegos-bootstrap/index.html": {"f2e9aa2a994acb9b259388b7b876be5ec5487c92", "b2c6f72c6947d09be0d7128e4a7df5d237a3b2d5", "926ccfd6c640bcfdb49298b05026b08325db0990", "630d2d826871f5b03b9976677793cf43a7952fa6", "677504a3e035e591f22bd91b35e58b7301d06074", "342fa60fff456d478ba641c9cb1f3ee92272c81c"},
     "stegos-bootstrap/stegos-bootstrap.js": {"15343c398c168f3d5f8fe6933aaf3073e89dd5c0", "d1ae2940d16f757b4bb5964f36dab75fc48bf9c5", "c094719cc4e8708af15bc0d374252a62b064cfc8", "ba3d4a4a0c749e12bea7c3ab305abf366b49698f"},
     "stegos-bootstrap/admitted-inference.js": {"493cf77a64479efe816cb2d89e38e4255bca121b", "5619540b9a953b58f2a859b5776241809aad1932"},
-    "stegos-bootstrap/service-worker.js": {"0bf8c8df1ae678bc73170978f6c6fdae7b9341f1", "7c5d62d5fba1fcde13b3a47c3b9b561d03b77087", "99d652dc961855b0b89d093a3f5ad2e027352849", "048ae96f211e28314fa91c6a34cbc29ec13a2a26", "9fdb5a580002c3a881f1523938ab1c0bcb127546", "28fca6db751b183397247319fa4b5ebef76cebb8", "8b0b8d270de2c0420373994c99a5ef8a49aa4744", "b48c79a6faf6735e262a5f2f791ff576d4379504", "017164f2a71c28300ee59abb8071b0da973d206c"},
+    "stegos-bootstrap/service-worker.js": {"0bf8c8df1ae678bc73170978f6c6fdae7b9341f1", "7c5d62d5fba1fcde13b3a47c3b9b561d03b77087", "99d652dc961855b0b89d093a3f5ad2e027352849", "048ae96f211e28314fa91c6a34cbc29ec13a2a26", "9fdb5a580002c3a881f1523938ab1c0bcb127546", "28fca6db751b183397247319fa4b5ebef76cebb8", "8b0b8d270de2c0420373994c99a5ef8a49aa4744", "b48c79a6faf6735e262a5f2f791ff576d4379504", "017164f2a71c28300ee59abb8071b0da973d206c", "4c4a059418c26762fa5880928dc48afe1ead81fe"},
 }
-
 CANONICAL_RECOVERY_BLOBS = {
     "stegos-bootstrap/master-records-sv001-recovery.js": "5ca977c4214c3eec13bd2ac1109405e7f1571723",
     "stegos-bootstrap/master-records-sv001-custody-package.json": "70e02082d63d046101fa0a21d82e12261c891e79",
 }
-V13_RUNTIME_PREDECESSOR = {
-    "stegos-bootstrap/service-worker-v13-runtime.js": "b48c79a6faf6735e262a5f2f791ff576d4379504"
-}
+V13_RUNTIME_PREDECESSOR = {"stegos-bootstrap/service-worker-v13-runtime.js": "b48c79a6faf6735e262a5f2f791ff576d4379504"}
 
 
 def git_blob_sha(data: bytes) -> str:
@@ -89,12 +85,13 @@ def main() -> int:
     html = read("stegos-bootstrap/index.html")
     service_worker = read("stegos-bootstrap/service-worker.js")
     service_worker_predecessor = read("stegos-bootstrap/service-worker-v13-runtime.js")
+    post_custody = read("stegos-bootstrap/sv001-evidence-chain-continuation.js")
     model = read("stegos-bootstrap/stegverse-reference-model.js")
     route = read("stegos-bootstrap/tvc-sovereign-local-model-route.js")
     resident_task = read("stegos-bootstrap/external-resident-task.js")
     recovery = read("stegos-bootstrap/master-records-sv001-recovery.js")
     auto_recovery = read("stegos-bootstrap/master-records-auto-recovery.js")
-    combined = "\n".join((bootstrap, inference, autostart, html, service_worker, service_worker_predecessor, model, route, resident_task, recovery, auto_recovery))
+    combined = "\n".join((bootstrap, inference, autostart, html, service_worker, service_worker_predecessor, post_custody, model, route, resident_task, recovery, auto_recovery))
 
     required_markers = {
         "activation_authority_plane": 'var AUTHORITY_PLANE = "STEGVERSE"',
@@ -140,12 +137,20 @@ def main() -> int:
         "mr_auto_progression_executor": "StegOSWebBootstrap.executeMasterRecordsSv001Custody",
         "mr_auto_progression_fail_closed": "EXACT_G23_PRESENT_MACHINE_GOVERNANCE_FAIL_CLOSED",
         "mr_auto_progression_no_authority_reuse": "successful_recovery_authorizes_transition: false",
-        "mr_v14_shell": 'CACHE_NAME = "stegos-web-bootstrap-v14";',
-        "mr_v14_exact_predecessor": 'importScripts("./service-worker-v13-runtime.js")',
+        "mr_v15_shell": 'CACHE_NAME = "stegos-web-bootstrap-v15";',
+        "mr_v15_exact_predecessor": 'importScripts("./service-worker-v13-runtime.js", "./sv001-evidence-chain-continuation.js")',
+        "mr_v15_post_custody_endpoint": '/stegos-bootstrap/sv001-evidence-chain/continue',
+        "mr_v15_direct_chain": "entry.previous_entry_sha256 !== custody.final_replay_tail_sha256",
+        "mr_v15_frozen_sv002": 'OPERATIVE_CONDITION = "v0.3 FROZEN"',
     }
     for label, marker in required_markers.items():
         if marker not in combined:
             failures.append(f"missing authority/activation marker {label}: {marker}")
+
+    if post_custody.count('"AO-') != 12:
+        failures.append("SV002 post-custody extension must preserve exactly 12 frozen adversarial cases")
+    if "WorkerCoordinator" in post_custody or "setInterval(" in post_custody:
+        failures.append("SV002 post-custody extension may not create WorkerCoordinator/scheduler authority")
 
     local_branch = ""
     if 'url.pathname === LOCAL_PATH' in service_worker_predecessor:
@@ -155,16 +160,13 @@ def main() -> int:
     if "fetch(event.request)" in local_branch:
         failures.append("device-local model branch may escape to network")
 
-    prohibited = [
-        "CLOUDFLARE_API_TOKEN", "RENDER_API_KEY", "VERCEL_TOKEN", "GITHUB_TOKEN", "GH_TOKEN",
-        "APP_STORE_CONNECT", "APPLE_ID_PASSWORD", "Authorization: Bearer",
-    ]
+    prohibited = ["CLOUDFLARE_API_TOKEN", "RENDER_API_KEY", "VERCEL_TOKEN", "GITHUB_TOKEN", "GH_TOKEN", "APP_STORE_CONNECT", "APPLE_ID_PASSWORD", "Authorization: Bearer"]
     for marker in prohibited:
         if marker in combined:
             failures.append(f"prohibited credential/runtime marker projected: {marker}")
 
     report = {
-        "schema_version": "1.11.0",
+        "schema_version": "1.12.0",
         "status": "FAIL" if failures else "PASS",
         "source_repository": UPSTREAM_REPO,
         "source_commit": UPSTREAM_COMMIT,
@@ -204,14 +206,16 @@ def main() -> int:
         "sv001_canonical_g23_recovery_is_custody": False,
         "sv001_auto_continuation_uses_current_governance": True,
         "sv001_auto_continuation_creates_scheduler": False,
+        "sv001_post_custody_sv002_same_journal": True,
+        "sv001_post_custody_sv002_authority_effect": "NONE_OBSERVATION_AND_DISPOSITION_ONLY",
         "hb32_grants_execution_authority": False,
-        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V14_AUTO_CONTINUATION_USING_EXISTING_HB32_INTR_RUNTIME",
+        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V15_POST_CUSTODY_SV002_SAME_JOURNAL_CONTINUATION",
         "failures": failures,
     }
     REPORT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"STEGOS_IPOD_BOOTSTRAP_PROJECTION_{report['status']}")
     for failure in failures:
-        print(failure)
+        print("- " + failure)
     return 1 if failures else 0
 
 

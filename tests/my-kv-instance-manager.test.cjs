@@ -8,7 +8,14 @@ function projection(){
       schema:"stegverse.kv.my-kv-instance-projection/v1",instance_id:`kvi_${n}`,instance_number:n,logical_name:`KV #${n}`,kv_set_id:"personal",
       storage:{medium:"icloud-drive",locator:`slot-${n}`,provider_authority_effect:"NONE"},
       relationship:{tier:"NOT_CONNECTED",governance_state:"NOT_CONNECTED",last_admitted_request_id:null,pending_request_ids:[]},
-      provider:{provider_id:"icloud-drive",connection_state:"NOT_CONNECTED",verified:false,last_request_id:null,last_operation:null,last_result_ref:null,pending_requests:[]},
+      providers:{
+        items:{
+          "icloud-drive":{connection_state:"NOT_CONNECTED",verified:false,last_request_id:null,last_operation:null,last_result_ref:null}
+        },
+        pending_requests:[],
+        provider_mutation_authorized:false,
+        credential_material_included:false
+      },
       management:{request_connect_supported:true,request_disconnect_supported:true,request_verify_supported:true,request_read_supported:true,request_write_supported:true,request_sync_supported:true,request_tier_change_supported:true,provider_mutation_authorized:false,relationship_mutation_authorized:false},
       private_content_included:false,credential_material_included:false,authority_effect:"NONE_STATUS_ONLY",activation_effect:false
     })),
@@ -20,6 +27,7 @@ function projection(){
   const p=api.validateSetProjection(projection());
   assert.strictEqual(p.instance_count,2);
   assert.deepStrictEqual(p.instances.map(x=>x.instance_number),[1,2]);
+  assert.strictEqual(p.instances[0].providers.items["icloud-drive"].connection_state,"NOT_CONNECTED");
 })();
 
 (function rejectAuthority(){
@@ -27,9 +35,21 @@ function projection(){
   assert.throws(()=>api.validateSetProjection(p),/FAIL_CLOSED/);
 })();
 
+(function rejectProviderAuthority(){
+  const p=projection();p.instances[0].providers.provider_mutation_authorized=true;
+  assert.throws(()=>api.validateSetProjection(p),/FAIL_CLOSED/);
+})();
+
 (function rejectCredentialReferenceLeak(){
-  const p=projection();p.instances[0].provider.skap_credential_ref="skap://private";
+  const p=projection();p.instances[0].providers.items["icloud-drive"].skap_credential_ref="skap://private";
   assert.throws(()=>api.validateSetProjection(p),/sensitive MyKV projection field/);
+})();
+
+(function rejectSingularProviderShape(){
+  const p=projection();
+  p.instances[0].provider={provider_id:"icloud-drive",connection_state:"NOT_CONNECTED"};
+  delete p.instances[0].providers;
+  assert.throws(()=>api.validateSetProjection(p),/FAIL_CLOSED/);
 })();
 
 (async function unavailableBridge(){

@@ -48,6 +48,7 @@
       "scripts/check_mr_sv001_intr_governance.py",
       "scripts/check_stegos_ipod_bootstrap_projection.py",
       "scripts/validate_stegos_persistent_card_ux.py",
+      ".github/workflows/validate-stegos-persistent-card-ux.yml",
       "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
       "README.md",
       "data/preflight/sv001-post-custody-sv002-bridge-20260908.json",
@@ -56,8 +57,10 @@
     "preserved_exact_predecessor": "stegos-bootstrap/service-worker-v13-runtime.js",
     "authority_effect": "NONE_OBSERVATION_AND_DISPOSITION_ONLY",
     "current_root_intr_still_required_for_custody": true,
-    "prior_receipt_authorizes_next_transition": false,
-    "historical_state_retroactively_authorized": false
+    "prior_receipt_authorizes_transition": false,
+    "historical_state_retroactively_authorized": false,
+    "validation_workflow_role": "VALIDATION_ONLY",
+    "github_actions_runtime_authority": "NONE"
   },
   "readme_completeness": {
     "impact": "MATERIAL",

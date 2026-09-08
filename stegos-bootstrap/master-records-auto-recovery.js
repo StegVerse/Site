@@ -7,6 +7,9 @@
   var PACKAGE_URL = "./master-records-sv001-custody-package.json";
   var CANONICAL_G23_SHA = "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35";
   var CANONICAL_G23_TRANSITION = "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED";
+  var INTR_SCHEMA = "stegverse.master-records.sv001-custody-intr-admission/v1";
+  var CUSTODY_SCHEMA = "stegverse.master-records.stegverse001-bounded-autonomy-custody/v1";
+  var RECONSTRUCTION_SCHEMA = "stegverse.master-records.stegverse001-bounded-autonomy-reconstruction/v1";
   var MAX_HYDRATION_ATTEMPTS = 80;
   var HYDRATION_RETRY_MS = 100;
   var runPromise = null;
@@ -84,6 +87,57 @@
     return cycle ? validateCanonicalCycleReceipt(cycle) : null;
   }
 
+  function receiptRow(bundle, schema) {
+    var matches = (bundle.receipts || []).filter(function (row) {
+      return row && row.receipt && row.receipt.schema === schema && row.receipt.source_receipt_sha256 === CANONICAL_G23_SHA;
+    });
+    if (matches.length !== 1) { fail("governed evidence bundle requires exactly one " + schema + " receipt for canonical G23"); }
+    return matches[0];
+  }
+
+  function validateGovernedEvidenceBundle(bundle, result) {
+    if (!bundle || bundle.schema !== "stegos.web_bootstrap_evidence_bundle.v1") { fail("governed evidence bundle schema mismatch"); }
+    if (!bundle.journal_replay || bundle.journal_replay.state !== "PASS") { fail("governed evidence bundle journal replay did not PASS"); }
+    if (!Array.isArray(bundle.receipts)) { fail("governed evidence bundle receipt rows unavailable"); }
+    if (!result || result.state !== "PASS" || result.reconstruction_state !== "PASS" || result.source_receipt_sha256 !== CANONICAL_G23_SHA) {
+      fail("Master Records result not bound to canonical G23 PASS");
+    }
+
+    var admission = receiptRow(bundle, INTR_SCHEMA);
+    var custody = receiptRow(bundle, CUSTODY_SCHEMA);
+    var reconstruction = receiptRow(bundle, RECONSTRUCTION_SCHEMA);
+    var a = admission.receipt;
+    if (a.state !== "INGRESS_ADMITTED" || a.governance_decision !== "ALLOW" ||
+        a.transition_id !== "SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION" ||
+        a.current_governance_decision_observed !== true || a.human_approval_checkpoint_inserted !== false ||
+        a.prior_receipt_authorizes_transition !== false || a.site_custody_authority !== false ||
+        a.credential_authority !== "TV/TVC" || a.authority_effect !== "NONE_INGRESS_ONLY") {
+      fail("retained contemporaneous root-InTr admission is invalid");
+    }
+    if (admission.entry_sha256 !== result.intr_admission_journal_entry_sha256 || a.receipt_sha256 !== result.intr_admission_receipt_sha256) {
+      fail("retained root-InTr admission journal binding mismatch");
+    }
+    if (custody.entry_sha256 !== result.custody_journal_entry_sha256) { fail("retained custody journal binding mismatch"); }
+    if (reconstruction.entry_sha256 !== result.reconstruction_journal_entry_sha256) { fail("retained reconstruction journal binding mismatch"); }
+    if (bundle.journal_replay.tail_sha256 !== result.final_replay_tail_sha256) { fail("retained journal tail does not match custody proof"); }
+    if (reconstruction.receipt.state !== "PASS") { fail("retained reconstruction receipt did not PASS"); }
+
+    return {
+      schema: "stegverse.site.sv001-governed-evidence-retention/v1",
+      state: "PASS",
+      source_receipt_sha256: CANONICAL_G23_SHA,
+      intr_admission_entry: admission,
+      custody_entry: custody,
+      reconstruction_entry: reconstruction,
+      journal_replay: bundle.journal_replay,
+      node_id: bundle.node && bundle.node.node_id ? bundle.node.node_id : null,
+      credential_authority: "TV/TVC",
+      prior_receipt_authorizes_transition: false,
+      evidence_retention_grants_authority: false,
+      authority_effect: "NONE_EVIDENCE_RETENTION_ONLY"
+    };
+  }
+
   function publishSourceReady(cycleReceipt, source, recovery) {
     var input = byId("mr-sv001-receipt");
     var state = byId("mr-sv001-state");
@@ -120,13 +174,13 @@
     return cycleReceipt;
   }
 
-  function publishGovernedPass(cycleReceipt, source, result) {
+  function publishGovernedPass(cycleReceipt, source, result, governedEvidence) {
     var state = byId("mr-sv001-state");
     var output = byId("mr-sv001-output");
-    if (state) { state.textContent = "PASS — MASTER RECORDS CUSTODY / RECONSTRUCTION"; }
+    if (state) { state.textContent = "PASS — MASTER RECORDS CUSTODY / RECONSTRUCTION / EVIDENCE RETAINED"; }
     if (output) {
       output.textContent = JSON.stringify({
-        schema: "stegverse.site.sv001-master-records-auto-progression/v1",
+        schema: "stegverse.site.sv001-master-records-auto-progression/v2",
         state: "PASS",
         source: source,
         source_receipt_sha256: cycleReceipt.receipt_hash,
@@ -134,17 +188,49 @@
         custody_executed: true,
         reconstruction_state: result.reconstruction_state,
         master_records_result: result,
+        governed_evidence_retention: governedEvidence,
+        governed_evidence_retained: true,
         prior_receipt_authorizes_transition: false,
         successful_recovery_authorizes_transition: false,
         human_approval_required: false,
         heartbeat_authority_effect: "NONE_CARRIER_ONLY",
         site_custody_authority: false,
-        authority_effect: "NONE_CARRIER_ONLY"
+        evidence_retention_grants_authority: false,
+        authority_effect: "NONE_EVIDENCE_RETENTION_ONLY"
       }, null, 2);
     }
     dispatchPersistenceSignals();
-    document.dispatchEvent(new CustomEvent("stegverse:sv001-master-records-custody-complete", { detail: result }));
+    document.dispatchEvent(new CustomEvent("stegverse:sv001-master-records-custody-complete", { detail: { master_records_result: result, governed_evidence_retention: governedEvidence } }));
     return result;
+  }
+
+  function publishRetentionFailClosed(error, cycleReceipt, source, result) {
+    var state = byId("mr-sv001-state");
+    var output = byId("mr-sv001-output");
+    if (state) { state.textContent = "TRANSITION_OCCURRED_RECEIPT_RETENTION_FAILED"; }
+    if (output) {
+      output.textContent = JSON.stringify({
+        schema: "stegverse.site.sv001-master-records-auto-progression/v2",
+        state: "TRANSITION_OCCURRED_RECEIPT_RETENTION_FAILED",
+        source: source,
+        source_receipt_sha256: cycleReceipt.receipt_hash,
+        reason: String(error && error.message ? error.message : error),
+        custody_executed: true,
+        reconstruction_state: result && result.reconstruction_state ? result.reconstruction_state : null,
+        master_records_result: result || null,
+        governed_evidence_retained: false,
+        terminal_success_visible: false,
+        retry_action: "RETAIN_EXISTING_GOVERNED_RECEIPTS_WITHOUT_REEXECUTING_CUSTODY",
+        prior_receipt_authorizes_transition: false,
+        human_approval_required: false,
+        site_custody_authority: false,
+        evidence_retention_grants_authority: false,
+        authority_effect: "NONE_RETENTION_FAILURE_ONLY"
+      }, null, 2);
+    }
+    dispatchPersistenceSignals();
+    document.dispatchEvent(new CustomEvent("stegverse:sv001-master-records-evidence-retention-failed", { detail: { error: String(error && error.message ? error.message : error), master_records_result: result || null } }));
+    return result || null;
   }
 
   function publishGovernanceFailClosed(error, cycleReceipt, source) {
@@ -153,7 +239,7 @@
     if (state && !/^PASS/.test(state.textContent || "")) { state.textContent = "EXACT_G23_PRESENT_MACHINE_GOVERNANCE_FAIL_CLOSED"; }
     if (output) {
       output.textContent = JSON.stringify({
-        schema: "stegverse.site.sv001-master-records-auto-progression/v1",
+        schema: "stegverse.site.sv001-master-records-auto-progression/v2",
         state: "EXACT_G23_PRESENT_MACHINE_GOVERNANCE_FAIL_CLOSED",
         source: source,
         source_receipt_sha256: cycleReceipt && cycleReceipt.receipt_hash ? cycleReceipt.receipt_hash : null,
@@ -183,7 +269,15 @@
       if (!result || result.state !== "PASS" || result.reconstruction_state !== "PASS") {
         fail("Master Records custody/reconstruction did not return PASS");
       }
-      return publishGovernedPass(cycleReceipt, source, result);
+      if (!root.StegOSWebBootstrap || typeof root.StegOSWebBootstrap.exportEvidence !== "function") {
+        return publishRetentionFailClosed(new Error("canonical StegOS evidence export surface unavailable after governed custody"), cycleReceipt, source, result);
+      }
+      return root.StegOSWebBootstrap.exportEvidence().then(function (bundle) {
+        var governedEvidence = validateGovernedEvidenceBundle(bundle, result);
+        return publishGovernedPass(cycleReceipt, source, result, governedEvidence);
+      }).catch(function (retentionError) {
+        return publishRetentionFailClosed(retentionError, cycleReceipt, source, result);
+      });
     }).catch(function (error) {
       return publishGovernanceFailClosed(error, cycleReceipt, source);
     });
@@ -245,9 +339,11 @@
 
   root.StegOSMasterRecordsAutoRecovery = {
     run: recoverNow,
+    validateGovernedEvidenceBundle: validateGovernedEvidenceBundle,
     authorityEffect: "NONE_CARRIER_ONLY",
     custodyExecutedByRecovery: false,
     custodyExecutedOnlyAfterCurrentGovernance: true,
+    evidenceRetentionGrantsAuthority: false,
     heartbeatGrantsExecutionAuthority: false,
     newSchedulerCreated: false
   };

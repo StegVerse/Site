@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "kv-n-device-kv-transport",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED_COMPLETE",
       "normalized_work_key": "site-kv-n-device-kv-transport",
       "dependency_surface_keys": [
         "site:my-kv-device-kv-resident-transport",
@@ -30,7 +30,7 @@
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
       "handoff_revision": "4990af3b9291cabc2fe1083b15a77dc223d38ce2",
       "claim_created_at": "2026-09-08T17:28:00-05:00",
-      "claim_expires_when": "Release after PR #1109 passes MyKV-specific and Site-wide claim/handoff/bootstrap/heartbeat validation and merges; user-visible UI binding remains a separately claimed successor slice.",
+      "claim_expires_when": "Released after PR #1109 passed MyKV, Site Handoff, Ecosystem Heartbeat, and Site Bootstrap validation and merged.",
       "expected_evidence": [
         "SESSION_WORK_CLAIMS_PASS",
         "SITE_HANDOFF_ORCHESTRATION_PASS",
@@ -58,7 +58,11 @@
       "credential_requirement": "NONE_FOR_BOUNDED_RESIDENT_TRANSPORT",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1109,
+      "release_commit": "1c5396d186b2a8674f265733d91c542d472d20fd",
+      "claim_released_at": "2026-09-08T17:29:30-05:00",
+      "archive_eligible": true
     }
   ]
 }

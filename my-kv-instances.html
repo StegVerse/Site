@@ -29,7 +29,7 @@
 <p>Submitting here preserves <code>PENDING_INTERLOCK_INTR</code>. Credentials remain outside this Site surface.</p>
 <div class="controls"><div class="row">
 <label>KV instance<select id="provider-instance"></select></label>
-<label>Provider ID<input id="provider-id" type="text" autocomplete="off" placeholder="e.g. icloud, google-drive"></label>
+<label>Provider ID<input id="provider-id" type="text" autocomplete="off" placeholder="e.g. icloud-drive, google-drive"></label>
 <label>Operation<select id="provider-operation"><option>CONNECT</option><option>VERIFY</option><option>READ</option><option>WRITE</option><option>SYNC</option><option>DISCONNECT</option></select></label>
 </div><button id="provider-submit" class="sv-btn sv-btn-primary" type="button" disabled>Submit governed provider request</button><p id="provider-status" class="status" aria-live="polite"></p></div>
 </section>
@@ -56,8 +56,24 @@ var projection=null;
 var status=document.getElementById("status"),instances=document.getElementById("instances"),providerInstance=document.getElementById("provider-instance"),relA=document.getElementById("rel-a"),relB=document.getElementById("rel-b"),providerSubmit=document.getElementById("provider-submit"),relSubmit=document.getElementById("rel-submit");
 function setStatus(el,msg,kind){el.textContent=msg;el.className="status"+(kind?" "+kind:"");}
 function fillSelect(select,rows){select.replaceChildren();rows.forEach(function(row){var o=document.createElement("option");o.value=row.instance_id;o.textContent=row.label+" · "+row.instance_id;select.appendChild(o);});}
+function providerStatus(row){
+  if(!row.providers.length)return "Provider status: none observed";
+  return "Provider status: "+row.providers.map(function(p){return p.provider_id+"="+p.connection_state+"; verified="+(p.verified?"true":"false")+(p.last_operation?"; last="+p.last_operation:"");}).join(" | ");
+}
+function pendingProviderStatus(row){
+  if(!row.pending_provider_requests.length)return "Pending provider requests: none";
+  return "Pending provider requests: "+row.pending_provider_requests.map(function(p){return p.request_id+" · "+(p.provider_id||"provider-unspecified")+" · "+(p.operation||"operation-unspecified");}).join(" | ");
+}
 function render(summary){
-  instances.replaceChildren();summary.instances.forEach(function(row){var card=document.createElement("article");card.className="instance";var h=document.createElement("h3");h.textContent=row.label;card.appendChild(h);var meta=document.createElement("div");meta.className="meta";["Instance: "+row.instance_id,"Provider: "+(row.provider_id||"not observed"),"Provider state: "+row.provider_state,"Relationship: "+row.relationship_tier,"Authority: "+row.authority_effect].forEach(function(v){var d=document.createElement("div");d.textContent=v;meta.appendChild(d);});card.appendChild(meta);instances.appendChild(card);});
+  instances.replaceChildren();summary.instances.forEach(function(row){var card=document.createElement("article");card.className="instance";var h=document.createElement("h3");h.textContent=row.label;card.appendChild(h);var meta=document.createElement("div");meta.className="meta";[
+    "Instance: "+row.instance_id,
+    "Storage: "+row.storage_medium+(row.storage_locator?" · "+row.storage_locator:""),
+    providerStatus(row),
+    pendingProviderStatus(row),
+    "Relationship: "+row.relationship_tier+" · governance="+row.relationship_governance_state,
+    "Pending relationship requests: "+(row.pending_relationship_request_ids.length?row.pending_relationship_request_ids.join(", "):"none"),
+    "Authority: "+row.authority_effect
+  ].forEach(function(v){var d=document.createElement("div");d.textContent=v;meta.appendChild(d);});card.appendChild(meta);instances.appendChild(card);});
   fillSelect(providerInstance,summary.instances);fillSelect(relA,summary.instances);fillSelect(relB,summary.instances);providerSubmit.disabled=summary.instances.length<1;relSubmit.disabled=summary.instances.length<2;
 }
 async function load(){

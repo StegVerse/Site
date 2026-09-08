@@ -115,6 +115,37 @@ def main() -> int:
     require("USER_ONLY" not in auto_recovery and "HUMAN_ONLY" not in auto_recovery,
             "automatic machine-owned continuation reintroduced a human authority gate")
 
+    # After authentic governance + custody/reconstruction PASS, Site may carry the
+    # resulting proof to the already-existing resident rendezvous. This transport is
+    # evidence-only and must never become a substitute for the fresh InTr decision.
+    for marker in [
+        'SITE_CUSTODY_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"',
+        'EVIDENCE_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence/v1"',
+        'EVIDENCE_STORE_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence-store/v1"',
+        'proof.intr_governance_admission_observed !== true',
+        'proof.reconstruction_state !== "PASS"',
+        'proof.site_custody_authority !== false',
+        'proof.site_execution_authority !== false',
+        'proof.heartbeat_granted_authority !== false',
+        'proof.prior_receipt_authorizes_transition !== false',
+        'proof.historical_state_retroactively_authorized !== false',
+        'fetch("/api/resident-rendezvous/v1/discovery"',
+        'fetch("/api/resident-rendezvous/v1/evidence/site-governed-custody"',
+        'gateway_execution_authority: "NONE"',
+        'evidence_grants_authority: false',
+        'authority_effect: "NONE_EVIDENCE_ONLY"',
+        'resident_evidence_transport_state:',
+        'transport && transport.state === "RETAINED"',
+        '{ state: "PENDING_RETRY" }',
+    ]:
+        require(marker in auto_recovery, f"custody-proof rendezvous marker missing: {marker}")
+    governance_call = auto_recovery.index("root.StegOSWebBootstrap.executeMasterRecordsSv001Custody(cycleReceipt)")
+    proof_submit = auto_recovery.index("submitGovernedCustodyProof(result)", governance_call)
+    require(governance_call < proof_submit,
+            "Site must obtain authentic governed custody PASS before relaying its proof")
+    require('return publishGovernedPass(cycleReceipt, source, result, { state: "PENDING_RETRY" });' in auto_recovery,
+            "rendezvous transport failure must not rewrite authentic custody PASS as failure")
+
     require("machine-owned transition" in readme_normalized and "write-once admission" in readme_normalized,
             "README does not describe material governance/failure behavior")
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
@@ -141,6 +172,7 @@ def main() -> int:
         require("USER_ONLY" not in text and "HUMAN_ONLY" not in text, f"{name} reintroduced a human authority gate")
 
     print("MR_SV001_INTR_GOVERNANCE_PASS")
+    print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
     return 0
 
 

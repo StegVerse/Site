@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="View admitted KnowledgeVault instances and submit governed provider or relationship requests.">
+<title>StegVerse — My KV Instances</title>
+<link rel="stylesheet" href="sv-shared.css">
+<style>
+.wrap{max-width:960px;margin:0 auto}.panel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;margin:0 0 18px}.boundary{border-left:4px solid #d97706;padding:12px;background:rgba(217,119,6,.08)}.status{font:12px/1.5 var(--mono);color:var(--muted);white-space:pre-wrap}.status.ok{color:var(--green)}.status.error{color:#ffb4ab}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.instance{border:1px solid var(--border);border-radius:14px;padding:14px;background:#0b1420}.instance h3{margin:0 0 8px}.meta{display:grid;gap:5px;color:var(--muted);font:12px/1.4 var(--mono)}.controls{display:grid;gap:10px;margin-top:12px}.controls label{display:grid;gap:5px;color:var(--muted);font-size:12px}.controls input,.controls select{min-height:42px;border:1px solid var(--border2);border-radius:10px;background:#080d16;color:var(--text);padding:8px}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 180px}.empty{border:1px dashed var(--border2);border-radius:14px;padding:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="sv-nav"><a class="sv-nav-brand" href="index.html">StegVerse</a><a href="my-kv.html">My KV</a><a class="active" href="my-kv-instances.html">KV Instances</a><a href="stegos-node/">My Node</a></nav>
+<main class="sv-wrap wrap">
+<section class="panel">
+<h1>My KV #1 / #2 / #n</h1>
+<p>This page shows only a bounded KV-set projection already admitted to your resident DEVICE_KV. It does not create KV #2 or infer cloud/provider state.</p>
+<div class="boundary"><strong>Fail-closed boundary:</strong> provider actions and KV relationship changes are requests only. A pending acknowledgement does not mean a provider connected, data moved, replication began, or an AI corpus was exposed.</div>
+<div class="row" style="margin-top:12px"><button id="reload" class="sv-btn sv-btn-primary" type="button">Load admitted KV set</button><a class="sv-btn sv-btn-secondary" href="my-kv.html">Back to My KV setup</a></div>
+<p id="status" class="status" role="status" aria-live="polite">No KV-set projection loaded.</p>
+</section>
+<section class="panel">
+<h2>Instances</h2>
+<div id="instances" class="grid"><div class="empty">Load the admitted KV set to view instances.</div></div>
+</section>
+<section class="panel">
+<h2>Request a provider operation</h2>
+<p>Submitting here preserves <code>PENDING_INTERLOCK_INTR</code>. Credentials remain outside this Site surface.</p>
+<div class="controls"><div class="row">
+<label>KV instance<select id="provider-instance"></select></label>
+<label>Provider ID<input id="provider-id" type="text" autocomplete="off" placeholder="e.g. icloud, google-drive"></label>
+<label>Operation<select id="provider-operation"><option>CONNECT</option><option>VERIFY</option><option>READ</option><option>WRITE</option><option>SYNC</option><option>DISCONNECT</option></select></label>
+</div><button id="provider-submit" class="sv-btn sv-btn-primary" type="button" disabled>Submit governed provider request</button><p id="provider-status" class="status" aria-live="polite"></p></div>
+</section>
+<section class="panel">
+<h2>Request a KV relationship tier</h2>
+<p>Two or more authentic instances are required. Relationship tiers are <code>NOT_CONNECTED</code>, <code>CONNECTED</code>, <code>SYNCED</code>, and <code>AI_INTERACTION</code>.</p>
+<div class="controls"><div class="row">
+<label>KV A<select id="rel-a"></select></label><label>KV B<select id="rel-b"></select></label>
+<label>Target tier<select id="rel-tier"><option>NOT_CONNECTED</option><option>CONNECTED</option><option>SYNCED</option><option>AI_INTERACTION</option></select></label>
+</div><button id="rel-submit" class="sv-btn sv-btn-primary" type="button" disabled>Submit governed relationship request</button><p id="rel-status" class="status" aria-live="polite"></p></div>
+</section>
+</main>
+<script src="assets/stegverse-node-continuity.js"></script>
+<script src="assets/generated/site-browser-intr-connectors.js"></script>
+<script src="assets/hb-intr-carrier.js"></script>
+<script src="assets/my-kv-instance-manager.js"></script>
+<script src="assets/my-kv-instance-device-kv-bridge.js"></script>
+<script src="assets/my-kv-instance-ui.js"></script>
+<script>
+(function(){
+"use strict";
+var manager=window.StegVerseMyKVInstanceManager,bridge=window.StegVerseMyKVInstanceBridge,ui=window.StegVerseMyKVInstanceUI;
+var projection=null;
+var status=document.getElementById("status"),instances=document.getElementById("instances"),providerInstance=document.getElementById("provider-instance"),relA=document.getElementById("rel-a"),relB=document.getElementById("rel-b"),providerSubmit=document.getElementById("provider-submit"),relSubmit=document.getElementById("rel-submit");
+function setStatus(el,msg,kind){el.textContent=msg;el.className="status"+(kind?" "+kind:"");}
+function fillSelect(select,rows){select.replaceChildren();rows.forEach(function(row){var o=document.createElement("option");o.value=row.instance_id;o.textContent=row.label+" · "+row.instance_id;select.appendChild(o);});}
+function render(summary){
+  instances.replaceChildren();summary.instances.forEach(function(row){var card=document.createElement("article");card.className="instance";var h=document.createElement("h3");h.textContent=row.label;card.appendChild(h);var meta=document.createElement("div");meta.className="meta";["Instance: "+row.instance_id,"Provider: "+(row.provider_id||"not observed"),"Provider state: "+row.provider_state,"Relationship: "+row.relationship_tier,"Authority: "+row.authority_effect].forEach(function(v){var d=document.createElement("div");d.textContent=v;meta.appendChild(d);});card.appendChild(meta);instances.appendChild(card);});
+  fillSelect(providerInstance,summary.instances);fillSelect(relA,summary.instances);fillSelect(relB,summary.instances);providerSubmit.disabled=summary.instances.length<1;relSubmit.disabled=summary.instances.length<2;
+}
+async function load(){
+ setStatus(status,"Loading admitted KV-set projection…","");projection=null;providerSubmit.disabled=true;relSubmit.disabled=true;
+ try{var result=await manager.loadKVSet(bridge);if(!result||result.state!=="KV_SET_LISTED")throw new Error("KV set was not listed");projection=result.projection;var summary=ui.summarizeProjection(projection,manager);render(summary);setStatus(status,"Admitted KV set loaded: "+summary.instance_count+" instance(s). No provider or relationship effects were inferred.","ok");}
+ catch(e){instances.innerHTML='<div class="empty">No authentic admitted KV-set projection is available on this device. KV #2 is not being inferred or created.</div>';setStatus(status,"Fail closed: "+String(e&&e.message||e),"error");}
+}
+document.getElementById("reload").addEventListener("click",load);
+providerSubmit.addEventListener("click",async function(){try{if(!projection)throw new Error("Load an admitted KV set first");var providerId=document.getElementById("provider-id").value.trim();if(!providerId)throw new Error("Provider ID is required");var result=await ui.requestProvider(manager,bridge,projection,providerInstance.value,providerId,document.getElementById("provider-operation").value);setStatus(document.getElementById("provider-status"),"Request "+result.request_id+" is "+result.governance_state+". Provider execution authorized=false.","ok");}catch(e){setStatus(document.getElementById("provider-status"),String(e&&e.message||e),"error");}});
+relSubmit.addEventListener("click",async function(){try{if(!projection)throw new Error("Load an admitted KV set first");if(relA.value===relB.value)throw new Error("Choose two different KV instances");var result=await ui.requestRelationship(manager,bridge,projection,[relA.value,relB.value],document.getElementById("rel-tier").value);setStatus(document.getElementById("rel-status"),"Request "+result.request_id+" is "+result.governance_state+". data_moved=false; replication_started=false; ai_corpus_exposed=false.","ok");}catch(e){setStatus(document.getElementById("rel-status"),String(e&&e.message||e),"error");}});
+load();
+}());
+</script>
+</body>
+</html>

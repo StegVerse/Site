@@ -6,20 +6,30 @@ on:
       - "assets/my-kv-instance-manager.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
       - "assets/my-kv-n-device-kv-receiver.js"
+      - "assets/my-kv-instance-ui.js"
+      - "my-kv-instances.html"
       - "tests/my-kv-instance-manager.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
+      - "tests/my-kv-instance-ui.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+      - "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json"
+      - "data/session-work-claims.d/site-kv-n-ui-binding-20260908.json"
       - ".github/workflows/my-kv-instance-manager.yml"
   push:
     paths:
       - "assets/my-kv-instance-manager.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
       - "assets/my-kv-n-device-kv-receiver.js"
+      - "assets/my-kv-instance-ui.js"
+      - "my-kv-instances.html"
       - "tests/my-kv-instance-manager.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
+      - "tests/my-kv-instance-ui.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+      - "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json"
+      - "data/session-work-claims.d/site-kv-n-ui-binding-20260908.json"
       - ".github/workflows/my-kv-instance-manager.yml"
   workflow_dispatch:
 
@@ -38,15 +48,19 @@ jobs:
         run: node tests/my-kv-instance-manager.test.cjs
       - name: Validate bounded DEVICE_KV transport client
         run: node tests/my-kv-instance-device-kv-bridge.test.cjs
+      - name: Validate bounded MyKV multi-instance UI
+        run: node tests/my-kv-instance-ui.test.cjs
       - name: Validate resident receiver syntax
         run: node --check assets/my-kv-n-device-kv-receiver.js
-      - name: Prove bounded authority and resident-receiver boundary
+      - name: Prove bounded authority, resident receiver, and UI boundary
         run: |
           python3 - <<'PY'
           from pathlib import Path
           src = Path('assets/my-kv-instance-manager.js').read_text(encoding='utf-8')
           transport = Path('assets/my-kv-instance-device-kv-bridge.js').read_text(encoding='utf-8')
           receiver = Path('assets/my-kv-n-device-kv-receiver.js').read_text(encoding='utf-8')
+          ui = Path('my-kv-instances.html').read_text(encoding='utf-8')
+          controller = Path('assets/my-kv-instance-ui.js').read_text(encoding='utf-8')
           required = [
               'provider_mutation_authorized===false',
               'relationship_mutation_authorized===false',
@@ -91,12 +105,29 @@ jobs:
           receiver_missing = [x for x in receiver_required if x not in receiver]
           if receiver_missing:
               raise SystemExit('missing resident receiver markers: ' + ', '.join(receiver_missing))
+          ui_required = [
+              'No authentic admitted KV-set projection is available',
+              'KV #2 is not being inferred or created',
+              'PENDING_INTERLOCK_INTR',
+              'Provider execution authorized=false',
+              'data_moved=false',
+              'replication_started=false',
+              'ai_corpus_exposed=false',
+          ]
+          ui_missing = [x for x in ui_required if x not in ui]
+          if ui_missing:
+              raise SystemExit('missing UI fail-closed markers: ' + ', '.join(ui_missing))
+          controller_required = ['requestProviderOperation','requestRelationshipTransition','KV set projection unavailable']
+          controller_missing = [x for x in controller_required if x not in controller]
+          if controller_missing:
+              raise SystemExit('missing UI controller markers: ' + ', '.join(controller_missing))
           forbidden = ['provider_execution_attempted:true','relationship_mutation_attempted:true','data_moved:true','replication_started:true','ai_corpus_exposed:true','provider_operation_authorized:true','relationship_mutation_authorized:true']
-          present = [x for x in forbidden if x in receiver]
+          present = [x for x in forbidden if x in receiver or x in ui or x in controller]
           if present:
-              raise SystemExit('resident receiver contains prohibited authority/effect markers: ' + ', '.join(present))
+              raise SystemExit('MyKV resident/UI surface contains prohibited authority/effect markers: ' + ', '.join(present))
           print('MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER=PASS')
           print('MY_KV_DEVICE_KV_RESIDENT_TRANSPORT=PASS')
+          print('MY_KV_MULTI_INSTANCE_UI=PASS')
           print('MY_KV_SET_PROJECTION_SOURCE=ALREADY_ADMITTED_ONLY')
           print('MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE')

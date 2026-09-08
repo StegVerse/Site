@@ -5,6 +5,7 @@ on:
     paths:
       - "assets/my-kv-instance-manager.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
+      - "assets/my-kv-n-device-kv-receiver.js"
       - "tests/my-kv-instance-manager.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
@@ -14,6 +15,7 @@ on:
     paths:
       - "assets/my-kv-instance-manager.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
+      - "assets/my-kv-n-device-kv-receiver.js"
       - "tests/my-kv-instance-manager.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
@@ -36,12 +38,15 @@ jobs:
         run: node tests/my-kv-instance-manager.test.cjs
       - name: Validate bounded DEVICE_KV transport client
         run: node tests/my-kv-instance-device-kv-bridge.test.cjs
-      - name: Prove source-only authority boundary
+      - name: Validate resident receiver syntax
+        run: node --check assets/my-kv-n-device-kv-receiver.js
+      - name: Prove bounded authority and resident-receiver boundary
         run: |
           python3 - <<'PY'
           from pathlib import Path
           src = Path('assets/my-kv-instance-manager.js').read_text(encoding='utf-8')
           transport = Path('assets/my-kv-instance-device-kv-bridge.js').read_text(encoding='utf-8')
+          receiver = Path('assets/my-kv-n-device-kv-receiver.js').read_text(encoding='utf-8')
           required = [
               'provider_mutation_authorized===false',
               'relationship_mutation_authorized===false',
@@ -59,6 +64,8 @@ jobs:
               'MY_KV_INSTANCE_SET_PROJECTION',
               'MY_KV_PROVIDER_OPERATION_REQUEST',
               'MY_KV_RELATIONSHIP_TRANSITION_REQUEST',
+              'DEVICE_KV_MY_KV_N_RESIDENT_TRANSPORT',
+              'STEGVERSE_MY_KV_N_LOCAL_TRIGGER',
               'credential_material_present:false',
               'provider_operation_authorized:false',
               'relationship_mutation_authorized:false',
@@ -67,8 +74,30 @@ jobs:
           transport_missing = [x for x in transport_required if x not in transport]
           if transport_missing:
               raise SystemExit('missing DEVICE_KV transport markers: ' + ', '.join(transport_missing))
+          receiver_required = [
+              '_System/my-kv-set-projection.json',
+              'my_kv_set_projection_not_admitted',
+              'PENDING_INTERLOCK_INTR',
+              'provider_execution_attempted:false',
+              'relationship_mutation_attempted:false',
+              'data_moved:false',
+              'replication_started:false',
+              'ai_corpus_exposed:false',
+              'provider_operation_authorized:false',
+              'relationship_mutation_authorized:false',
+              'github_token_runtime_authority:"NONE"',
+              'NONE_RESULT_DELIVERY_ONLY',
+          ]
+          receiver_missing = [x for x in receiver_required if x not in receiver]
+          if receiver_missing:
+              raise SystemExit('missing resident receiver markers: ' + ', '.join(receiver_missing))
+          forbidden = ['provider_execution_attempted:true','relationship_mutation_attempted:true','data_moved:true','replication_started:true','ai_corpus_exposed:true','provider_operation_authorized:true','relationship_mutation_authorized:true']
+          present = [x for x in forbidden if x in receiver]
+          if present:
+              raise SystemExit('resident receiver contains prohibited authority/effect markers: ' + ', '.join(present))
           print('MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER=PASS')
-          print('MY_KV_DEVICE_KV_TRANSPORT_CLIENT=PASS')
+          print('MY_KV_DEVICE_KV_RESIDENT_TRANSPORT=PASS')
+          print('MY_KV_SET_PROJECTION_SOURCE=ALREADY_ADMITTED_ONLY')
           print('MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_CREDENTIAL_MATERIAL=PROHIBITED')

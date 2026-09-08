@@ -21,7 +21,8 @@
         "assets/my-kv-instance-manager.js",
         "tests/my-kv-instance-manager.test.cjs",
         "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-        "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
+        "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json",
+        ".github/workflows/my-kv-instance-manager.yml"
       ],
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
       "handoff_revision": "0c4faa59f23bfe6ff51cee83f9da7a9ec8af49a7",
@@ -32,6 +33,7 @@
         "SITE_HANDOFF_ORCHESTRATION_PASS",
         "Site Bootstrap Validate PASS",
         "Ecosystem Heartbeat Orchestration PASS",
+        "My KV Multi-Instance Provider Manager PASS",
         "My KV instance manager tests PASS",
         "private_content_included=false required",
         "credential_material_included=false required",

@@ -1,0 +1,59 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-KV-N-PROVIDER-SHAPE-ALIGNMENT-20260908",
+      "session_worker_id": "chatgpt:site-kv-n-provider-shape-alignment-20260908",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "originating_goal": "Align the merged MyKV UI with the canonical continuity-vault-kit plural provider projection (`instance.providers.items` and `pending_requests`) so authentic provider state is rendered without singular-provider fabrication or authority drift.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "kv-n-provider-shape-alignment",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-kv-n-provider-shape-alignment",
+      "dependency_surface_keys": [
+        "site:my-kv-provider-projection-rendering",
+        "kv:my-kv-provider-status-projection"
+      ],
+      "claimed_paths": [
+        "assets/my-kv-instance-ui.js",
+        "tests/my-kv-instance-ui.test.cjs",
+        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-kv-n-provider-shape-alignment-20260908.json",
+        "data/session-work-claims.d/site-kv-n-ui-binding-20260908.json"
+      ],
+      "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+      "handoff_revision": "PROVIDER_SHAPE_ALIGNMENT_PENDING_20260908",
+      "claim_created_at": "2026-09-08T17:45:00-05:00",
+      "claim_expires_when": "Release after the canonical plural provider projection is rendered/tested, Site-wide validation passes, and the change merges.",
+      "expected_evidence": [
+        "canonical instance.providers.items consumed",
+        "canonical instance.providers.pending_requests consumed",
+        "provider_mutation_authorized=false preserved",
+        "credential_material_included=false preserved",
+        "no singular provider placeholder required",
+        "MY_KV_MULTI_INSTANCE_UI=PASS",
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS"
+      ],
+      "collision_boundaries": [
+        "Do not modify upstream provider state semantics",
+        "Do not infer provider connection state when provider items are empty",
+        "Do not expose raw credentials, SKAP refs, Interlock/InTr receipt refs, or private content",
+        "Do not authorize provider operations from rendering",
+        "Do not activate public navigation/README in this alignment-only slice",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Admit the authentic adopted KV #1 set projection into DEVICE_KV and verify exact MyKV readback, then proceed to public integration and real KV #2 authorization.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_PROJECTION_ALIGNMENT",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

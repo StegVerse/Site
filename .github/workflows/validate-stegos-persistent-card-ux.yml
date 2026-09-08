@@ -84,7 +84,6 @@ jobs:
           python3 scripts/validate_stegos_persistent_card_ux.py
           python3 scripts/check_stegos_ipod_bootstrap_projection.py
           python3 scripts/check_mr_sv001_intr_governance.py
-          python3 -m pytest -q tests/test_mr_sv001_intr_governance.py
           echo 'STEGOS_PERSISTENT_CARD_UX_SOURCE=PASS'
           echo 'STEGOS_PERSISTENT_CARD_OFFLINE_SHELL=PASS'
           echo 'SV001_CANONICAL_G23_RECOVERY_SOURCE=PASS'

@@ -1,8 +1,8 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `kv-n-my-kv-ui-binding`
-State: SOURCE_CONTRACT_MERGED / DEVICE_KV_RESIDENT_TRANSPORT_MERGED / PREPUBLICATION_UI_IMPLEMENTED / PUBLIC_NAV_README_BINDING_PENDING / AUTHENTIC_SET_PROJECTION_PENDING / PROVIDER_ACTIVATION_PENDING
+Branch: `kv-n-provider-shape-alignment`
+State: SOURCE_CONTRACT_MERGED / DEVICE_KV_RESIDENT_TRANSPORT_MERGED / PREPUBLICATION_UI_MERGED / CANONICAL_PROVIDER_SHAPE_ALIGNMENT_IN_PROGRESS / PUBLIC_NAV_README_BINDING_PENDING / AUTHENTIC_SET_PROJECTION_PENDING / PROVIDER_ACTIVATION_PENDING
 Updated: 2026-09-08
 Authority effect: NONE
 Activation effect: false
@@ -16,50 +16,45 @@ CANONICAL COSV HANDOFF: StegVerse-Labs/.github/KV_CONNECTION_REVALIDATION_COSV_M
 UPSTREAM CAPABILITY HANDOFF: StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md
 ```
 
-## Merged source + resident transport
+## Merged baseline
 
-Site consumes the bounded projection defined by the continuity-vault-kit KV #1/#2/#n workstream. `assets/my-kv-instance-manager.js` validates `stegverse.kv.my-kv-set-projection/v1` and provides request-only provider and relationship surfaces. `assets/my-kv-instance-device-kv-bridge.js` plus `assets/my-kv-n-device-kv-receiver.js` were merged through Site PR #1109 at `1c5396d186b2a8674f265733d91c542d472d20fd`.
+Site PR #1109 merged the bounded resident DEVICE_KV transport at `1c5396d186b2a8674f265733d91c542d472d20fd`. Site PR #1110 merged the intentionally unlinked MyKV #1/#2/#n prepublication UI candidate at `5977b53c8ac43099b4d2cecf27cdc4c78e4c4882`.
 
 The resident receiver returns `MY_KV_INSTANCE_SET_PROJECTION` only from an already-admitted `_System/my-kv-set-projection.json`. Missing projection state fails closed. Provider and relationship requests remain `PENDING_INTERLOCK_INTR`; provider execution, relationship mutation, data movement, replication, AI-corpus exposure, credential authority, and activation authority remain false.
 
-## Prepublication UI candidate — implemented on current branch
+## Canonical provider-shape alignment — current slice
 
-`my-kv-instances.html` is an intentionally unlinked candidate page. It loads:
+The continuity-vault-kit canonical projection emits provider status under:
 
-- `assets/stegverse-node-continuity.js`
-- `assets/generated/site-browser-intr-connectors.js`
-- `assets/hb-intr-carrier.js`
-- `assets/my-kv-instance-manager.js`
-- `assets/my-kv-instance-device-kv-bridge.js`
-- `assets/my-kv-instance-ui.js`
+```text
+instance.providers.items
+instance.providers.pending_requests
+instance.providers.provider_mutation_authorized=false
+instance.providers.credential_material_included=false
+```
 
-The page:
+The merged Site UI candidate previously read a synthetic singular `instance.provider`, which would have hidden authentic provider rows after real projection admission. The current branch corrects that mismatch.
 
-1. renders only an authentic admitted KV-set projection;
-2. explicitly states that missing projection state does not create or imply KV #2;
-3. renders KV #1/#2/#n instance/provider/relationship status from the validated projection only;
-4. emits provider operations only through `requestProviderOperation` as `PENDING_INTERLOCK_INTR`;
-5. emits relationship tier requests only through `requestRelationshipTransition` as `PENDING_INTERLOCK_INTR`;
-6. explicitly preserves `provider_operation_authorized=false`, `data_moved=false`, `replication_started=false`, and `ai_corpus_exposed=false` semantics.
+`assets/my-kv-instance-manager.js` now requires the canonical plural provider object, requires `provider_mutation_authorized=false` and `credential_material_included=false`, validates provider item rows and pending requests, and rejects singular `instance.provider` input. `assets/my-kv-instance-ui.js` summarizes all canonical provider rows and pending requests. `my-kv-instances.html` renders storage, provider rows, pending provider requests, relationship tier, and relationship governance state without inferring provider connection or execution.
 
-`tests/my-kv-instance-ui.test.cjs` and `.github/workflows/my-kv-instance-manager.yml` validate the candidate and reject true-valued provider execution, relationship mutation, data movement, replication, or AI-corpus effect markers.
+## Upstream physical-KV prerequisite
 
-## Publication boundary
+The connected Google Drive KnowledgeVault contains the canonical `_System/installation.receipt.json` but no `_System/Instances` layout, establishing that the physical KV predates the multi-instance identity model. `StegVerse-Labs/continuity-vault-kit` PR #203 is the current non-destructive KV #1 adoption source slice. It is designed to bind apply mode to the exact existing installation-receipt SHA-256, refuse overwrites, preserve private content and the original installation receipt, create only canonical KV #1 identity/adoption/projection records, and default relationship state to `NOT_CONNECTED` with no provider or relationship authority.
 
-The candidate is not linked from the existing `my-kv.html` onboarding flow or ordinary Site navigation in this slice. Therefore this branch does not claim public navigation activation. README/navigation integration is still required in one later public-activation change before this candidate is treated as an ordinary public MyKV capability surface.
+## Publication and authority boundary
 
-## Existing boundary preservation
-
-Site does not own KV instance state, provider state, relationship state, credentials, provider sessions, or governance admission. The current work does not widen `intr-service-worker.js`, existing MyKV directory/installation/profile semantics, or continuity-vault-kit provider/relationship authority.
+This provider-shape branch does not activate public navigation or modify README semantics. It does not admit the physical KV #1 projection, create KV #2, authenticate a provider, execute provider operations, move/replicate data, or expose an AI corpus. Site remains a bounded projection/request surface only.
 
 ## Next machine work
 
-- validate and merge the prepublication UI candidate;
-- in a separately claimed public-activation change, link the validated candidate from My KV navigation and update repository README without destructive replacement;
-- establish authentic admitted `_System/my-kv-set-projection.json` from the canonical continuity-vault-kit projection path;
-- verify the current device can read that projection end-to-end;
-- only then request user-controlled provider authorization/materialization for real KV #2.
+1. validate and merge the Site provider-shape alignment;
+2. validate and merge continuity-vault-kit PR #203;
+3. run the owner-controlled non-destructive adoption plan against the existing Google Drive KnowledgeVault and bind the exact installation-receipt SHA-256;
+4. materialize the authentic KV #1 identity/adoption receipt/set projection only after exact binding;
+5. admit that exact `_System/my-kv-set-projection.json` into resident DEVICE_KV and verify exact MyKV readback;
+6. integrate public MyKV navigation + README without weakening the authority boundary;
+7. only then request owner-controlled materialization/authorization for real KV #2.
 
 ## Manual work
 
-No user action is required yet. Do **not** create, connect, or authorize KV #2 from a provider UI yet. Provider authorization becomes appropriate only after authentic KV-set projection admission and public MyKV integration are complete. At that point manual instructions must name the exact provider, exact account/folder selection, exact requested scope, expected receipt/state, and what evidence to return.
+None yet. Do not manually create `_System/Instances`, `instance.json`, `adoption.receipt.json`, or `my-kv-set-projection.json`, and do not authorize KV #2. The next manual action begins only after the two source PRs are green/merged and must bind the exact current installation receipt before any physical KV mutation.

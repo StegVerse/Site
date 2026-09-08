@@ -2,9 +2,9 @@
   "schema_version": "2.0.0",
   "season": 2026,
   "phase": "PRE_CFP_RANKINGS",
-  "last_updated": "2026-09-08T15:11:05Z",
+  "last_updated": "2026-09-08T18:48:17Z",
   "freshness": {
-    "generated_at": "2026-09-08T15:11:05Z",
+    "generated_at": "2026-09-08T18:48:17Z",
     "current_season_only": true,
     "historical_rankings_carried_forward": false,
     "rankings_state": "NOT_YET_PUBLISHED_OR_NOT_OBSERVED",
@@ -23,7 +23,7 @@
       "id": "2",
       "label": "NCAA-derived AP Top 25 JSON (henrygd/ncaa-api)",
       "url": "https://ncaa-api.henrygd.me/rankings/football/fbs/associated-press",
-      "status": "AVAILABLE",
+      "status": "NO_CURRENT_DATA_OBSERVED",
       "error": null,
       "origin": "https://www.ncaa.com/rankings/football/fbs/associated-press"
     },
@@ -39,165 +39,7 @@
   "cfp_source_id": "1",
   "conf_source_id": null,
   "rankings": [],
-  "polls": [
-    {
-      "name": "College football rankings: Associated Press Top 25",
-      "source_id": "2",
-      "updated": "Through Games AUG. 17, 2026",
-      "teams": [
-        {
-          "rank": 1,
-          "team": "Ohio State",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 2,
-          "team": "Oregon",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 3,
-          "team": "Georgia",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 4,
-          "team": "Notre Dame",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 5,
-          "team": "Texas",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 6,
-          "team": "Indiana",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 7,
-          "team": "Miami (FL)",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 8,
-          "team": "Texas A&M",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 9,
-          "team": "Ole Miss",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 10,
-          "team": "Oklahoma",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 11,
-          "team": "LSU",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 12,
-          "team": "Texas Tech",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 13,
-          "team": "Alabama",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 14,
-          "team": "BYU",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 14,
-          "team": "Southern Cal",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 16,
-          "team": "Michigan",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 17,
-          "team": "Washington",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 18,
-          "team": "Penn State",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 19,
-          "team": "SMU",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 20,
-          "team": "Tennessee",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 21,
-          "team": "Utah",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 22,
-          "team": "Iowa",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 23,
-          "team": "Houston",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 24,
-          "team": "Louisville",
-          "record": "",
-          "conference": ""
-        },
-        {
-          "rank": 25,
-          "team": "Missouri",
-          "record": "",
-          "conference": ""
-        }
-      ]
-    }
-  ],
+  "polls": [],
   "conferences": [],
   "games": [
     {
@@ -1322,7 +1164,7 @@
   "availability": {
     "cfp_rankings": "NOT_YET_PUBLISHED_OR_NOT_OBSERVED",
     "games": "AVAILABLE",
-    "polls": "AVAILABLE",
+    "polls": "NO_CURRENT_POLLS_OBSERVED",
     "conference_standings": "NOT_YET_CANONICALLY_INGESTED"
   },
   "historical_reference": {

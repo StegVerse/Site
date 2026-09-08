@@ -30,6 +30,26 @@
       rejectSensitive(child,path+"."+key);
     });
   }
+  function validateProviders(providers){
+    requireValue(providers&&typeof providers==="object"&&!Array.isArray(providers),"canonical plural provider projection missing");
+    requireValue(providers.items&&typeof providers.items==="object"&&!Array.isArray(providers.items),"provider items invalid");
+    requireValue(Array.isArray(providers.pending_requests),"provider pending requests invalid");
+    requireValue(providers.provider_mutation_authorized===false,"provider mutation authority prohibited");
+    requireValue(providers.credential_material_included===false,"provider credential material prohibited");
+    Object.keys(providers.items).forEach(function(providerId){
+      requireValue(typeof providerId==="string"&&providerId,"provider id invalid");
+      var row=providers.items[providerId];
+      requireValue(row&&typeof row==="object"&&!Array.isArray(row),"provider status row invalid");
+      requireValue(typeof row.verified==="boolean","provider verification status invalid");
+    });
+    providers.pending_requests.forEach(function(row){
+      requireValue(row&&typeof row==="object"&&!Array.isArray(row),"pending provider request invalid");
+      requireValue(typeof row.request_id==="string"&&row.request_id,"pending provider request id missing");
+      requireValue(row.provider_id==null||typeof row.provider_id==="string","pending provider id invalid");
+      requireValue(row.operation==null||PROVIDER_OPS.indexOf(String(row.operation).toUpperCase())>=0,"pending provider operation invalid");
+    });
+    return providers;
+  }
   function validateInstance(instance,setId){
     requireValue(instance&&instance.schema===INSTANCE_SCHEMA,"instance projection schema invalid");
     requireValue(typeof instance.instance_id==="string"&&instance.instance_id.indexOf("kvi_")===0,"instance id invalid");
@@ -40,9 +60,8 @@
     requireValue(instance.authority_effect==="NONE_STATUS_ONLY"&&instance.activation_effect===false,"instance authority boundary invalid");
     requireValue(instance.management&&instance.management.provider_mutation_authorized===false&&instance.management.relationship_mutation_authorized===false,"mutation authority prohibited");
     requireValue(instance.relationship&&TIERS.indexOf(instance.relationship.tier)>=0,"relationship tier invalid");
-    if(instance.provider){
-      requireValue(instance.provider.credential_material_included!==true,"provider credential material prohibited");
-    }
+    validateProviders(instance.providers);
+    requireValue(instance.provider===undefined,"legacy singular provider projection prohibited");
     rejectSensitive(instance,"instance");
     return clone(instance);
   }

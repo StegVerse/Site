@@ -53,8 +53,8 @@ function projection(){
   assert.strictEqual(r.data_moved,false);assert.strictEqual(r.replication_started,false);assert.strictEqual(r.ai_corpus_exposed,false);
 })();
 
-(async function directProviderMutationUnavailableFails(){
-  await assert.rejects(()=>api.requestProviderOperation(projection(),"kvi_1","icloud-drive","CONNECT",null),/governed provider-operation bridge unavailable/);
+(function directProviderMutationUnavailableFails(){
+  assert.throws(()=>api.requestProviderOperation(projection(),"kvi_1","icloud-drive","CONNECT",null),/governed provider-operation bridge unavailable/);
 })();
 
 console.log("My KV instance manager tests: PASS");

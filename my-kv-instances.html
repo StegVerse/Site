@@ -20,6 +20,14 @@
 <div class="row" style="margin-top:12px"><button id="reload" class="sv-btn sv-btn-primary" type="button">Load admitted KV set</button><a class="sv-btn sv-btn-secondary" href="my-kv.html">Back to My KV setup</a></div>
 <p id="status" class="status" role="status" aria-live="polite">No KV-set projection loaded.</p>
 </section>
+<section class="panel" id="projection-admission">
+<h2>Admit the current KV-set projection</h2>
+<p>If this device does not yet have the projection, select the canonical <code>KnowledgeVault/_System/my-kv-set-projection.json</code> from Files or your connected cloud storage. The selected raw bytes are validated before resident write and must be recovered exactly after write.</p>
+<div class="boundary"><strong>Status-only admission:</strong> this action writes only <code>_System/my-kv-set-projection.json</code> in resident DEVICE_KV. It grants no provider execution, relationship mutation, credential, data-movement, replication, AI-corpus, or activation authority.</div>
+<input id="projection-file" type="file" accept="application/json,.json" hidden>
+<div class="row" style="margin-top:12px"><button id="projection-select" class="sv-btn sv-btn-primary" type="button">Select KV-set projection from Files</button><button id="projection-reload" class="sv-btn sv-btn-secondary" type="button">Recheck resident projection</button></div>
+<p id="projection-status" class="status" role="status" aria-live="polite">No projection admission attempted.</p>
+</section>
 <section class="panel">
 <h2>Instances</h2>
 <div id="instances" class="grid"><div class="empty">Load the admitted KV set to view instances.</div></div>
@@ -47,13 +55,14 @@
 <script src="assets/hb-intr-carrier.js"></script>
 <script src="assets/my-kv-instance-manager.js"></script>
 <script src="assets/my-kv-instance-device-kv-bridge.js"></script>
+<script src="assets/my-kv-set-projection-admission-bridge.js"></script>
 <script src="assets/my-kv-instance-ui.js"></script>
 <script>
 (function(){
 "use strict";
-var manager=window.StegVerseMyKVInstanceManager,bridge=window.StegVerseMyKVInstanceBridge,ui=window.StegVerseMyKVInstanceUI;
+var manager=window.StegVerseMyKVInstanceManager,bridge=window.StegVerseMyKVInstanceBridge,admissionBridge=window.StegVerseMyKVSetProjectionAdmissionBridge,ui=window.StegVerseMyKVInstanceUI;
 var projection=null;
-var status=document.getElementById("status"),instances=document.getElementById("instances"),providerInstance=document.getElementById("provider-instance"),relA=document.getElementById("rel-a"),relB=document.getElementById("rel-b"),providerSubmit=document.getElementById("provider-submit"),relSubmit=document.getElementById("rel-submit");
+var status=document.getElementById("status"),instances=document.getElementById("instances"),providerInstance=document.getElementById("provider-instance"),relA=document.getElementById("rel-a"),relB=document.getElementById("rel-b"),providerSubmit=document.getElementById("provider-submit"),relSubmit=document.getElementById("rel-submit"),projectionFile=document.getElementById("projection-file"),projectionSelect=document.getElementById("projection-select"),projectionStatus=document.getElementById("projection-status");
 function setStatus(el,msg,kind){el.textContent=msg;el.className="status"+(kind?" "+kind:"");}
 function fillSelect(select,rows){select.replaceChildren();rows.forEach(function(row){var o=document.createElement("option");o.value=row.instance_id;o.textContent=row.label+" · "+row.instance_id;select.appendChild(o);});}
 function providerStatus(row){
@@ -78,13 +87,27 @@ function render(summary){
 }
 async function load(){
  setStatus(status,"Loading admitted KV-set projection…","");projection=null;providerSubmit.disabled=true;relSubmit.disabled=true;
- try{var result=await manager.loadKVSet(bridge);if(!result||result.state!=="KV_SET_LISTED")throw new Error("KV set was not listed");projection=result.projection;var summary=ui.summarizeProjection(projection,manager);render(summary);setStatus(status,"Admitted KV set loaded: "+summary.instance_count+" instance(s). No provider or relationship effects were inferred.","ok");}
- catch(e){instances.innerHTML='<div class="empty">No authentic admitted KV-set projection is available on this device. KV #2 is not being inferred or created.</div>';setStatus(status,"Fail closed: "+String(e&&e.message||e),"error");}
+ try{var result=await manager.loadKVSet(bridge);if(!result||result.state!=="KV_SET_LISTED")throw new Error("KV set was not listed");projection=result.projection;var summary=ui.summarizeProjection(projection,manager);render(summary);setStatus(status,"Admitted KV set loaded: "+summary.instance_count+" instance(s). No provider or relationship effects were inferred.","ok");return summary;}
+ catch(e){instances.innerHTML='<div class="empty">No authentic admitted KV-set projection is available on this device. KV #2 is not being inferred or created.</div>';setStatus(status,"Fail closed: "+String(e&&e.message||e),"error");throw e;}
 }
-document.getElementById("reload").addEventListener("click",load);
+document.getElementById("reload").addEventListener("click",function(){load().catch(function(){});});
+document.getElementById("projection-reload").addEventListener("click",function(){load().then(function(summary){setStatus(projectionStatus,"Resident projection verified: "+summary.instance_count+" instance(s).","ok");}).catch(function(e){setStatus(projectionStatus,"Resident projection unavailable: "+String(e&&e.message||e),"error");});});
+projectionSelect.addEventListener("click",function(){projectionFile.value="";projectionFile.click();});
+projectionFile.addEventListener("change",async function(){
+ var file=this.files&&this.files[0];if(!file)return;
+ projectionSelect.disabled=true;setStatus(projectionStatus,"Validating and admitting "+file.name+" through the registered Node and resident DEVICE_KV…","");
+ try{
+  if(!admissionBridge||typeof admissionBridge.admitFile!=="function")throw new Error("projection admission bridge unavailable");
+  var result=await admissionBridge.admitFile(file),response=result.response;
+  if(!response||response.exact_readback_verified!==true)throw new Error("exact resident readback was not verified");
+  setStatus(projectionStatus,"Projection admitted with exact readback. sha256="+response.projection_sha256+"; instances="+response.instance_count+". No provider or relationship authority was granted.","ok");
+  await load();
+ }catch(e){setStatus(projectionStatus,"Admission failed closed: "+String(e&&e.message||e),"error");}
+ finally{projectionSelect.disabled=false;}
+});
 providerSubmit.addEventListener("click",async function(){try{if(!projection)throw new Error("Load an admitted KV set first");var providerId=document.getElementById("provider-id").value.trim();if(!providerId)throw new Error("Provider ID is required");var result=await ui.requestProvider(manager,bridge,projection,providerInstance.value,providerId,document.getElementById("provider-operation").value);setStatus(document.getElementById("provider-status"),"Request "+result.request_id+" is "+result.governance_state+". Provider execution authorized=false.","ok");}catch(e){setStatus(document.getElementById("provider-status"),String(e&&e.message||e),"error");}});
 relSubmit.addEventListener("click",async function(){try{if(!projection)throw new Error("Load an admitted KV set first");if(relA.value===relB.value)throw new Error("Choose two different KV instances");var result=await ui.requestRelationship(manager,bridge,projection,[relA.value,relB.value],document.getElementById("rel-tier").value);setStatus(document.getElementById("rel-status"),"Request "+result.request_id+" is "+result.governance_state+". data_moved=false; replication_started=false; ai_corpus_exposed=false.","ok");}catch(e){setStatus(document.getElementById("rel-status"),String(e&&e.message||e),"error");}});
-load();
+load().catch(function(){});
 }());
 </script>
 </body>

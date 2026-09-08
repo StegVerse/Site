@@ -1,0 +1,62 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-KV-N-UI-BINDING-20260908",
+      "session_worker_id": "chatgpt:site-kv-n-ui-binding-20260908",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "originating_goal": "Expose the merged bounded MyKV #1/#2/#n resident transport through a user-visible Site surface without fabricating provider or relationship state, and document the Site boundary before authentic set-projection admission/provider authorization.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "kv-n-my-kv-ui-binding",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-kv-n-ui-binding",
+      "dependency_surface_keys": [
+        "site:my-kv-multi-instance-ui",
+        "site:my-kv-provider-request-ui",
+        "site:my-kv-relationship-request-ui",
+        "site:my-kv-readme-boundary"
+      ],
+      "claimed_paths": [
+        "my-kv.html",
+        "assets/my-kv-instance-ui.js",
+        "tests/my-kv-instance-ui.test.cjs",
+        "README.md",
+        ".github/workflows/my-kv-instance-manager.yml",
+        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-kv-n-ui-binding-20260908.json",
+        "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json"
+      ],
+      "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+      "handoff_revision": "1c5396d186b2a8674f265733d91c542d472d20fd",
+      "claim_created_at": "2026-09-08T17:31:00-05:00",
+      "claim_expires_when": "Release after the MyKV UI loads the merged manager/transport, renders only authentic admitted KV-set state, emits request-only provider/relationship actions, updates README, passes Site-wide validation, and merges. Authentic set-projection admission/provider authorization remains a successor slice.",
+      "expected_evidence": [
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "My KV Multi-Instance Provider Manager PASS",
+        "MyKV UI fails closed when admitted KV-set projection is unavailable",
+        "provider and relationship UI actions remain PENDING_INTERLOCK_INTR",
+        "README documents Site authority boundary"
+      ],
+      "collision_boundaries": [
+        "Own only the user-visible Site MyKV multi-instance rendering and request-control slice",
+        "Do not synthesize KV #2, provider state, provider sessions, relationship state, credentials, data movement, replication, or AI corpus state",
+        "Do not add direct provider APIs or credentials to Site",
+        "Do not weaken the merged DEVICE_KV resident transport validation",
+        "Do not claim runtime provider authorization from UI rendering or request acknowledgement",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Admit an authentic canonical `_System/my-kv-set-projection.json` through the governed continuity-vault-kit to DEVICE_KV path, then request real owner-controlled provider authorization for KV #2.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_UI_BINDING",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

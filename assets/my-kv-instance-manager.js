@@ -20,10 +20,14 @@
     if(Array.isArray(value)){value.forEach(function(v,i){rejectSensitive(v,path+"["+i+"]");});return;}
     if(!value||typeof value!=="object") return;
     Object.keys(value).forEach(function(key){
-      var lower=String(key).toLowerCase();
+      var lower=String(key).toLowerCase(),child=value[key];
+      if(lower==="credential_material_included"||lower==="credential_material_present"){
+        requireValue(child===false,"credential-material sentinel must remain false at "+path+"."+key);
+        return;
+      }
       var forbidden=["password","secret","token","private_key","access_token","refresh_token","credential_material","skap_credential_ref","interlock_receipt_ref","intr_receipt_ref"];
       if(forbidden.some(function(part){return lower===part||lower.indexOf(part)>=0;})) throw new Error("FAIL_CLOSED: sensitive MyKV projection field prohibited at "+path+"."+key);
-      rejectSensitive(value[key],path+"."+key);
+      rejectSensitive(child,path+"."+key);
     });
   }
   function validateInstance(instance,setId){

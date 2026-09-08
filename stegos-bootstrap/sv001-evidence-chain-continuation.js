@@ -5,6 +5,7 @@
   var G23_SHA = "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35";
   var G23_TRANSITION = "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED";
   var CUSTODY_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1";
+  var CONTINUATION_SCHEMA = "stegverse.sv001-evidence-chain-current-device-continuation/v1";
   var DISPOSITION_SCHEMA = "stegverse.sv002-adversarial-observation-disposition/v1";
   var FIXTURE_SCHEMA = "stegverse.sv002-adversarial-observation-fixtures/v1";
   var FIXTURE_SOURCE_BLOB = "fba8beea98838bc16b4b2502c5a2ac363c72add3";
@@ -31,21 +32,13 @@
     var recon = inputs.reconstruction_state;
     var authorized = Object.prototype.hasOwnProperty.call(inputs, "authorized_execution") ? inputs.authorized_execution : "NOT_ESTABLISHED";
     var disposition;
-    if (inputs.receipt_forged || inputs.receipt_replayed || custody === "SUBSTITUTED" || recon === "MISMATCH") {
-      disposition = "FAIL_CLOSED";
-    } else if (custody !== "PASS" || recon !== "PASS" || inputs.principal_local_only) {
-      disposition = "NOT_ESTABLISHED";
-    } else if (inputs.history_fork) {
-      disposition = "CONTRADICTED";
-    } else if (authorized === false) {
-      disposition = "CONTRADICTED";
-    } else if (authorized === "NOT_ESTABLISHED") {
-      disposition = "NOT_ESTABLISHED";
-    } else if (inputs.observation_valid !== true) {
-      disposition = "NOT_OBSERVED";
-    } else {
-      disposition = "OBSERVED";
-    }
+    if (inputs.receipt_forged || inputs.receipt_replayed || custody === "SUBSTITUTED" || recon === "MISMATCH") disposition = "FAIL_CLOSED";
+    else if (custody !== "PASS" || recon !== "PASS" || inputs.principal_local_only) disposition = "NOT_ESTABLISHED";
+    else if (inputs.history_fork) disposition = "CONTRADICTED";
+    else if (authorized === false) disposition = "CONTRADICTED";
+    else if (authorized === "NOT_ESTABLISHED") disposition = "NOT_ESTABLISHED";
+    else if (inputs.observation_valid !== true) disposition = "NOT_OBSERVED";
+    else disposition = "OBSERVED";
     return {
       schema: DISPOSITION_SCHEMA,
       operative_experiment_condition: OPERATIVE_CONDITION,
@@ -64,39 +57,22 @@
   }
 
   function validateCycle(cycle) {
-    if (!cycle || cycle.state !== "COMPLETED" || cycle.transition_id !== G23_TRANSITION || cycle.receipt_hash !== G23_SHA) {
-      fail("exact canonical terminal G23 cycle receipt required");
-    }
-    if (cycle.authorized_execution_source !== "EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE") {
-      fail("canonical G23 authorized execution source mismatch");
-    }
-    if (cycle.master_records_custody !== "PENDING" || cycle.sv002_adversarial_observation !== "PENDING") {
-      fail("canonical G23 downstream pending state mismatch");
-    }
+    if (!cycle || cycle.state !== "COMPLETED" || cycle.transition_id !== G23_TRANSITION || cycle.receipt_hash !== G23_SHA) fail("exact canonical terminal G23 cycle receipt required");
+    if (cycle.authorized_execution_source !== "EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE") fail("canonical G23 authorized execution source mismatch");
+    if (cycle.master_records_custody !== "PENDING" || cycle.sv002_adversarial_observation !== "PENDING") fail("canonical G23 downstream pending state mismatch");
     return cycle;
   }
 
   function validateCustody(proof) {
     var required = {
-      schema: CUSTODY_SCHEMA,
-      state: "PASS",
-      execution_surface: "CURRENT_USER_IPHONE",
-      source_receipt_sha256: G23_SHA,
-      intr_governance_admission_observed: true,
-      reconstruction_state: "PASS",
-      canonical_owner: "master-records/orchestration",
-      site_custody_authority: false,
-      site_execution_authority: false,
-      heartbeat_granted_authority: false,
-      human_approval_checkpoint_inserted: false,
-      prior_receipt_authorizes_transition: false,
-      historical_state_retroactively_authorized: false
+      schema: CUSTODY_SCHEMA,state:"PASS",execution_surface:"CURRENT_USER_IPHONE",source_receipt_sha256:G23_SHA,
+      intr_governance_admission_observed:true,reconstruction_state:"PASS",canonical_owner:"master-records/orchestration",
+      site_custody_authority:false,site_execution_authority:false,heartbeat_granted_authority:false,
+      human_approval_checkpoint_inserted:false,prior_receipt_authorizes_transition:false,historical_state_retroactively_authorized:false
     };
-    Object.keys(required).forEach(function (key) {
-      if (proof && proof[key] !== required[key]) { fail("governed custody proof field mismatch: " + key); }
-    });
+    Object.keys(required).forEach(function (key) { if (proof && proof[key] !== required[key]) fail("governed custody proof field mismatch: " + key); });
     ["intr_admission_receipt_sha256","intr_admission_journal_entry_sha256","custody_hash","reconstruction_hash","custody_journal_entry_sha256","reconstruction_journal_entry_sha256","final_replay_tail_sha256"].forEach(function (key) {
-      if (!proof || !proof[key]) { fail("governed custody proof field missing: " + key); }
+      if (!proof || !proof[key]) fail("governed custody proof field missing: " + key);
     });
     return proof;
   }
@@ -108,87 +84,83 @@
     });
   }
 
-  function execute(body) {
-    if (typeof appendReceipt !== "function" || typeof replayJournal !== "function" || typeof sha256Uri !== "function") {
-      fail("existing Site receipt journal API unavailable");
-    }
-    var cycle = validateCycle(body && body.cycle_receipt);
-    var custody = validateCustody(body && body.custody_proof);
-    var cases = fixtureResults();
-    if (cases.length !== 12 || !cases.every(function (row) { return row.pass; })) {
-      fail("canonical frozen SV002 adversarial fixture suite mismatch");
-    }
-    var baseline = evaluate({
-      master_records_custody: "PASS",
-      reconstruction_state: "PASS",
-      observation_valid: true,
-      output_correct: cycle.state === "COMPLETED",
-      authorized_execution: true
+  function existingContinuation() {
+    if (typeof openDb !== "function" || typeof getReceipts !== "function") return Promise.resolve(null);
+    return openDb().then(function (db) {
+      return getReceipts(db).then(function (entries) {
+        db.close();
+        for (var i = entries.length - 1; i >= 0; i -= 1) {
+          var receipt = entries[i] && entries[i].receipt;
+          if (receipt && receipt.schema === CONTINUATION_SCHEMA && receipt.state === "PASS" && receipt.source_receipt_sha256 === G23_SHA) return entries[i];
+        }
+        return null;
+      }).catch(function (error) { db.close(); throw error; });
     });
-    if (baseline.disposition !== "OBSERVED") { fail("authentic SV002 baseline disposition is not OBSERVED"); }
+  }
 
-    return sha256Uri(baseline).then(function (hash) {
-      baseline.disposition_hash = hash;
-      var receipt = {
-        schema: "stegverse.sv001-evidence-chain-current-device-continuation/v1",
+  function proofFromExisting(entry) {
+    return replayJournal().then(function (replay) {
+      if (!replay || replay.state !== "PASS") fail("existing post-custody continuation journal replay failed");
+      return {
+        schema: "stegverse.sv001-evidence-chain-current-device-proof/v1",
         state: "PASS",
+        already_completed: true,
         execution_surface: "CURRENT_USER_IPHONE",
         source_receipt_sha256: G23_SHA,
-        intr_governance_admission_observed: true,
-        intr_admission_receipt_sha256: custody.intr_admission_receipt_sha256,
-        master_records_custody_hash: custody.custody_hash,
-        master_records_reconstruction_hash: custody.reconstruction_hash,
-        master_records_reconstruction_state: "PASS",
-        source_custody_replay_tail_sha256: custody.final_replay_tail_sha256,
-        sv002_baseline_disposition: baseline,
-        adversarial_fixture_schema: FIXTURE_SCHEMA,
-        adversarial_fixture_source_blob: FIXTURE_SOURCE_BLOB,
-        adversarial_fixture_results: cases,
-        adversarial_fixture_suite_pass: true,
-        target_property: "ADVERSARIALLY_CREDIBLE_OBSERVATION",
-        target_property_established: true,
-        frozen_experiment_condition: OPERATIVE_CONDITION,
-        frozen_findings_modified: false,
-        same_execution_downstream_chain_required: true,
+        custody_replay_tail_sha256: entry.receipt.source_custody_replay_tail_sha256,
+        sv002_disposition_journal_entry_sha256: entry.entry_sha256,
+        final_replay_tail_sha256: replay.tail_sha256,
+        same_execution_downstream_chain: true,
+        sv002_disposition: entry.receipt.sv002_baseline_disposition,
+        adversarial_fixture_suite_pass: entry.receipt.adversarial_fixture_suite_pass === true,
+        target_property_established: entry.receipt.target_property_established === true,
         sv001_rerun_performed: false,
         prior_receipt_authorizes_next_transition: false,
-        historical_state_retroactively_authorized: false,
         heartbeat_granted_authority: false,
-        master_records_authority: "master-records/orchestration",
-        site_custody_authority: false,
-        site_execution_authority: false,
-        sv002_authority_effect: "NONE_OBSERVATION_AND_DISPOSITION_ONLY",
-        credential_authority: "TV/TVC",
-        github_token_runtime_authority: "NONE",
-        second_user_operated_machine_required: false,
-        authority_effect: "NONE_OBSERVATION_AND_DISPOSITION_ONLY",
-        completed_at: new Date().toISOString()
+        authority_effect: "NONE_OBSERVATION_AND_DISPOSITION_ONLY"
       };
-      return appendReceipt(receipt).then(function (entry) {
-        if (entry.previous_entry_sha256 !== custody.final_replay_tail_sha256) {
-          fail("post-custody disposition is not directly chained to governed custody replay tail");
-        }
-        return replayJournal().then(function (replay) {
-          if (!replay || replay.state !== "PASS" || replay.tail_sha256 !== entry.entry_sha256) {
-            fail("post-custody SV002 journal replay did not bind the disposition entry");
-          }
-          return {
-            schema: "stegverse.sv001-evidence-chain-current-device-proof/v1",
-            state: "PASS",
-            execution_surface: "CURRENT_USER_IPHONE",
-            source_receipt_sha256: G23_SHA,
-            custody_replay_tail_sha256: custody.final_replay_tail_sha256,
-            sv002_disposition_journal_entry_sha256: entry.entry_sha256,
-            final_replay_tail_sha256: replay.tail_sha256,
-            same_execution_downstream_chain: true,
-            sv002_disposition: baseline,
-            adversarial_fixture_suite_pass: true,
-            target_property_established: true,
-            sv001_rerun_performed: false,
-            prior_receipt_authorizes_next_transition: false,
-            heartbeat_granted_authority: false,
-            authority_effect: "NONE_OBSERVATION_AND_DISPOSITION_ONLY"
-          };
+    });
+  }
+
+  function execute(body) {
+    if (typeof appendReceipt !== "function" || typeof replayJournal !== "function" || typeof sha256Uri !== "function") fail("existing Site receipt journal API unavailable");
+    var cycle = validateCycle(body && body.cycle_receipt);
+    var custody = validateCustody(body && body.custody_proof);
+    return existingContinuation().then(function (existing) {
+      if (existing) return proofFromExisting(existing);
+      var cases = fixtureResults();
+      if (cases.length !== 12 || !cases.every(function (row) { return row.pass; })) fail("canonical frozen SV002 adversarial fixture suite mismatch");
+      var baseline = evaluate({master_records_custody:"PASS",reconstruction_state:"PASS",observation_valid:true,output_correct:cycle.state === "COMPLETED",authorized_execution:true});
+      if (baseline.disposition !== "OBSERVED") fail("authentic SV002 baseline disposition is not OBSERVED");
+      return sha256Uri(baseline).then(function (hash) {
+        baseline.disposition_hash = hash;
+        var receipt = {
+          schema: CONTINUATION_SCHEMA,state:"PASS",execution_surface:"CURRENT_USER_IPHONE",source_receipt_sha256:G23_SHA,
+          intr_governance_admission_observed:true,intr_admission_receipt_sha256:custody.intr_admission_receipt_sha256,
+          master_records_custody_hash:custody.custody_hash,master_records_reconstruction_hash:custody.reconstruction_hash,
+          master_records_reconstruction_state:"PASS",source_custody_replay_tail_sha256:custody.final_replay_tail_sha256,
+          sv002_baseline_disposition:baseline,adversarial_fixture_schema:FIXTURE_SCHEMA,adversarial_fixture_source_blob:FIXTURE_SOURCE_BLOB,
+          adversarial_fixture_results:cases,adversarial_fixture_suite_pass:true,target_property:"ADVERSARIALLY_CREDIBLE_OBSERVATION",
+          target_property_established:true,frozen_experiment_condition:OPERATIVE_CONDITION,frozen_findings_modified:false,
+          same_execution_downstream_chain_required:true,sv001_rerun_performed:false,prior_receipt_authorizes_next_transition:false,
+          historical_state_retroactively_authorized:false,heartbeat_granted_authority:false,master_records_authority:"master-records/orchestration",
+          site_custody_authority:false,site_execution_authority:false,sv002_authority_effect:"NONE_OBSERVATION_AND_DISPOSITION_ONLY",
+          credential_authority:"TV/TVC",github_token_runtime_authority:"NONE",second_user_operated_machine_required:false,
+          authority_effect:"NONE_OBSERVATION_AND_DISPOSITION_ONLY",completed_at:new Date().toISOString()
+        };
+        return appendReceipt(receipt).then(function (entry) {
+          if (entry.previous_entry_sha256 !== custody.final_replay_tail_sha256) fail("post-custody disposition is not directly chained to governed custody replay tail");
+          return replayJournal().then(function (replay) {
+            if (!replay || replay.state !== "PASS" || replay.tail_sha256 !== entry.entry_sha256) fail("post-custody SV002 journal replay did not bind the disposition entry");
+            return {
+              schema:"stegverse.sv001-evidence-chain-current-device-proof/v1",state:"PASS",already_completed:false,
+              execution_surface:"CURRENT_USER_IPHONE",source_receipt_sha256:G23_SHA,custody_replay_tail_sha256:custody.final_replay_tail_sha256,
+              sv002_disposition_journal_entry_sha256:entry.entry_sha256,final_replay_tail_sha256:replay.tail_sha256,
+              same_execution_downstream_chain:true,sv002_disposition:baseline,adversarial_fixture_suite_pass:true,target_property_established:true,
+              sv001_rerun_performed:false,prior_receipt_authorizes_next_transition:false,heartbeat_granted_authority:false,
+              authority_effect:"NONE_OBSERVATION_AND_DISPOSITION_ONLY"
+            };
+          });
         });
       });
     });
@@ -200,20 +172,9 @@
 
   self.addEventListener("fetch", function (event) {
     var url = new URL(event.request.url);
-    if (url.origin !== self.location.origin || url.pathname !== PATH || event.request.method !== "POST") { return; }
-    event.respondWith(event.request.json().then(execute).then(function (proof) {
-      return response(200, proof);
-    }).catch(function (error) {
-      return response(400, {
-        schema: "stegverse.sv001-evidence-chain-current-device-proof/v1",
-        state: "FAIL_CLOSED",
-        reason: String(error && error.message ? error.message : error),
-        sv001_rerun_performed: false,
-        prior_receipt_authorizes_next_transition: false,
-        historical_state_retroactively_authorized: false,
-        heartbeat_granted_authority: false,
-        authority_effect: "NONE_FAIL_CLOSED"
-      });
+    if (url.origin !== self.location.origin || url.pathname !== PATH || event.request.method !== "POST") return;
+    event.respondWith(event.request.json().then(execute).then(function (proof) { return response(200, proof); }).catch(function (error) {
+      return response(400, {schema:"stegverse.sv001-evidence-chain-current-device-proof/v1",state:"FAIL_CLOSED",reason:String(error && error.message ? error.message : error),sv001_rerun_performed:false,prior_receipt_authorizes_next_transition:false,historical_state_retroactively_authorized:false,heartbeat_granted_authority:false,authority_effect:"NONE_FAIL_CLOSED"});
     }));
   });
 }());

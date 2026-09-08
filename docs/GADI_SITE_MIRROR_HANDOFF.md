@@ -9,24 +9,18 @@ Canonical task record: `StegVerse-Labs/.github/data/canonical-task-records/GADI-
 COSV ID: `10100000100000`
 Branch: `gadi-001-site-external-ai-boundary-ingress`
 Base observed: `5977b53c8ac43099b4d2cecf27cdc4c78e4c4882`
-STATUS: `NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_IMPLEMENTATION_ACTIVE / AUTHENTIC_ACTIVATION_PENDING`
+STATUS: `NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / VALIDATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
 ARCHIVE_READY: `false`
 
 ## Continuity rule
 
-This document is a repository-local projection of the already-established GADI-001 workstream. It does not create or replace the Goal, Task, COSV vector, canonical parent handoff, task record, or STATUS.
-
-Before each continuation, resolve the canonical Goal ID, Task ID, COSV ID, parent handoff, task record, canonical STATUS, current Site main/head/collision state, and existing HIL/receiver/readiness authority surfaces. Absence of a local file must never be interpreted as absence of the parent workstream.
-
-The task is not archive-ready until the canonical GADI task is explicitly `RETIRED`.
+This document is a repository-local projection of the already-established GADI-001 workstream. It does not create or replace the Goal, Task, COSV vector, canonical parent handoff, task record, or STATUS. Before each continuation resolve those canonical identifiers/statuses plus current Site main/head/collision state and existing HIL/receiver/readiness authority surfaces. Absence of a local file never means absence of the parent workstream. The task is not archive-ready until canonical GADI status is explicitly `RETIRED`.
 
 ## Parent state entering this Site slice
 
-Merged GADI source layers include StegCore threat reasoning, StegOS GADI contracts/capability discovery/native organizational boundary defense, TV/TVC controlled capability authority/custody sources, micro-node-runtime controlled reassessment, and Continuity controlled confrontation reconstruction.
+StegOS native boundary-defense PR `StegVerse-Labs/StegOS#227` merged as `d0a9703725c6169f23ab55d4bce8a0b035a3a450` after exact-head focused validation, capability-discovery validation, and StegOS CI passed.
 
-StegOS native boundary-defense PR `StegVerse-Labs/StegOS#227` merged as `d0a9703725c6169f23ab55d4bce8a0b035a3a450` after exact-head GADI and StegOS CI validation passed.
-
-That merged source establishes the boundary invariant:
+Merged StegOS boundary invariant:
 
 ```text
 external AI interaction
@@ -43,56 +37,69 @@ Source validation does not prove production network placement or authentic exter
 
 ## Site responsibility
 
-Site must provide a bounded HIL/external-AI ingress/readiness projection that binds to the merged StegOS boundary contract without creating a second evaluator, resident runtime, credential authority, threat-state engine, WorkerCoordinator, InTr authority, receipt authority, or network-placement claim.
+Site provides a bounded HIL/external-AI ingress/readiness projection bound to the merged StegOS boundary contract. It must not create a second evaluator, resident runtime, credential authority, threat-state engine, WorkerCoordinator, InTr authority, receipt authority, or network-placement claim.
 
-The Site layer may:
-- accept or project boundary-observation-shaped evidence at an explicitly bounded ingress surface;
-- validate canonical GADI task/COSV/schema/authority metadata;
-- expose readiness/status indicating whether required downstream authority surfaces are declared;
-- preserve fail-closed non-claims when authentic runtime/network placement has not been observed;
-- hand accepted evidence toward the existing canonical GADI/InTr path.
+Existing Site HIL surfaces remain authoritative for their existing scope:
 
-The Site layer may not:
-- convert a web request into defensive execution authority;
-- claim StegOS is actually on the organization network path from source presence alone;
-- claim an external AI was observed without authentic ingress evidence;
-- mint TV/TVC capability authority;
-- fabricate InTr admission, resident action, effect, Continuity reconstruction, or Master Records reconciliation.
+```text
+GET /api/hil/readiness
+GET /api/hil/probes
+```
 
-## Existing HIL collision boundary
+GADI does not replace those surfaces and does not promote HIL readiness into GADI activation.
 
-Site already contains HIL receiver/readiness/probe/public surfaces. This GADI slice must reuse or bind to those existing surfaces where appropriate and must not create a competing HIL receiver or readiness authority.
+## Implemented source
 
-Known public HIL surfaces include:
-- `/api/hil/probes/`
-- `/api/hil/readiness/`
-- `/humans-as-interoperability-layer.html`
+Added:
 
-Existing HIL state and authority remain independently governed; GADI integration must not silently promote an HIL readiness observation into GADI activation.
+- `data/gadi-site-boundary-ingress-contract.json`
+- `scripts/check_gadi_site_boundary_ingress.py`
+- `.github/workflows/gadi-site-boundary-ingress-validation.yml`
 
-## Planned bounded implementation
+The machine-readable contract binds Site to:
 
-1. inspect the current HIL readiness/receiver implementation and identify the smallest compatible GADI boundary-ingress seam;
-2. add a machine-readable GADI Site ingress contract bound to `GADI-001`, COSV `10100000100000`, and merged StegOS boundary semantics;
-3. implement fail-closed validation/readiness projection with explicit runtime non-claims;
-4. add focused tests/workflow validation;
-5. update Site documentation/README only where behavior/surface visibility requires it;
-6. merge only on exact-head green validation;
-7. reconcile result into canonical `.github` GADI state.
+- Goal/Task `GADI-001`;
+- COSV `10100000100000`;
+- merged StegOS boundary source PR #227 / merge `d0a9703725c6169f23ab55d4bce8a0b035a3a450`;
+- the existing Site HIL readiness/probe paths;
+- the external-AI observation fields needed by the StegOS boundary model;
+- semantic-integrity states `PASS | DRIFT | MATERIAL_DRIFT | UNOBSERVABLE`;
+- defensive disposition vocabulary `OBSERVE | CHALLENGE | CONSTRAIN | QUARANTINE | INTERCEPT | CONTAIN`;
+- the ordered boundary path requiring StegOS/GADI assessment before protected governed environment entry;
+- canonical downstream InTr admission for consequential defensive effects;
+- TV/TVC capability authority;
+- explicit source/runtime non-claims.
+
+The validator fails if Site attempts to widen itself into a parallel receiver/evaluator/InTr authority/credential authority/runtime, if task/COSV/StegOS merge identity drifts, if the existing HIL readiness/probe surfaces disappear, if boundary ordering drifts, or if source presence is promoted into network placement, external-AI ingress, safety guarantee, or GADI activation proof.
+
+This slice intentionally does not modify `src/worker.js`; it binds the GADI contract to the existing HIL receiver surfaces without silently creating a new production route. A live GADI-specific ingress route should be added only when its downstream canonical InTr transport/receiver binding and runtime evidence semantics are concretely resolved.
+
+## Product/service boundary
+
+The Site contract preserves the organizational strategy that StegOS can provide an organization-controlled governed AI layer in the ingress path through which external AI interactions enter a protected governed environment when that network placement is actually deployed. It explicitly records `absolute_safety_guarantee=false` and does not claim deployment from source.
 
 ## Current proof boundary
 
 ```text
 SITE_GADI_LOCAL_HANDOFF: ESTABLISHED
 STEGOS_NATIVE_BOUNDARY_SOURCE: VALIDATED_AND_MERGED
-SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE: NOT_YET_IMPLEMENTED
-SITE_GADI_READINESS_BINDING: NOT_YET_IMPLEMENTED
+SITE_EXTERNAL_AI_BOUNDARY_INGRESS_CONTRACT: SOURCE_IMPLEMENTED
+SITE_EXISTING_HIL_READINESS_BINDING: SOURCE_BOUND
+SITE_GADI_VALIDATION: PENDING
 AUTHENTIC_NETWORK_PLACEMENT: NOT_OBSERVED
 AUTHENTIC_EXTERNAL_AI_INGRESS: NOT_OBSERVED
 AUTHENTIC_INTR_ADMISSION: NOT_OBSERVED
 AUTHENTIC_DEFENSIVE_EFFECT: NOT_OBSERVED
 GADI_ACTIVATION_PROOF_COMPLETE: FALSE
 ```
+
+## Next bounded work
+
+1. validate this exact Site source head and existing Site regression surfaces;
+2. merge only on exact-head green evidence;
+3. reconcile the Site source result into canonical `.github` GADI state;
+4. resolve the canonical transport seam for authentic external-AI boundary observations before adding a live Site ingress route;
+5. pursue network-placement and authentic ingress evidence separately from source validation.
 
 ## Required status
 
@@ -101,6 +108,6 @@ GOAL TASK ID: GADI-001
 TASK ID: GADI-001
 HANDOFF TASK ID: docs/GADI_SITE_MIRROR_HANDOFF.md
 COSV ID: 10100000100000
-STATUS: NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_IMPLEMENTATION_ACTIVE / AUTHENTIC_ACTIVATION_PENDING
+STATUS: NOT_RETIRED / SITE_EXTERNAL_AI_BOUNDARY_INGRESS_SOURCE_IMPLEMENTED / VALIDATION_PENDING / AUTHENTIC_ACTIVATION_PENDING
 MANUAL WORK: None
 ```

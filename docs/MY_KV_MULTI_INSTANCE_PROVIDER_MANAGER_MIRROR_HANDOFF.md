@@ -78,7 +78,7 @@ This slice does not broaden or replace `assets/my-kv-directory.js`, `window.Steg
 
 ## README impact preflight determination
 
-No public page behavior changes yet because the new bridge is not loaded by MyKV UI. README mutation becomes required in the same change set that exposes the MyKV #n manager/receiver in user-visible Site behavior.
+No existing public My KV page loads `assets/my-kv-instance-manager.js` or `assets/my-kv-instance-device-kv-bridge.js` in this receiver-only slice. The dedicated receiver has no fetch handler and no page scope behavior; it runs only when explicitly registered and messaged by the bridge. Therefore this slice does not yet change ordinary public Site behavior. Repository README mutation is deferred to, and required in, the same change set that loads the MyKV #n manager/bridge from a user-visible Site page.
 
 ## Completion predicates reached
 
@@ -95,12 +95,12 @@ No public page behavior changes yet because the new bridge is not loaded by MyKV
 
 ## Next machine work
 
-- wire MyKV UI to load `assets/my-kv-instance-manager.js` and `assets/my-kv-instance-device-kv-bridge.js`;
+- validate PR #1109 and repair any CI failures;
+- wire a user-visible MyKV page to load `assets/my-kv-instance-manager.js` and `assets/my-kv-instance-device-kv-bridge.js`;
 - render KV #1/#2/#n status from authentic `MY_KV_INSTANCE_SET_PROJECTION` only;
 - expose provider-operation and relationship-transition request controls without direct mutation authority;
-- update README in that user-visible behavior change;
-- validate and merge Site PR #1109;
-- then establish an authentic admitted `_System/my-kv-set-projection.json` from the canonical continuity-vault-kit projection path;
+- update README in that same user-visible behavior change;
+- establish an authentic admitted `_System/my-kv-set-projection.json` from the canonical continuity-vault-kit projection path;
 - only after that, invoke user-controlled provider authorization to materialize real KV #2 and verify an end-to-end provider request/receipt.
 
 ## Manual work

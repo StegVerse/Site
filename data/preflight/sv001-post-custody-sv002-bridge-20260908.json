@@ -63,7 +63,16 @@
     "impact": "MATERIAL",
     "reason": "The change extends current-device runtime semantics after governed custody by automatically producing and retaining the bounded SV002 observation/disposition. This changes runtime behavior, evidence semantics, and capability meaning.",
     "required_in_same_change_set": true,
-    "satisfied_before_functional_merge": false
+    "satisfied_before_functional_merge": true,
+    "readme_ref": "README.md",
+    "documented_semantics": [
+      "v15 exact-v13 plus bounded post-custody extension",
+      "fresh root-InTr governance remains required before custody",
+      "same local journal retains bounded SV002 disposition after custody PASS",
+      "no filesystem export or second user-operated machine",
+      "SV002 continuation failure preserves authentic custody PASS",
+      "no authority inferred or reused and no new runtime plane"
+    ]
   },
   "human_action_required": false,
   "second_user_operated_machine_required": false,

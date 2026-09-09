@@ -1,0 +1,120 @@
+{
+  "schema": "stegverse.site-machine-preflight/v1",
+  "goal": "Implement one authentic bounded Hugging Face living-analysis collection attempt per minute (60/hour) without duplicating the existing sovereign observer or canonical scheduler/runtime.",
+  "evaluated_at": "2026-09-06T01:43:00-05:00",
+  "state": "BLOCKED_COLLISION_MACHINE_PREFLIGHT_VALIDATED",
+  "canonical_handoffs_resolved": [
+    "docs/SITE_MIRROR_HANDOFF.md",
+    "docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+    "master-records/orchestration/MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md"
+  ],
+  "canonical_task_registry_resolved": "StegVerse-Labs/.github/data/canonical-task-registry.json",
+  "master_records_resolved": "master-records/orchestration/MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+  "cross_task_coordination_resolved": "StegVerse-Labs/.github/control/cross-task-coordination.json + control/cross-task-coordination.d/*.json",
+  "site_orchestration_state": {
+    "source": "data/site-orchestration-state.json",
+    "state": "OBSERVED_BLOCKED",
+    "external_session_ownership_allowed": false,
+    "admitted_external_tasks": 0
+  },
+  "site_heartbeat_state": {
+    "source": "data/ecosystem-heartbeat-state.json",
+    "work_state": "BLOCKED",
+    "system_health": "HEALTHY_BLOCKED",
+    "heartbeat_mode": "TRANSITION_DRIVEN",
+    "github_runtime_authority": "NONE"
+  },
+  "machine_preflight": {
+    "claim_only_pr": 1087,
+    "head_sha": "fc63ed861b01e597e2d37e91c56e954debee4d87",
+    "site_handoff_orchestrator_run": 34017278172,
+    "site_handoff_orchestrator_result": "PASS",
+    "ecosystem_heartbeat_orchestration_run": 34017278171,
+    "ecosystem_heartbeat_orchestration_result": "PASS",
+    "site_bootstrap_run": 34017278191,
+    "site_bootstrap_result": "PASS",
+    "machine_validation_effect": "VALIDATES_CLAIM_ONLY_PREFLIGHT; DOES_NOT_OVERRIDE_EXPLICIT_PATH_COLLISION_OR_GRANT_RUNTIME_AUTHORITY"
+  },
+  "existing_implementation_reused": [
+    "StegVerse-Labs/.github/workers/sv_dn1_resident_observer_worker.py",
+    "StegVerse-Labs/.github/control/worker-registry.d/sv-dn1-resident-observer-001.json",
+    "StegVerse-Labs/.github/control/worker-registry.d/sv-dn1-source-materialization-001.json",
+    "StegVerse-Labs/.github/heartbeat_runtime/worker_runtime.py WorkerCoordinator",
+    "StegVerse-Labs/.github/scripts/dispatch_resident_execution_requests.py",
+    "data/nvidia-hugging-face-living-analysis.json v2 pre-acquisition B0/two-axis contract",
+    "scripts/validate_nvidia_hugging_face_living_analysis.py",
+    "hugging-face-analysis.html public living-analysis projection"
+  ],
+  "runtime_reuse_boundary": {
+    "single_scheduler_required": true,
+    "second_scheduler_allowed": false,
+    "second_worker_runtime_allowed": false,
+    "sv_dn1_observer_task_state": "HANDOFF_READY",
+    "sv_dn1_observer_claim_id": null,
+    "sv_dn1_observer_executor_binding": "AUTHORIZED",
+    "sv_dn1_source_materialization_state": "HANDOFF_READY",
+    "new_observer_authorized": false,
+    "new_scheduler_authorized": false
+  },
+  "current_analysis_defect": {
+    "canonical_resolution": "DAILY_CHECKPOINT_WHEN_AUTHENTIC_OBSERVATION_EXISTS",
+    "required_resolution": "ONE_BOUNDED_COLLECTION_ATTEMPT_PER_MINUTE_60_PER_HOUR",
+    "historical_backfill_allowed": false,
+    "b0_rewrite_allowed": false,
+    "t0_rewrite_allowed": false
+  },
+  "collision_check": {
+    "hf_prior_claim_site_1075": "RELEASED_COMPLETE",
+    "hf_prior_claim_site_1079": "RELEASED_COMPLETE",
+    "hf_overlapping_open_pr_found": false,
+    "shared_completeness_path_collision": true,
+    "shared_path": "README.md",
+    "conflicting_open_pr": 1067,
+    "conflicting_claim": "SITE-SV001-MR-INTR-GOVERNANCE-20260905",
+    "conflicting_pr_mergeable": false,
+    "functional_mutation_admitted": false
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "material_evidence_semantics_change": true,
+    "reason": "Changing the canonical Hugging Face analysis from daily checkpointing to 60 collection attempts per hour changes repository behavior, evidence cadence, history/gap semantics, and the meaning of the public analytical capability.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "disposition": "REQUIRED_BUT_PATH_CURRENTLY_OWNED_BY_OPEN_PR_1067; FUNCTIONAL_MUTATION_MUST_WAIT"
+  },
+  "admitted_mutation_scope": [
+    "data/preflight/hf-60ph-collection-1077-20260906.json",
+    "data/session-work-claims.d/site-hf-60ph-collection-1077-20260906.json"
+  ],
+  "deferred_functional_scope": [
+    "data/nvidia-hugging-face-living-analysis.json",
+    "hugging-face-analysis.html",
+    "scripts/validate_nvidia_hugging_face_living_analysis.py",
+    ".github/workflows/verify-nvidia-hf-publication.yml",
+    "docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+    "README.md"
+  ],
+  "required_release_conditions_for_functional_mutation": [
+    "README.md collision with PR #1067 is released, superseded, or explicitly admitted by canonical orchestration",
+    "no new overlapping Hugging Face claim appears",
+    "existing SV-DN1 observer and canonical WorkerCoordinator remain the reused runtime path"
+  ],
+  "invariants": {
+    "authority_inferred": false,
+    "runtime_evidence_inferred": false,
+    "historical_checkpoints_fabricated": false,
+    "second_scheduler_created": false,
+    "second_worker_runtime_created": false,
+    "second_hf_observer_created": false,
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "master_records_reality_authority_preserved": true,
+    "interlock_intr_ingress_egress_required": true
+  },
+  "runtime_execution_performed": false,
+  "functional_mutation_performed": false,
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}

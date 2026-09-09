@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HF-60PH-COLLECTION-1077-20260906",
+      "session_worker_id": "chatgpt:site-hf-60ph-collection-1077-20260906",
+      "task_id": "SITE-HF-60PH-COLLECTION-1077",
+      "originating_goal": "Change the NVIDIA/Hugging Face living-analysis collection contract to one authentic bounded collection attempt per minute (60/hour), preserving B0 and immutable T0, explicit collection gaps, full retained minute-resolution history, and review-window summaries without fabricating historical transitions.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "preflight/hf-60ph-collection-1077",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-hf-60ph-collection-1077",
+      "dependency_surface_keys": [
+        "site:nvidia-hf-analysis",
+        "site:publications",
+        "stegverse-labs-dotgithub:sv-dn1-resident-observer",
+        "stegverse-labs-dotgithub:canonical-worker-runtime"
+      ],
+      "governing_dependency_keys": [
+        "site:nvidia-hf-analysis",
+        "stegverse-labs-dotgithub:sv-dn1-resident-observer",
+        "stegverse-labs-dotgithub:canonical-worker-runtime"
+      ],
+      "claimed_paths": [
+        "data/nvidia-hugging-face-living-analysis.json",
+        "hugging-face-analysis.html",
+        "scripts/validate_nvidia_hugging_face_living_analysis.py",
+        ".github/workflows/verify-nvidia-hf-publication.yml",
+        "docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+        "README.md",
+        "data/preflight/hf-60ph-collection-1077-20260906.json",
+        "data/session-work-claims.d/site-hf-60ph-collection-1077-20260906.json"
+      ],
+      "handoff": "docs/NVIDIA_HUGGING_FACE_ANALYSIS_MIRROR_HANDOFF.md",
+      "handoff_revision": "NVIDIA_HF_60PH_COLLECTION_1077_PREFLIGHT",
+      "claim_created_at": "2026-09-06T01:43:00-05:00",
+      "claim_expires_when": "Release after canonical machine preflight admission, 60/hour collection contract implementation using the existing scheduler/runtime path, exact-head validation, merge/publication where applicable, authentic runtime collection evidence, claim reconciliation, and downstream release projection.",
+      "next_task_after_release": "Verify pertinent released semantics are projected to GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegGuardian-wiki without duplicating authority.",
+      "expected_evidence": [
+        "canonical Site handoff, Task Registry, Master Records, and cross-task coordination resolved before mutation",
+        "existing SV-DN1 resident observer and canonical WorkerCoordinator runtime reused; no duplicate observer or scheduler",
+        "collection contract encodes exactly one bounded attempt per minute / 60 per hour",
+        "B0 pre-acquisition reference and immutable T0 remain unchanged",
+        "authentic retained observations advance monotonic Tn while missed attempts remain explicit gap records",
+        "full minute-resolution history remains retained even when public review uses 5m/15m/1h/6h/24h summaries",
+        "no source, merge, CI, deployment, or route reachability is accepted as runtime observation evidence",
+        "README completeness predicate is satisfied in the same functional change set",
+        "validators reject fabricated/backfilled checkpoints and cadence/history inconsistencies",
+        "runtime collection evidence is classified separately from merge/deployment/public-route evidence"
+      ],
+      "collision_boundaries": [
+        "Do not alter Node Receipt #1 or shared Node-status resolver semantics",
+        "Do not alter SV-DN1 evidence schemas or create a second Hugging Face source observer",
+        "Do not create a second scheduler, WorkerCoordinator, resident executor, credential path, principal identity, loopback host, or coordination mechanism",
+        "Do not rewrite B0 or immutable T0 and do not fabricate historical T1+ transitions",
+        "Do not treat a missed collection attempt as an authentic Tn observation",
+        "Do not infer runtime evidence from source, merge, CI, release, deployment, route reachability, or workflow success",
+        "Do not mutate README.md while an unreleased overlapping claim owns that path unless the canonical orchestrator explicitly admits shared-path continuation or the prior claim releases"
+      ],
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

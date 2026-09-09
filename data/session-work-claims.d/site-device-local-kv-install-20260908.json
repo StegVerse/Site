@@ -10,54 +10,29 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "device-local-kv-install",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED_AFTER_MERGE",
       "normalized_work_key": "site-device-local-kv-install",
       "dependency_surface_keys": ["site:device-local-kv","site:device-local-kv-install","kv:multi-instance-identity","kv:cloud-peer-expansion"],
-      "claimed_paths": [
-        "assets/device-local-kv-installer.js",
-        "device-kv-install.html",
-        "tests/device-local-kv-installer.test.cjs",
-        ".github/workflows/device-local-kv-install.yml",
-        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-        "data/session-work-claims.d/site-device-local-kv-install-20260908.json",
-        "data/session-work-claims.d/site-kv-n-device-kv-projection-admission-20260908.json"
-      ],
+      "claimed_paths": [],
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-      "handoff_revision": "DEVICE_LOCAL_KV_INSTALL_IN_PROGRESS_20260908",
+      "handoff_revision": "DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED_20260908",
       "claim_created_at": "2026-09-08T19:00:00-05:00",
-      "claim_expires_when": "Release after exact-head hosted validation and merge. Runtime installation remains pending until the owner taps Install resident KV on the current iPhone and exact readback is observed.",
-      "expected_evidence": [
-        "separate stegverse-device-local-kv-v1 database",
-        "registered Node binding",
-        "device-local KV instance record",
-        "device-local installation receipt",
-        "device-local MyKV set projection",
-        "NOT_CONNECTED default",
-        "browser persistence request recorded without overclaim",
-        "exact local row readback",
-        "no cloud provider authority",
-        "no credential material",
-        "no DEVICE_KV transport database reuse",
-        "Device Local KV Install workflow PASS",
-        "Site Bootstrap Validate PASS",
+      "claim_released_at": "2026-09-08T19:24:00-05:00",
+      "release_evidence": [
+        "Site PR #1115 merged at 571821a609a6ec17b1a8b4a307a9de9d84a35028",
+        "Device Local KV Install exact-head validation PASS",
         "Site Handoff Orchestrator PASS",
-        "Ecosystem Heartbeat Orchestration PASS"
+        "Ecosystem Heartbeat Orchestration PASS",
+        "Site Bootstrap Validate PASS",
+        "Pages deployment run 34294750852 SUCCESS"
       ],
-      "collision_boundaries": [
-        "Do not write resident vault records into stegverse-device-local-intr-v1",
-        "Do not silently renumber or rewrite the existing Google Drive KV",
-        "Do not import cloud data during device-local installation",
-        "Do not grant provider, relationship, credential, execution, or activation authority",
-        "Do not require a second user device",
-        "No NON-TV/TVC secret/token",
-        "No GitHub-token runtime authority"
-      ],
-      "next_task_after_release": "Exercise one-tap current-iPhone resident KV installation and exact readback, then add provider-neutral cloud-hosted KV peer creation/adoption flows and governed relationships.",
+      "next_task_after_release": "Cloud-hosted KV peer request implementation while current-iPhone resident installation proof remains runtime pending.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_DEVICE_LOCAL_INSTALL",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "archive_eligible": true
     }
   ]
 }

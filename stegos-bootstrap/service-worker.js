@@ -4,16 +4,19 @@
 // state while forcing one explicit browser-evidence protocol across the activation
 // page and imported HIL receiver. The versioned registration URL is a code-version
 // convergence mechanism only; it does not reset IndexedDB, portable WorkerCoordinator
-// state, claim/fence lineage, or authority semantics.
+// state, claim/fence lineage, or authority semantics. The ESRL v1 successor is a
+// separate post-local-ready evidence route and does not alter the accepted v16 G25 path.
 importScripts("./service-worker-v13-runtime.js");
 importScripts("./hil-portable-state-bridge.js");
+importScripts("./hil-browser-esrl-lease.js");
 importScripts("./hil-portable-native-bridge.js");
 
 CACHE_NAME = "stegos-web-bootstrap-v16";
 
 [
   "./sv001-native-resident-activation.js",
-  "./native-resident-activate.html"
+  "./native-resident-activate.html",
+  "./hil-esrl-activate.html"
 ].forEach(function (asset) {
   if (Array.isArray(SHELL) && SHELL.indexOf(asset) < 0) { SHELL.push(asset); }
 });

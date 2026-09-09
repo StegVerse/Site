@@ -13,7 +13,7 @@ def git_blob_sha(path: Path) -> str:
 def test_exact_hil_browser_receiver_and_page_projection():
     receiver = BOOT / "hil-browser-receiver.js"
     page = BOOT / "hil-activate.html"
-    assert git_blob_sha(receiver) == "35ea230bcb33594125244fe2f9164a98f79983e6"
+    assert git_blob_sha(receiver) == "de0c25bf66f59561ee357d121b47c81415d7e202"
     assert git_blob_sha(page) == "3d8d0db5faa29d89bcf6b149ec402d7cd1a0ed81"
     html = page.read_text(encoding="utf-8")
     assert "/stegos-bootstrap/portable-workercoordinator/hil-browser" in html
@@ -31,6 +31,28 @@ def test_existing_service_worker_and_portable_state_lineage_are_reused():
     assert "portableStateStoreForPackage" in state_bridge
     assert "new Worker" not in state_bridge
     assert "new SharedWorker" not in state_bridge
+
+
+def test_browser_receiver_reuses_retained_checkout_without_second_claim():
+    source = (BOOT / "hil-browser-receiver.js").read_text(encoding="utf-8")
+    assert "function resolveCheckout(pkg)" in source
+    assert "return store.read().then(function (existing)" in source
+    assert "existing.last_checkout_receipt" in source
+    assert "existing.last_task_id !== TASK_ID" in source
+    assert "existing.checkout_tail_sha256 !== retained.receipt_sha256" in source
+    assert "continuation_reused_existing_checkout: true" in source
+    assert "second_claim_minted: false" in source
+    assert 'if (count !== 1) { fail("retained HIL state has invalid checkout count")' in source
+
+
+def test_browser_receiver_verifies_retained_checkout_self_hash_and_lineage():
+    source = (BOOT / "hil-browser-receiver.js").read_text(encoding="utf-8")
+    assert "function verifyCheckoutSelfHash(receipt)" in source
+    assert 'if (key !== "receipt_sha256")' in source
+    assert "receipt.predecessor_registry_git_blob_sha !== pkg.predecessor_registry_git_blob_sha" in source
+    assert "receipt.task_fragment_git_blob_sha !== pkg.source_binding.task_fragment_git_blob_sha" in source
+    assert "receipt.handoff_git_blob_sha !== pkg.source_binding.handoff_git_blob_sha" in source
+    assert "receipt.state_vector_git_blob_sha !== pkg.source_binding.state_vector_git_blob_sha" in source
 
 
 def test_browser_receiver_preserves_authority_and_evidence_boundaries():

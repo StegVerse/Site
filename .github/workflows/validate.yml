@@ -46,18 +46,20 @@ jobs:
           git checkout --detach FETCH_HEAD
           test -z "$(git config --local --get-regexp 'extraheader|credential' || true)"
 
-      - name: Verify preinstalled Python
+      - name: Verify preinstalled Python and repository-local schema validator
         shell: bash
         run: |
           python3 --version
           python3 - <<'PY'
           import sys
+          from scripts.stegverse_jsonschema import Draft202012Validator, FormatChecker
           assert sys.version_info >= (3, 11), sys.version
+          assert Draft202012Validator is not None
+          assert FormatChecker is not None
           print('SITE_BOOTSTRAP_PYTHON=PASS')
+          print('SITE_BOOTSTRAP_SCHEMA_VALIDATOR=REPOSITORY_LOCAL')
+          print('SITE_BOOTSTRAP_PUBLIC_PYPI_REQUIRED=false')
           PY
-
-      - name: Install public validation dependency without credential
-        run: python3 -m pip install jsonschema
 
       - name: Validate HIL pilot ledger, announcement status, and deterministic fixtures
         run: |
@@ -68,7 +70,7 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          from jsonschema import Draft202012Validator, FormatChecker
+          from scripts.stegverse_jsonschema import Draft202012Validator, FormatChecker
           status = json.loads(Path('data/hil-announcement-status.json').read_text(encoding='utf-8'))
           schema = json.loads(Path('data/schemas/hil-announcement-status.schema.json').read_text(encoding='utf-8'))
           errors = sorted(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(status), key=lambda error: list(error.path))
@@ -234,9 +236,14 @@ jobs:
               'schedule' + ':',
               'repository:' + ' StegVerse-org/LLM-adapter',
               'pip install -e ' + "'./adapter-source[service]'",
+              'pip ' + 'install jsonschema',
+              'python3 -m pip ' + 'install jsonschema',
           ]
           assert 'permissions: {}' in workflow
           assert 'Refuse credential-bearing environment' in workflow
+          assert 'SITE_BOOTSTRAP_SCHEMA_VALIDATOR=REPOSITORY_LOCAL' in workflow
+          assert 'SITE_BOOTSTRAP_PUBLIC_PYPI_REQUIRED=false' in workflow
+          assert 'from scripts.stegverse_jsonschema import Draft202012Validator, FormatChecker' in workflow
           assert 'python scripts/check_ecosystem_chat_application.py' in workflow
           assert 'python3 scripts/check_master_records_persistent_service_evidence_import.py' in workflow
           assert 'python3 scripts/check_sv_continuity_109_site_receipt.py receipts/sv-continuity-109-site-verification.json' in workflow

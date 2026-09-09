@@ -81,10 +81,51 @@ def main() -> None:
     if "automatic_third_party_selection: false" not in discovery_source:
         die("automatic third-party selection false marker missing")
 
+    bootstrap = (ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
+    for prohibited in (
+        "pip install jsonschema",
+        "python3 -m pip install jsonschema",
+        "from jsonschema import Draft202012Validator",
+    ):
+        if prohibited in bootstrap:
+            die(f"Site bootstrap still requires public Python package infrastructure: {prohibited}")
+    if "SITE_BOOTSTRAP_SCHEMA_VALIDATOR=REPOSITORY_LOCAL" not in bootstrap:
+        die("Site bootstrap does not assert repository-local schema validation")
+
+    task_runner = (ROOT / ".github/workflows/site-task-runner.yml").read_text(encoding="utf-8")
+    forbidden_runner = (
+        "workflow_" + "run:",
+        "permissions:\n  contents: write",
+        "secrets.",
+        "actions/" + "checkout@",
+        "actions/" + "setup-python@",
+        "actions/" + "upload-artifact@",
+        "pip " + "install",
+        "python -m pip",
+        "git " + "push",
+        "onrender.com",
+        "vercel.app",
+        "netlify.app",
+        "build_external_chat_activation_evidence.py",
+    )
+    for prohibited in forbidden_runner:
+        if prohibited in task_runner:
+            die(f"GitHub-hosted Site task runner still owns orchestration/dependency behavior: {prohibited}")
+    for required in (
+        "permissions: {}",
+        "OPTIONAL_VALIDATION_FALLBACK_ONLY",
+        "PRODUCTION_CONTINUITY_DEPENDENCY=false",
+        "SITE_TASK_RUNNER_MUTATION_AUTHORITY=NONE",
+    ):
+        if required not in task_runner:
+            die(f"GitHub-hosted Site task runner missing fallback-only marker: {required}")
+
     print("NO_REQUIRED_THIRD_PARTY_RUNTIME_PASS")
     print("THIRD_PARTY_ROLE=OPTIONAL_EXPLICIT_FALLBACK_OR_INTEROP_ONLY")
     print("PRODUCTION_CONTINUITY_THIRD_PARTY_DEPENDENCY=false")
     print("ACTIVATION_THIRD_PARTY_DEPENDENCY=false")
+    print("SITE_BOOTSTRAP_PUBLIC_PYPI_REQUIRED=false")
+    print("SITE_GITHUB_ACTIONS_ORCHESTRATION_ROLE=RETIRED")
 
 
 if __name__ == "__main__":

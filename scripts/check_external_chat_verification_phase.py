@@ -48,34 +48,40 @@ def main() -> int:
     if not declares_post_deployment(application):
         return fail("application result must declare POST_DEPLOYMENT live verification")
 
-    required_workflow_markers = [
+    # Public-route observation remains a valid post-deployment phase, but it is no
+    # longer owned by the GitHub-hosted Site Task Runner. Resident StegVerse workers
+    # may perform that observation and retain evidence independently.
+    required_fallback_markers = [
+        "OPTIONAL_VALIDATION_FALLBACK_ONLY",
+        "PRODUCTION_CONTINUITY_DEPENDENCY=false",
+        "SITE_TASK_RUNNER_MUTATION_AUTHORITY=NONE",
+        "permissions: {}",
+        "workflow_dispatch:",
+    ]
+    for marker in required_fallback_markers:
+        if marker not in workflow:
+            return fail(f"validation fallback missing marker: {marker}")
+
+    forbidden_hosted_observation_markers = [
         "Verify External Chat public surfaces",
-        "STEGVERSE_PAGES_DEPLOYMENT_URL: https://stegverse.org/",
-        "STEGVERSE_PAGES_DEPLOYMENT_RESULT: NOT_OWNED_BY_TASK_RUNNER",
+        "STEGVERSE_PAGES_DEPLOYMENT_URL:",
+        "STEGVERSE_PAGES_DEPLOYMENT_RESULT:",
         "python scripts/check_external_chat_live_routes.py",
         "Upload External Chat live verification receipt",
         "site/reports/external-chat-live-verification.json",
-        "if: always()",
-        "Mutation required disabled",
-    ]
-    for marker in required_workflow_markers:
-        if marker not in workflow:
-            return fail(f"workflow missing marker: {marker}")
-
-    forbidden_deployment_markers = [
-        "environment:\n      name: github-pages",
         "actions/configure-pages@",
         "actions/upload-pages-artifact@",
         "actions/deploy-pages@",
+        "actions/upload-artifact@",
+        "onrender.com",
+        "vercel.app",
+        "netlify.app",
     ]
-    for marker in forbidden_deployment_markers:
+    for marker in forbidden_hosted_observation_markers:
         if marker in workflow:
-            return fail(f"Task Runner must not own Pages deployment marker: {marker}")
+            return fail(f"GitHub-hosted validation fallback still owns live/public observation: {marker}")
 
-    if workflow.index("Upload External Chat live verification receipt") < workflow.index("Verify External Chat public surfaces"):
-        return fail("live receipt upload must follow live verification")
-
-    print("EXTERNAL CHAT VERIFICATION PHASE: PASS (local checks pre-publication; Task Runner observes canonical public route without deployment ownership)")
+    print("EXTERNAL CHAT VERIFICATION PHASE: PASS (local checks pre-publication; post-deployment observation remains resident-owned; GitHub Task Runner is validation fallback only)")
     return 0
 
 

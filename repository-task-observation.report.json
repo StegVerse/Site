@@ -2,28 +2,15 @@
   "schema_version": "2.2.0",
   "repository": "StegVerse-Labs/Site",
   "controller": "scripts/observe_and_complete_repository_tasks.py",
-  "declared_active_tasks": [
-    "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001"
-  ],
+  "declared_active_tasks": [],
   "auto_discovered_tasks": [
-    "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION",
-    "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001"
+    "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION"
   ],
   "active_tasks_observed": [
-    "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001",
     "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION"
   ],
   "ownership_reconciliations": [],
   "observations": [
-    {
-      "task_id": "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001",
-      "state": "COMPLETE",
-      "task_location": "data/tasks/SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001.json",
-      "validator_command": "python scripts/check_conectrr_browser_projection.py",
-      "success_marker": "CONECTRR_BROWSER_PROJECTION_CHECK=PASS",
-      "success_marker_seen": true,
-      "output": "CONECTRR_BROWSER_PROJECTION_CHECK=PASS\ndefault_loader_execution=disabled\ndefault_fixture_execution=disabled\nfixture_opt_in=query:conectrr-fixture=1\nrendered_records=source,decision_on_opt_in_only\ncorrelation=bidirectional\nauthority_effect=none"
-    },
     {
       "task_id": "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION",
       "state": "VALIDATION_FAILED",
@@ -34,9 +21,7 @@
       "output": "COHERENT_TRANSITION_THRESHOLD_ACTIVATION=BLOCKED\nthreshold_state=SYNCHRONY_OBSERVED; missing=['required_transitions_jointly_ready', 'continuation_conditions_preserved', 'next_cycle_admissible']"
     }
   ],
-  "completed_tasks": [
-    "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001"
-  ],
+  "completed_tasks": [],
   "remaining_tasks": [
     "SITE-0001-COHERENT-TRANSITION-THRESHOLD-ACTIVATION"
   ],

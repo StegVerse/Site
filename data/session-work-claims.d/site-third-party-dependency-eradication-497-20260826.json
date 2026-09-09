@@ -24,7 +24,8 @@
         "site:current-third-party-runtime-cutover",
         "site:dns-edge-portability-recovery",
         "site:source-publication-recovery",
-        "site:recovery-bundle-materialization"
+        "site:recovery-bundle-materialization",
+        "site:master-records-proof-rendezvous-provider-cutover"
       ],
       "claimed_paths": [
         "data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json",
@@ -40,6 +41,8 @@
         "scripts/check_source_publication_recovery.py",
         "scripts/materialize_site_recovery_bundle.py",
         "scripts/check_site_recovery_bundle_manifest.py",
+        "scripts/check_mr_sv001_intr_governance.py",
+        "stegos-bootstrap/master-records-auto-recovery.js",
         ".github/workflows/no-required-third-party-runtime.yml",
         ".github/workflows/validate.yml",
         ".github/workflows/site-task-runner.yml",
@@ -76,6 +79,7 @@
         "Ecosystem Chat static provider disabled/null",
         "automatic node discovery restricted to sovereign candidates",
         "HIL third-party candidates disabled by default and explicit-opt-in only",
+        "Master Records custody-proof relay consumes current sovereign-local-only gateway config and never automatically selects hosted fallback",
         "Site bootstrap validation with repository-local schema validator and no public jsonschema install",
         "GitHub-hosted Site task runner reduced to manual credential-free validation fallback only",
         "StegCore primary and fallback GitHub-hosted Cloudflare quick-tunnel carriers retired",
@@ -95,6 +99,7 @@
         "Do not alter TV/TVC credential authority",
         "Do not claim provider independence from negative prose alone",
         "Do not mutate active HIL/VACC/StegFin product semantics outside dependency classification/cutover",
+        "Do not alter Master Records custody/reconstruction semantics beyond provider/rendezvous cutover compatibility",
         "Do not treat external interoperability as StegVerse execution or custody authority",
         "Do not use GitHub Actions as resident orchestration, mutation, activation, credential, or runtime authority",
         "Do not make Cloudflare quick tunnels or any hosted tunnel the canonical StegGate carrier",

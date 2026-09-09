@@ -67,7 +67,16 @@ Site PR #1148 merged at `7a7d66045074cb066d1e948b24afede183e1413b`, establishing
 
 Site PR #1152 merged the ERL-assisted drafting implementation at `38be9d952ef4cbf30b9fa15cdedee1f3b5dc1242`.
 
-The current StegSocials canonical coordination is reconciled separately under `SS-EVIDENCE-COMPARISON-001` / COSV `40000100100000`.
+Site PR #1167 merged the current-iPhone resident-KV source-identity / empty-ERL clarification at `bb3ccf4280f1843fb7e85e726d5c7dba0f9a4c11`. Its final head `e9d6923745aa9c12097fcd7c347b7f23a98a9557` passed:
+
+- My KV Directory Landing;
+- StegSocials Post Preparation;
+- StegSocials ERL Assisted Drafting;
+- Site Handoff Orchestrator;
+- Site Bootstrap Validate;
+- Ecosystem Heartbeat Orchestration.
+
+The current StegSocials canonical coordination remains `SS-EVIDENCE-COMPARISON-001` / COSV `40000100100000`.
 
 ## 2026-09-09 authentic current-iPhone observation
 
@@ -79,41 +88,39 @@ No files available to display
 This directory is currently empty.
 ```
 
-This observation proves the current Site reached a valid resident directory projection, but it does not prove the Google Drive ERL vault was inspected. The current resident KV is device-local browser storage, while the existing Google Drive vault remains a separate, not-yet-materialized cloud KV identity under the KV multi-instance workstream.
+That authentic observation established that the live Site reached a valid resident directory projection, while also exposing that the generic wording could be mistaken for a separate Google Drive/cloud-KV read. The current resident KV is device-local browser storage; a separate cloud KV is not implied by a resident DEVICE_KV listing.
 
-The observed text exposed a UI ambiguity: `assets/my-kv-directory.js` used the generic phrase `your KnowledgeVault` for any valid DEVICE_KV projection, including an empty current resident device-local KV. That wording could be misread as evidence that a separate cloud KV had been queried.
+PR #1167 repaired that ambiguity so the page now identifies successful listing as the current resident `DEVICE_KV` projection, renders a dedicated ERL empty state, and explicitly says separate Google Drive/iCloud/other cloud KV content is not included unless connected/materialized into the active set. The existing `Import owner-controlled files` path remains available for iPhone Files staging and still does not claim canonical KV persistence until admission/readback succeeds.
 
-Repair branch:
+No Google Drive KV #2 retry, cloud relationship mutation, provider credential operation, provider operation, or COSV change was introduced by this repair.
+
+README impact determination: this repair clarifies existing resident-source identity and recovery text without adding a new repository capability. Existing README already describes MyKV ERL browsing and the standard preparation path; no README text change was required for this bounded clarification.
+
+## Current machine state
 
 ```text
-ss-erl-empty-resident-kv-clarity-20260909
+ERL_ASSISTED_STANDARD_DRAFTING_MERGED=true
+EMPTY_RESIDENT_ERL_STATE_CLARITY_REPAIR_MERGED=true
+CURRENT_IPHONE_EMPTY_RESIDENT_ERL_DIRECTORY_OBSERVED=true
+CLOUD_KV_INSPECTED_BY_THAT_DEVICE_READ=false
+CURRENT_IPHONE_CORRECTED_PAGE_REOBSERVATION_PENDING=true
+CURRENT_IPHONE_ERL_ADMISSION_PENDING=true
+CURRENT_IPHONE_PREPARE_SAVE_EXACT_READBACK_PENDING=true
 ```
-
-The branch:
-
-- changes directory success text to identify the `current resident DEVICE_KV projection`;
-- changes the ERL empty state to `No ERL files in the current resident KV`;
-- explicitly states that separate Google Drive/iCloud/other cloud KV content is not included unless connected/materialized into the active set;
-- points the non-provider fallback to `Import owner-controlled files` from iPhone Files;
-- preserves the existing portable-source rule that selected bytes are staged locally and appear only after canonical KV admission/readback;
-- adds a focused regression test and wires it into the My KV directory workflow;
-- changes no cloud-KV relationship, provider credential, provider operation, or COSV bit.
-
-README impact determination: this repair clarifies existing resident-source identity and recovery text without adding a new repository capability. Existing README already describes MyKV ERL browsing and the standard preparation path; no README text change is required for this bounded clarification.
 
 ## Remaining work
 
-1. Validate and merge the current empty-ERL resident-source clarity repair.
-2. Observe the corrected page on the current iPhone.
-3. Use the existing owner-controlled portable import path if needed to stage an ERL artifact from iPhone Files into the resident admission flow without changing cloud-KV state.
-4. After canonical KV admission/readback, execute the complete ERL -> Prepare -> Save draft to My KV -> exact saved-draft readback path on the current iPhone.
-5. Expand content retrieval/proof to authentically materialized external KV providers before claiming arbitrary-provider ERL drafting.
-6. Keep automated/scheduled publication in the separately governed premium release path.
+1. Merge this post-merge reconciliation so the focused handoff and session-work claims no longer describe PR #1167 as pending.
+2. Re-open `My KV -> ERL` on the current iPhone after the PR #1167 deployment is live and verify the corrected resident-DEVICE_KV wording / dedicated empty state.
+3. If the current resident ERL directory is still empty, use the existing `Import owner-controlled files` action to select an ERL artifact from iPhone Files; wait for canonical KV admission/readback before expecting it in the listing.
+4. After an ERL artifact is admitted/readable, execute the complete `ERL -> Prepare post -> Draft from ERL -> Save draft to My KV -> exact saved-draft readback` proof on the current iPhone.
+5. Expand runtime proof to additional authentically materialized external KV providers before claiming arbitrary-provider ERL drafting.
+6. Keep automated/scheduled social-provider publication in the separately governed premium release path.
 
 ## Manual work
 
-None until this repair is merged/deployed. Do not retry Google Drive KV #2 adoption as part of this StegSocials task.
+None until this post-merge reconciliation is merged and the corrected Site deployment is observed live. Do not retry Google Drive KV #2 adoption as part of this StegSocials task.
 
 ## State
 
-`ERL_ASSISTED_STANDARD_DRAFTING_MERGED / CURRENT_IPHONE_RESIDENT_ERL_DIRECTORY_EMPTY_OBSERVED / CLOUD_KV_NOT_INSPECTED_BY_THIS_READ / EMPTY_STATE_CLARITY_REPAIR_IN_PROGRESS / DEVICE_ERL_ADMISSION_AND_DRAFT_FLOW_PENDING`
+`ERL_ASSISTED_STANDARD_DRAFTING_MERGED / EMPTY_RESIDENT_ERL_STATE_CLARITY_REPAIR_MERGED / CURRENT_IPHONE_RESIDENT_ERL_DIRECTORY_EMPTY_OBSERVED / CLOUD_KV_NOT_INSPECTED_BY_THAT_READ / POSTMERGE_RECONCILIATION_IN_PROGRESS / CURRENT_IPHONE_CORRECTED_PAGE_REOBSERVATION_PENDING / DEVICE_ERL_ADMISSION_AND_DRAFT_FLOW_PENDING`

@@ -6,16 +6,17 @@ Goal: `KV-CONNECTION-REVALIDATION-WORKER-001`
 Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
 COSV: `50000000102000`
 Upstream handoff: `StegVerse-Labs/StegCore/docs/STEGGATE_HOSTED_CARRIER_RETIREMENT_MIRROR_HANDOFF.md`
-Current continuation branch: `task/site-497-offgithub-retention-20260909`
-Current pull request: `#1155`
+Current continuation branch: `task/site-497-publication-equivalence-contract-20260909`
+Current pull request: `PENDING`
 
 ## Merged cleanup evidence
 
 - Site PR #1146 merged at `f21ae88ba871c68fdcc00d371a7f87ecf8246152` after focused third-party runtime, Bootstrap, Ecosystem Heartbeat, and handoff-orchestrator validation passed.
-- Site PR #1149 merged at `448eb1b646703243e986a65cf86a969c992b1188` after No Required Third-Party Runtime `34317666399`, Site Bootstrap `34317666471`, Ecosystem Heartbeat `34317666466`, and Site Handoff Orchestrator `34317666389` passed. It added explicit `HISTORICAL_SUPERSEDED` bindings for legacy Render and Cloudflare-tunnel requirement observations.
-- Site PR #1151 merged at `a076a392c7776abf693b824f22b216d6d7c8e611` after No Required Third-Party Runtime `34317857608`, Site Bootstrap `34317857529`, Ecosystem Heartbeat `34317857462`, and Site Handoff Orchestrator `34317857517` passed. It added deterministic provider-neutral DNS/edge recovery intent plus fail-closed validation while preserving physical DNS/TLS migration as unproven.
-- Site PR #1153 merged at `a3fd62d54896b735c0bdc517fbebcc3cf85fcdc0` after No Required Third-Party Runtime `34318036288`, Site Bootstrap `34318036299`, Ecosystem Heartbeat `34318036320`, and Site Handoff Orchestrator `34318036323` passed. It added deterministic source/publication recovery semantics and explicitly retained off-GitHub restore/publication as unobserved.
-- Site PR #1154 merged at `1d813a92ed55648530dc070d17c3f981535b1aac` after focused recovery/bundle validation, persistent-card/recovery validation, Bootstrap, Ecosystem Heartbeat, and handoff orchestration passed. It integrated the root README recovery boundary, deterministic bundle/hash materialization, v16 persistent-card reconciliation, and removal of automatic hosted fallback from the Master Records proof rendezvous.
+- Site PR #1149 merged at `448eb1b646703243e986a65cf86a969c992b1188` after explicit historical supersession of legacy Render and Cloudflare-tunnel requirements.
+- Site PR #1151 merged at `a076a392c7776abf693b824f22b216d6d7c8e611` with deterministic provider-neutral DNS/edge recovery intent while preserving physical DNS/TLS migration as unproven.
+- Site PR #1153 merged at `a3fd62d54896b735c0bdc517fbebcc3cf85fcdc0` with deterministic source/publication recovery semantics.
+- Site PR #1154 merged at `1d813a92ed55648530dc070d17c3f981535b1aac` with root README recovery-boundary integration, deterministic recovery-bundle materialization/hash verification, persistent-card v16 reconciliation, and removal of automatic hosted fallback from the Master Records proof rendezvous.
+- Site PR #1155 merged at `7a32080b6ce6cc072d1d18d041220244aceec948`. Its exact head `bdb0ecef9b4fe87c6c502e17799552865cc50459` passed No Required Third-Party Runtime, Site Bootstrap, Ecosystem Heartbeat, and Site Handoff Orchestrator. #1155 authenticated external retention, off-GitHub restore, and off-GitHub validation from the Drive-retained recovery archive while preserving publication/DNS/TLS/public-equivalence claims as false.
 
 ## Reconciled runtime state
 
@@ -29,23 +30,11 @@ Legacy Render and Cloudflare-tunnel observations remain provenance and are expli
 
 ## Source / publication recovery
 
-`data/source-publication-recovery.json` and `scripts/check_source_publication_recovery.py` establish the merged `STEGVERSE_SITE_RECOVERY_BUNDLE_V1` contract. The contract requires an identified source snapshot, static publication files, domain binding, DNS/edge portability data, repository-local validators, dependency census, current handoff/task state, and a cryptographic path/hash manifest. It does not treat GitHub source hosting, Actions, Pages, or any replacement provider as canonical StegVerse state.
-
-## Recovery-bundle materialization
-
-PR #1154 added `scripts/materialize_site_recovery_bundle.py`, `scripts/check_site_recovery_bundle_manifest.py`, `data/site-recovery-bundle-materialization.json`, and direct root `README.md` maintenance describing the provider-independent runtime/recovery boundary and canonical public surface `https://stegverse.org/`.
-
-Recovery bundle materialization and hash verification were authentically observed in No Required Third-Party Runtime run `34326685598` at head `bccbe2971f024c277ada01067b8a4c770bcd7abd`, then revalidated before #1154 merged.
-
-## Master Records hosted-fallback contamination repaired by PR #1154
-
-`stegos-bootstrap/master-records-auto-recovery.js` now consumes gateway schema `1.3.0`, validates `SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS`, probes only sovereign loopback advertisements, verifies optional third-party fallbacks are explicit-opt-in/non-required, and does not automatically select any hosted fallback. If local rendezvous is unavailable, authentic custody/reconstruction PASS remains intact and evidence relay remains `PENDING_RETRY`.
-
-`scripts/check_mr_sv001_intr_governance.py` validates the current v16 wrapper while preserving retained v15 configured-rendezvous provenance, and `scripts/check_stegos_ipod_bootstrap_projection.py` rejects the retired hosted-fallback markers.
+`data/source-publication-recovery.json` and `scripts/check_source_publication_recovery.py` establish `STEGVERSE_SITE_RECOVERY_BUNDLE_V1`. The contract requires an identified source snapshot, static publication files, domain binding, DNS/edge portability data, repository-local validators, dependency census, current handoff/task state, and a cryptographic path/hash manifest. It does not treat GitHub source hosting, Actions, Pages, or a replacement publication provider as canonical StegVerse state.
 
 ## Off-GitHub retention / restore / validation evidence
 
-PR #1155 advances recovery proof beyond repository/CI materialization. The exact recovery archive for source commit `00fcf4149d4deb81066e2829618885cafadc2325` was retained outside GitHub in connected Google Drive, downloaded back, and verified byte-for-byte. The external object locator is intentionally not published.
+The exact recovery archive for source commit `00fcf4149d4deb81066e2829618885cafadc2325` was retained outside GitHub in connected Google Drive, downloaded back, and verified byte-for-byte. The external object locator is intentionally not published.
 
 Observed archive facts:
 
@@ -54,10 +43,24 @@ Observed archive facts:
 - `SHA256SUMS` entries verified = `3400`;
 - round-trip external download = observed;
 - restored source validation without GitHub API/Actions = PASS;
-- repository-local provider cutover, DNS portability, source recovery, recovery-bundle, Ecosystem Chat, Master Records, and exact StegOS projection validators = PASS from the restored external copy;
-- root `README.md` now documents the observed external round trip while preserving publication/DNS/TLS/resident-rendezvous proof as pending.
+- repository-local provider cutover, DNS portability, source recovery, recovery-bundle, Ecosystem Chat, Master Records, and exact StegOS projection validators = PASS from the restored external copy.
 
 These observations prove external retention, off-GitHub restore, and off-GitHub validation/rematerialization. They do not prove off-GitHub publication, DNS/TLS migration/recovery, public-content equivalence, or a resident/provider-neutral public rendezvous.
+
+## Publication-equivalence continuation
+
+The current continuation adds a fail-closed evidence seam before any publication predicate may advance:
+
+- `data/off-github-publication-evidence-template.json` binds publication proof to the exact externally restored recovery archive and leaves provider identity, origin URL, TLS observations, manifest hashes, path counts, and provenance unset until authentic observation exists;
+- `scripts/check_off_github_publication_evidence.py` requires a non-GitHub origin, exact path + SHA-256 comparison semantics, the canonical `stegverse.org` TLS hostname, no publication-provider state authority, and no premature observation claims;
+- `data/source-publication-recovery.json` now explicitly binds the evidence template/validator and forbids inferring publication or equivalence from source/CI validation;
+- `.github/workflows/site-497-publication-equivalence-contract.yml` validates the contract without provider credentials and explicitly records that it performs no publication, DNS, or TLS mutation.
+
+This source-only contract does not prove publication. Its purpose is to make the later authentic public observation deterministic and fail closed.
+
+## README maintenance
+
+Root `README.md` was reviewed for this continuation. The merged #1154/#1155 provider-independent recovery text already accurately separates observed off-GitHub restore/validation from still-pending publication, DNS/TLS, and resident-rendezvous proof. No README wording change is required for this source-only evidence-contract increment; a README update is required when authentic publication/equivalence evidence changes those facts.
 
 ## Current truth
 
@@ -73,22 +76,23 @@ source/publication recovery contract = MERGED_SOURCE_VALIDATED
 recovery bundle materialization = OBSERVED_IN_CI
 recovery bundle SHA-256 verification = OBSERVED_IN_CI
 Master Records proof rendezvous automatic hosted fallback = false
-Master Records proof rendezvous current config = SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS
 external retention = OBSERVED
 off-GitHub restore proof = OBSERVED
 off-GitHub validation proof = OBSERVED
+off-GitHub publication evidence contract = IMPLEMENTED_SOURCE_PENDING_VALIDATION
 off-GitHub publication proof = PENDING
+public-content equivalence proof = PENDING
 resident/provider-neutral public rendezvous proof = PENDING
 ```
 
 ## Remaining work
 
-1. Validate and merge PR #1155 with the external-retention evidence bindings.
-2. Publish the verified static artifact through a non-GitHub origin and capture exact public-content equivalence evidence.
+1. Validate and merge the publication-equivalence contract continuation.
+2. Publish the verified static artifact through a non-GitHub origin and capture exact path + SHA-256 public-content equivalence evidence using the installed contract.
 3. Capture authentic registrar/nameserver state and perform a controlled DNS/edge recovery drill with TLS/public-content equivalence evidence.
 4. Materialize and authentically observe a resident/provider-neutral public rendezvous.
-5. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only when release conditions are met.
+5. When release conditions are reached, tag/release and create a separate verification task for propagation to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
 
 ## Manual work
 
-None currently. Do not change registrar, nameservers, DNS records, publication origin, or Cloudflare tunnel configuration until the corresponding controlled recovery drill is explicitly prepared and authenticated.
+None currently. Do not change registrar, nameservers, DNS records, publication origin, or Cloudflare tunnel configuration until the controlled recovery drill is explicitly prepared and authenticated.

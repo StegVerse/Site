@@ -12,7 +12,7 @@
       "handoff": "docs/HIL_BROWSER_EVIDENCE_EXPORT_MIRROR_HANDOFF.md",
       "handoff_revision": "f23bb5e70b1ffbb38d2fe966e5576d8f60db73a3",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-hil-controller-refresh-1133",
       "dependency_surface_keys": ["site:hil-browser-evidence-export"],
       "claimed_paths": [
@@ -51,7 +51,11 @@
       "github_token_runtime_authority": "NONE",
       "render_required": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1133,
+      "release_commit": "53ec3bd31c02faab416fca843604fbc77402349c",
+      "claim_released_at": "2026-09-09T03:58:52Z",
+      "archive_eligible": true
     }
   ]
 }

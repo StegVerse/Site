@@ -4,18 +4,30 @@ on:
   pull_request:
     paths:
       - "assets/cloud-kv-peer-manager.js"
+      - "assets/cloud-kv-adoption-device-kv-bridge.js"
+      - "assets/cloud-kv-adoption-device-kv-receiver.js"
       - "cloud-kv-peers.html"
+      - "data/kv/google-drive-existing-peer-adoption-profile.json"
       - "tests/cloud-kv-peer-manager.test.cjs"
+      - "tests/cloud-kv-adoption-resident-transport.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-device-local-kv-cloud-peers-20260908.json"
+      - "data/session-work-claims.d/site-kv-runtime-cloud-adoption-20260908.json"
+      - "data/session-work-claims.d/site-google-drive-kv2-resident-transport-20260908.json"
       - ".github/workflows/cloud-kv-peer-manager.yml"
   push:
     paths:
       - "assets/cloud-kv-peer-manager.js"
+      - "assets/cloud-kv-adoption-device-kv-bridge.js"
+      - "assets/cloud-kv-adoption-device-kv-receiver.js"
       - "cloud-kv-peers.html"
+      - "data/kv/google-drive-existing-peer-adoption-profile.json"
       - "tests/cloud-kv-peer-manager.test.cjs"
+      - "tests/cloud-kv-adoption-resident-transport.test.cjs"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-device-local-kv-cloud-peers-20260908.json"
+      - "data/session-work-claims.d/site-kv-runtime-cloud-adoption-20260908.json"
+      - "data/session-work-claims.d/site-google-drive-kv2-resident-transport-20260908.json"
       - ".github/workflows/cloud-kv-peer-manager.yml"
   workflow_dispatch:
 
@@ -32,14 +44,22 @@ jobs:
           node-version: "22"
       - name: Validate cloud peer request contract
         run: node tests/cloud-kv-peer-manager.test.cjs
+      - name: Validate resident adoption transport contract
+        run: node tests/cloud-kv-adoption-resident-transport.test.cjs
       - name: Validate source syntax
-        run: node --check assets/cloud-kv-peer-manager.js
+        run: |
+          node --check assets/cloud-kv-peer-manager.js
+          node --check assets/cloud-kv-adoption-device-kv-bridge.js
+          node --check assets/cloud-kv-adoption-device-kv-receiver.js
       - name: Prove resident prerequisite and no cloud authority
         run: |
           python3 - <<'PY'
           from pathlib import Path
           src=Path('assets/cloud-kv-peer-manager.js').read_text(encoding='utf-8')
+          bridge=Path('assets/cloud-kv-adoption-device-kv-bridge.js').read_text(encoding='utf-8')
+          receiver=Path('assets/cloud-kv-adoption-device-kv-receiver.js').read_text(encoding='utf-8')
           page=Path('cloud-kv-peers.html').read_text(encoding='utf-8')
+          profile=Path('data/kv/google-drive-existing-peer-adoption-profile.json').read_text(encoding='utf-8')
           required=[
             'device-local-browser-indexeddb',
             'PENDING_INTERLOCK_INTR',
@@ -61,13 +81,19 @@ jobs:
           if missing: raise SystemExit('missing cloud-peer boundary markers: '+', '.join(missing))
           for provider in ['icloud-drive','google-drive','onedrive','dropbox']:
             if provider not in src: raise SystemExit('missing provider: '+provider)
-          forbidden=['provider_operation_authorized:true','instance_materialized:true','relationship_mutation_authorized:true','data_moved:true','replication_started:true','ai_corpus_exposed:true']
-          present=[x for x in forbidden if x in src or x in page]
+          for marker in ['MY_KV_CLOUD_PEER_ADOPTION_REQUEST','resident_ingress_observed:true','provider_execution_attempted:false','instance_materialized:false','NONE_RESULT_DELIVERY_ONLY']:
+            if marker not in bridge+receiver: raise SystemExit('missing resident adoption marker: '+marker)
+          forbidden=['provider_operation_authorized:true','instance_materialized:true','relationship_mutation_authorized:true','data_moved:true','replication_started:true','ai_corpus_exposed:true','provider_execution_attempted:true']
+          present=[x for x in forbidden if x in src or x in bridge or x in receiver or x in page]
           if present: raise SystemExit('prohibited runtime effect marker: '+', '.join(present))
-          if 'Cloud-hosted KnowledgeVault peers' not in page:
-            raise SystemExit('cloud peer page missing')
+          if 'Emit governed Google Drive KV #2 adoption request' not in page:
+            raise SystemExit('prepared Google Drive adoption action missing')
+          if '1c8OdhJeLD6E4ALmi-aR7dXvG8PjDLSfi' in page or '1c8OdhJeLD6E4ALmi-aR7dXvG8PjDLSfi' in profile:
+            raise SystemExit('private Drive locator leaked into public prepared surface')
           print('CLOUD_KV_PEER_MANAGER=PASS')
           print('RESIDENT_KV_PREREQUISITE=REQUIRED')
+          print('GOOGLE_DRIVE_KV2_PREPARED_ADOPTION=PASS')
+          print('RESIDENT_ADOPTION_INGRESS_TRANSPORT=BOUNDED')
           print('CLOUD_PROVIDER_AUTHORITY=NONE')
           print('EXISTING_CLOUD_PROVENANCE_REWRITE=PROHIBITED')
           PY

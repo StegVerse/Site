@@ -1,0 +1,43 @@
+name: Site 497 Publication Observation Contract
+
+on:
+  pull_request:
+    paths:
+      - 'data/publication-equivalence-contract.json'
+      - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_off_github_publication_evidence.py'
+      - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
+      - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
+      - '.github/workflows/site-497-publication-observation-contract.yml'
+  push:
+    paths:
+      - 'data/publication-equivalence-contract.json'
+      - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_off_github_publication_evidence.py'
+      - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
+      - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
+      - '.github/workflows/site-497-publication-observation-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source without persisted credential
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate provider-neutral publication artifact
+        run: python3 scripts/check_site_publication_artifact.py
+      - name: Validate fail-closed publication observation evidence
+        run: python3 scripts/check_off_github_publication_evidence.py
+      - name: Confirm no external mutation is claimed
+        run: |
+          echo 'PUBLICATION_ORIGIN_SELECTED=false'
+          echo 'PUBLICATION_MUTATION_PERFORMED=false'
+          echo 'DNS_MUTATION_PERFORMED=false'
+          echo 'TLS_RECOVERY_CLAIMED=false'
+          echo 'PUBLIC_CONTENT_EQUIVALENCE_CLAIMED=false'

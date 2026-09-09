@@ -57,7 +57,7 @@ jobs:
           if missing: raise SystemExit('missing installer markers: '+', '.join(missing))
           if 'stegverse-device-local-intr-v1' in src:
             raise SystemExit('device-local KV must not reuse DEVICE_KV transport database')
-          page_required=['Install resident KV','Cloud-hosted KnowledgeVaults can be added as independent peers','assets/device-local-kv-installer.js']
+          page_required=['Install resident KV','cloud-hosted KnowledgeVaults can be added as independent peers','assets/device-local-kv-installer.js']
           missing=[x for x in page_required if x not in page]
           if missing: raise SystemExit('missing page markers: '+', '.join(missing))
           print('DEVICE_LOCAL_KV_INSTALL=PASS')

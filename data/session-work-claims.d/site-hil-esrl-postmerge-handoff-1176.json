@@ -1,0 +1,49 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-ESRL-POSTMERGE-HANDOFF-1176-20260909",
+      "session_worker_id": "chatgpt:hil-esrl-postmerge-handoff-1176-20260909",
+      "task_id": "SITE-HIL-ESRL-POSTMERGE-HANDOFF-1176",
+      "originating_goal": "Reconcile the canonical Site ESRL handoff after stale-navigation repair PR #1173 merged and validated, while preserving the separate public current-iPhone propagation and authentic LEASE_OPEN evidence boundary.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "docs/hil-esrl-stale-navigation-postmerge-1173",
+      "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
+      "handoff_revision": "PENDING_BRANCH_HEAD",
+      "role": "POST_MERGE_HANDOFF_RECONCILIATION",
+      "state": "CLAIMED",
+      "normalized_work_key": "site-hil-esrl-postmerge-handoff-1176",
+      "dependency_surface_keys": ["site:hil-esrl-postmerge-handoff"],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-esrl-postmerge-handoff-1176.json",
+        "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
+        "README.md"
+      ],
+      "claim_created_at": "2026-09-09T09:39:00-05:00",
+      "claim_expires_when": "Release after exact-head validation and merge of the post-merge handoff reconciliation; the separate stale-navigation runtime claim remains active until public current-iPhone propagation is physically observed.",
+      "expected_evidence": [
+        "canonical Site handoff records PR #1173 merge SHA",
+        "canonical Site handoff records exact-head and post-merge validation evidence",
+        "canonical Site handoff preserves public propagation and authentic LEASE_OPEN as separate physical predicates",
+        "README reviewed and remains accurate",
+        "Site orchestration validation passes"
+      ],
+      "collision_boundaries": [
+        "No source/runtime modification",
+        "No replacement G25 claim/fence",
+        "No Safari/site-data reset",
+        "No promotion of source merge to runtime success"
+      ],
+      "next_task_after_release": "Obtain physical public current-iPhone observation of the converged ESRL page/worker and, if LEASE_OPEN is produced, export exact evidence for canonical .github intake.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

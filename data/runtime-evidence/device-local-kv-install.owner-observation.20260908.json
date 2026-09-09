@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.site.device-local-kv-owner-observation/v1",
+  "goal_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "cosv_id": "50000000102000",
+  "observed_at_local": "2026-09-08T19:57:00-05:00",
+  "observation_source": "OWNER_SCREENSHOT_OF_DEPLOYED_SITE",
+  "runtime_surface": "https://stegverse.org/device-kv-install.html",
+  "resident_kv": {
+    "state": "INSTALLED",
+    "instance_ordinal": 1,
+    "instance_id": "kvi_0d5d4cfd531db51bbcf7fdfc0311f5dc",
+    "set_id": "personal",
+    "storage_medium": "device-local-browser-indexeddb",
+    "relationship": "NOT_CONNECTED",
+    "persistence_requested": true,
+    "persistence_granted": false,
+    "exact_readback_verified": true
+  },
+  "display_evidence": {
+    "installation_message": "Resident KV installed and exact-readback verified.",
+    "instance_hash_displayed": true,
+    "receipt_hash_displayed": true,
+    "projection_hash_displayed": true,
+    "full_hash_values_transcribed": false
+  },
+  "cloud_peer_context": {
+    "existing_google_drive_root_confirmed": true,
+    "google_drive_root_id": "1c8OdhJeLD6E4ALmi-aR7dXvG8PjDLSfi",
+    "google_drive_root_title": "KnowledgeVault",
+    "existing_cloud_relationship_change_performed": false
+  },
+  "authority_effect": "NONE",
+  "activation_effect": false,
+  "notes": [
+    "This is authentic owner-observed runtime evidence from the deployed Site surface, not CI/runtime substitution.",
+    "Browser persistent-storage request was not granted; current installation remains exact-readback verified in IndexedDB but durability across aggressive browser storage eviction is not independently guaranteed.",
+    "No cloud provider authentication, credential movement, relationship transition, sync, replication, or AI corpus merge is claimed by this observation."
+  ]
+}

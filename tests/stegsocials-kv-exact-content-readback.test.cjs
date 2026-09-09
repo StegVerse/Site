@@ -49,7 +49,7 @@ async function sha(text){
     [{...row,authority_effect:'WRITE'}, expected, /authority boundary invalid/]
   ];
   for(const [badRow, exp, pattern] of mutations){
-    await assert.rejects(()=>api.verifyStoredRow(badRow,exp),pattern);
+    await assert.rejects(Promise.resolve().then(()=>api.verifyStoredRow(badRow,exp)),pattern);
   }
 
   assert.throws(()=>api.normalizeExpected({...expected,canonical_path:'02_Research/ERL'}),/Drafts/);

@@ -36,7 +36,7 @@ jobs:
           grep -q 'StegVerseStegSocialsKVExactReadback' stegsocials-prepare.html
           grep -q 'exactReadback.readExact' stegsocials-prepare.html
           grep -q 'exact_content_bytes_readback_verified' stegsocials-prepare.html
-          grep -q 'cloud-provider readback not claimed' stegsocials-prepare.html
+          grep -q 'device-local store observed' stegsocials-prepare.html
       - name: Verify non-provider device-local boundary
         run: |
           grep -q 'EXACT_CONTENT_BYTES_READBACK_VERIFIED' assets/stegsocials-kv-exact-content-readback.js

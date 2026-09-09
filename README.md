@@ -133,14 +133,16 @@ reuse completed local workflow data without turning Site into an authority plane
 The explicit offline shell includes `persistent-card-ux.js`, the exact canonical
 Master Records G23 recovery module, the automatic same-device recovery carrier, and
 all eleven card-help routes. The current service-worker propagation generation is
-`stegos-web-bootstrap-v15`. v15 imports the exact released v13 runtime predecessor plus
-the HIL portable WorkerCoordinator bridges. The HIL activation surface explicitly
-requests an uncached service-worker update and waits for a replacement controller when
-new worker bytes are materialized, preventing an updated request-bound page from
-executing through a stale imported HIL receiver. This roll-forward preserves the
-existing IndexedDB, cache identity, browser context, and portable WorkerCoordinator
-checkout lineage; it does not mint a second claim/fence or create another runtime,
-scheduler, heartbeat, WorkerCoordinator, InTr boundary, or custody implementation.
+`stegos-web-bootstrap-v16`. v16 imports the exact released v13 runtime predecessor plus
+the HIL portable WorkerCoordinator bridges. The HIL activation surface pins both the
+worker script URL and local receiver route to protocol `HIL_BROWSER_EVIDENCE_V16`,
+requires the receiver to echo that protocol with the exact request/context bindings,
+and reports the specific mismatched field if convergence fails. A stale pre-v16
+controller therefore cannot silently satisfy the current activation contract. The
+roll-forward preserves existing IndexedDB, browser context, and portable
+WorkerCoordinator checkout lineage; it does not mint a second claim/fence or create
+another runtime, scheduler, heartbeat, WorkerCoordinator, InTr boundary, or custody
+implementation.
 
 The normal Master Records path first reuses an exact same-device persisted SV001 proof
 when one is available. For the legacy canonical G23 execution whose complete proof
@@ -215,9 +217,9 @@ Relevant source surfaces:
 | [`stegos-bootstrap/master-records-auto-recovery.js`](stegos-bootstrap/master-records-auto-recovery.js) | Same-device carrier that reuses/reconstructs exact G23 and automatically continues into the existing fresh-root-InTr-governed custody/reconstruction executor |
 | [`stegos-bootstrap/master-records-sv001-custody-package.json`](stegos-bootstrap/master-records-sv001-custody-package.json) | Exact canonical Master Records package, including G23 recovery target, lineage requirements, and reconstruction-ledger semantics |
 | [`stegos-bootstrap/stegos-bootstrap.js`](stegos-bootstrap/stegos-bootstrap.js) | Same-device browser carrier that derives the current HB32 reference, constructs the exact Node-bound machine-governed SV001 custody trigger, and obtains root Universal InTr admission before nested custody execution |
-| [`stegos-bootstrap/service-worker.js`](stegos-bootstrap/service-worker.js) | v15 propagation wrapper; imports the exact v13 runtime predecessor and HIL portable bridges, then uses immediate activation/client claim so installed clients can converge without clearing local state |
-| [`stegos-bootstrap/hil-activate.html`](stegos-bootstrap/hil-activate.html) | Same-device HIL activation/export surface; forces uncached worker update resolution, waits for controller convergence when required, and exports exact request-bound browser evidence |
-| [`stegos-bootstrap/hil-browser-receiver.js`](stegos-bootstrap/hil-browser-receiver.js) | Request-bound HIL browser receiver that validates and reuses the retained portable WorkerCoordinator checkout without minting a second claim/fence |
+| [`stegos-bootstrap/service-worker.js`](stegos-bootstrap/service-worker.js) | v16 propagation wrapper; imports the exact v13 runtime predecessor and HIL portable bridges, then uses immediate activation/client claim so installed clients can converge without clearing local state |
+| [`stegos-bootstrap/hil-activate.html`](stegos-bootstrap/hil-activate.html) | Same-device HIL activation/export surface; pins the v16 worker script/route, forces uncached update resolution, validates protocol + request + browser context, and exports exact request-bound evidence |
+| [`stegos-bootstrap/hil-browser-receiver.js`](stegos-bootstrap/hil-browser-receiver.js) | v16 request-bound HIL browser receiver that validates and reuses the retained portable WorkerCoordinator checkout without minting a second claim/fence |
 | [`stegos-bootstrap/service-worker-v13-runtime.js`](stegos-bootstrap/service-worker-v13-runtime.js) | Exact released v13 service-worker runtime predecessor containing the existing device-local governed endpoints and Master Records no-retroactive-authorization implementation |
 | [`intr-service-worker.js`](intr-service-worker.js) | Existing root Universal InTr runtime, including bounded `MasterRecords:SV001Custody` admission alongside the existing KV and HIL profiles |
 | [`stegos-bootstrap/help/`](stegos-bootstrap/help/) | Per-card purpose, remediation, and troubleshooting pages cached for offline use |

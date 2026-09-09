@@ -115,11 +115,18 @@ def main() -> int:
         'retry_surface: "EXISTING_PAGE_RESUME_LIFECYCLE_ONLY"',
         "newSchedulerCreated: false",
         "heartbeatGrantsExecutionAuthority: false",
+        'config.schema_version !== "1.3.0"',
+        'config.mode !== "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS"',
+        'discovery.selection_policy !== "FIRST_VALID_SOVEREIGN_LOCAL_ONLY"',
+        'fallback.selection_requires_explicit_runtime_opt_in !== true',
+        'hosted fallback not automatically selected',
     ]:
         require(marker in auto_recovery, f"automatic governed continuation marker missing: {marker}")
     require(CANONICAL_G23 in auto_recovery, "automatic continuation not bound to canonical G23")
     require("USER_ONLY" not in auto_recovery and "HUMAN_ONLY" not in auto_recovery,
             "automatic machine-owned continuation reintroduced a human authority gate")
+    require("hostedFallbackOrigin" not in auto_recovery,
+            "Master Records proof relay must not retain automatic hosted fallback selection")
 
     for marker in [
         'GATEWAY_CONFIG_URL = "../data/ecosystem-chat-gateway.json"',
@@ -130,7 +137,7 @@ def main() -> int:
         'boundary.gateway_execution_authority !== false',
         'boundary.master_records_authority !== false',
         'boundary.node_discovery_grants_authority !== false',
-        'endpoint.protocol !== "https:"',
+        'boundary.third_party_fallback_grants_authority !== false',
         'proof.intr_governance_admission_observed !== true',
         'proof.reconstruction_state !== "PASS"',
         'proof.site_custody_authority !== false',
@@ -150,13 +157,27 @@ def main() -> int:
         require(marker in auto_recovery, f"custody-proof rendezvous marker missing: {marker}")
 
     boundary = gateway_config.get("authority_boundary") or {}
-    require(gateway_config.get("enabled") is True, "canonical Site gateway config must be enabled")
-    require(str(gateway_config.get("endpoint", "")).startswith("https://"),
-            "canonical Site gateway endpoint must be HTTPS")
+    discovery = gateway_config.get("discovery") or {}
+    optional = gateway_config.get("optional_third_party_fallbacks") or []
+    require(gateway_config.get("schema_version") == "1.3.0",
+            "canonical Site gateway config must use current 1.3.0 schema")
+    require(gateway_config.get("mode") == "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS",
+            "canonical Site gateway config must use sovereign-local discovery mode")
+    require(gateway_config.get("enabled") is False and gateway_config.get("endpoint") is None and gateway_config.get("health_endpoint") is None,
+            "static hosted Site gateway must remain disabled")
+    require(discovery.get("enabled") is True and discovery.get("selection_policy") == "FIRST_VALID_SOVEREIGN_LOCAL_ONLY",
+            "canonical Site gateway must discover sovereign local residents only")
+    require(all(item.get("enabled_by_default") is False and
+                item.get("selection_requires_explicit_runtime_opt_in") is True and
+                item.get("production_continuity_dependency") is False and
+                item.get("activation_dependency") is False and
+                item.get("authority_effect") == "NONE" for item in optional),
+            "optional third-party gateway fallbacks must remain explicit opt-in and non-required")
     require(boundary.get("site_execution_authority") is False and
             boundary.get("gateway_execution_authority") is False and
             boundary.get("master_records_authority") is False and
-            boundary.get("node_discovery_grants_authority") is False,
+            boundary.get("node_discovery_grants_authority") is False and
+            boundary.get("third_party_fallback_grants_authority") is False,
             "canonical Site gateway config must preserve non-authorizing rendezvous boundary")
     require('fetch("/api/resident-rendezvous/' not in auto_recovery,
             "SV001 proof relay must not assume GitHub Pages same-origin API routing")
@@ -197,7 +218,8 @@ def main() -> int:
 
     print("MR_SV001_INTR_GOVERNANCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
-    print("MR_SV001_CUSTODY_PROOF_CONFIGURED_GATEWAY_ROUTE_PASS")
+    print("MR_SV001_CUSTODY_PROOF_SOVEREIGN_LOCAL_DISCOVERY_PASS")
+    print("MR_SV001_CUSTODY_PROOF_HOSTED_AUTO_FALLBACK=false")
     print("MR_SV001_CUSTODY_PROOF_V16_WRAPPER_PASS")
     print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_EVIDENCE_RETAINED")
     return 0

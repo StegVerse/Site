@@ -9,6 +9,8 @@ MANIFEST = ROOT / "data" / "source-publication-recovery.json"
 DNS = ROOT / "data" / "dns-edge-portability.json"
 MATERIALIZATION = ROOT / "data" / "site-recovery-bundle-materialization.json"
 OFF_GITHUB = ROOT / "data" / "off-github-recovery-evidence-2026-09-09.json"
+PUBLICATION_TEMPLATE = ROOT / "data" / "off-github-publication-evidence-template.json"
+PUBLICATION_VALIDATOR = ROOT / "scripts" / "check_off_github_publication_evidence.py"
 
 
 def die(message: str) -> None:
@@ -68,10 +70,22 @@ def main() -> None:
         die("publication recovery requires a provider/platform")
     if publication.get("publication_origin_selection") != "EXPLICIT_ADMISSIBLE_ORIGIN_SELECTION":
         die("publication origin selection is not explicit")
-    if publication.get("automatic_provider_selection") is not False:
-        die("automatic publication provider selection enabled")
-    if publication.get("automatic_external_mutation") is not False:
-        die("automatic external mutation enabled")
+    if publication.get("evidence_contract") != "data/off-github-publication-evidence-template.json":
+        die("publication evidence contract binding missing")
+    if publication.get("evidence_validator") != "scripts/check_off_github_publication_evidence.py":
+        die("publication evidence validator binding missing")
+    if publication.get("equivalence_method") != "EXACT_PATH_AND_SHA256":
+        die("publication equivalence method is not exact path + SHA-256")
+    if not PUBLICATION_TEMPLATE.is_file() or not PUBLICATION_VALIDATOR.is_file():
+        die("publication evidence contract source is missing")
+    for key in (
+        "automatic_provider_selection",
+        "automatic_external_mutation",
+        "publication_observation_may_be_inferred_from_source_or_ci",
+        "equivalence_observation_may_be_inferred_from_zero_mismatches_without_manifest_binding",
+    ):
+        if publication.get(key) is not False:
+            die(f"unsafe publication inference or mutation enabled: {key}")
 
     failure = body.get("failure_semantics", {})
     for key in (
@@ -85,15 +99,18 @@ def main() -> None:
     for key in (
         "recovery_independence_is_proven_by_manifest_alone",
         "off_github_publication_is_proven_by_manifest_alone",
+        "public_content_equivalence_is_proven_by_source_validation_alone",
     ):
         if failure.get(key) is not False:
-            die(f"manifest overclaims proof: {key}")
+            die(f"source or manifest overclaims proof: {key}")
 
     observation = body.get("current_observation", {})
     if observation.get("complete_recovery_bundle_materialized") is not True:
         die("complete recovery bundle materialization evidence missing")
     if observation.get("recovery_bundle_hash_manifest_observed") is not True:
         die("recovery bundle hash-manifest evidence missing")
+    if observation.get("publication_evidence_contract_installed") is not True:
+        die("publication evidence contract is not recorded as installed")
 
     evidence = materialization.get("ci_materialization_evidence", {})
     if materialization.get("schema") != "stegverse.site.recovery_bundle_materialization.v1":
@@ -107,9 +124,6 @@ def main() -> None:
     if evidence.get("observed_head") != observation.get("materialization_evidence_head"):
         die("materialization head binding mismatch")
 
-    # External retention and restore/validation are now independently observed
-    # from a Drive-retained archive round trip. Publication and public equivalence
-    # remain separate and must stay false until separately observed.
     for key in ("off_github_source_restore_observed", "off_github_validation_observed", "external_retention_observed"):
         if observation.get(key) is not True:
             die(f"observed off-GitHub recovery evidence missing: {key}")
@@ -154,6 +168,7 @@ def main() -> None:
             die(f"completed proof item remains pending: {completed}")
     for pending_fragment in (
         "non-GitHub origin",
+        "path and SHA-256 public-content equivalence",
         "TLS and exact public content equivalence",
     ):
         if not any(pending_fragment in item for item in remaining):
@@ -173,6 +188,7 @@ def main() -> None:
     print("OFF_GITHUB_RESTORE_OBSERVED=true")
     print("OFF_GITHUB_VALIDATION_OBSERVED=true")
     print("OFF_GITHUB_RECOVERY_PROVEN=true")
+    print("PUBLICATION_EVIDENCE_CONTRACT_INSTALLED=true")
     print("OFF_GITHUB_PUBLICATION_PROVEN=false")
 
 

@@ -1,8 +1,8 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `kv-google-drive-adoption-resident-transport`
-State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_IMPLEMENTED / GOOGLE_DRIVE_KV2_RESIDENT_ADOPTION_TRANSPORT_IMPLEMENTED / HOSTED_VALIDATION_PENDING / AUTHENTIC_OWNER_REQUEST_EMISSION_PENDING / CLOUD_PROVIDER_EXECUTION_PENDING / PUBLIC_NAV_README_BINDING_PENDING
+Branch: `kv-google-drive-adoption-legacy-node-fallback`
+State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_ATTEMPT_OBSERVED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING / EVENT_EPHEMERAL_FALLBACK_IMPLEMENTED / HOSTED_VALIDATION_PENDING / AUTHENTIC_OWNER_REQUEST_EMISSION_PENDING / CLOUD_PROVIDER_EXECUTION_PENDING
 Updated: 2026-09-08
 Authority effect: NONE
 Activation effect: false
@@ -18,7 +18,7 @@ UPSTREAM CAPABILITY HANDOFF: StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTAN
 
 ## Merged resident/runtime basis
 
-Site PR #1115 merged the first-class resident browser KnowledgeVault and its deployed installer. The current iPhone subsequently reported:
+Site PR #1115 merged the resident browser KnowledgeVault installer. The current iPhone later reported authentic owner-observed runtime state:
 
 ```text
 State: INSTALLED
@@ -30,66 +30,46 @@ Persistence: requested; granted=false
 Exact readback: true
 ```
 
-PR #1120 merged at `aaa8a8d253534bd53afbec075b376d73401ad18c` after all required Site gates passed. It permanently records the owner-observed resident runtime evidence, classifies `granted=false` durability as `BEST_EFFORT_BROWSER_ORIGIN`, and records the exact existing Google Drive adoption evidence. The organization-level COSV reconciliation then merged through `StegVerse-Labs/.github` PR #1202 at `374170455b82278845a3f7f972615b4d3d670977` without altering the fail-closed COSV vector.
+PR #1120 merged at `aaa8a8d253534bd53afbec075b376d73401ad18c`, permanently recording that runtime observation, `BEST_EFFORT_BROWSER_ORIGIN` durability, and exact existing Google Drive evidence. Organization COSV reconciliation merged through `.github` PR #1202 at `374170455b82278845a3f7f972615b4d3d670977` without changing the fail-closed task vector.
 
 ## Existing Google Drive cloud KV
 
-The historical Google Drive KnowledgeVault remains intact and authentic:
-
 ```text
-existing cloud instance_id:
-kvi_a31335d2cc3745fa987b635432cfed2c
-
+existing cloud instance_id: kvi_a31335d2cc3745fa987b635432cfed2c
 current ordinal: 1
 requested peer ordinal: 2
 relationship: NOT_CONNECTED
-
-adoption.receipt.json:
-sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552
-
-my-kv-set-projection.json:
-sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4
+adoption.receipt.json: sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552
+my-kv-set-projection.json: sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4
 ```
 
-No private Drive folder locator is required by the new public request surface.
+The public prepared profile omits the private Google Drive locator. No provider execution, identity rewrite, private-content rewrite, relationship mutation, data movement, replication, or AI-corpus exposure is claimed.
 
-## Current slice — prepared resident adoption transport
+## Prepared resident adoption transport
 
-`data/kv/google-drive-existing-peer-adoption-profile.json` contains the non-secret prepared evidence required to construct the existing-peer request. It deliberately omits the physical Google Drive folder locator.
+Site PR #1122 merged at `b5c3939878bafc7f3aeb40a52458c7a4528c6628` after all six required validation gates passed and Pages deployment succeeded.
 
-`cloud-kv-peers.html` now exposes a dedicated one-action flow:
+It added:
+
+```text
+data/kv/google-drive-existing-peer-adoption-profile.json
+assets/cloud-kv-adoption-device-kv-bridge.js
+assets/cloud-kv-adoption-device-kv-receiver.js
+tests/cloud-kv-adoption-resident-transport.test.cjs
+```
+
+The Cloud KV Peers page exposes one prepared action:
 
 ```text
 Emit governed Google Drive KV #2 adoption request
 ```
 
-The owner no longer needs to select Google Drive files or type the recovered instance ID/hashes.
-
-The page first verifies the installed resident KV, loads the bounded prepared profile, calls `StegVerseCloudKVPeers.adoptRequest(...)` so the request receives a fresh `SITE-CLOUD-KV-*` request ID and the authentic current resident instance binding, then sends that request through `StegVerseCloudKVAdoptionTransport.submit(...)`.
-
-## Dedicated resident transport
-
-New files:
+The intended successful result remains bounded:
 
 ```text
-assets/cloud-kv-adoption-device-kv-bridge.js
-assets/cloud-kv-adoption-device-kv-receiver.js
-```
-
-The bridge uses the existing registered Node, generated InTr intent/materialization request, and HB-derived carrier path. It uses a dedicated record class:
-
-```text
-MY_KV_CLOUD_PEER_ADOPTION_REQUEST
-```
-
-The dedicated service-worker receiver accepts only that bounded record class and validates the exact cloud adoption request contract. It writes only its local result/receipt store; it does not mutate the cloud vault or resident KV identity.
-
-A successful resident acknowledgement means only:
-
-```text
+governance_state=PENDING_INTERLOCK_INTR
 resident_ingress_observed=true
 resident_materialization_observed=true
-governance_state=PENDING_INTERLOCK_INTR
 instance_materialized=false
 provider_execution_attempted=false
 provider_operation_authorized=false
@@ -102,28 +82,71 @@ credential_material_present=false
 authority_effect=NONE_RESULT_DELIVERY_ONLY
 ```
 
-The original cloud request ID is preserved separately from the transport request ID so the request can be reconciled into later authentic governance/provider execution evidence.
+## Authentic owner attempt — runtime defect observed
 
-## Validation
+On the deployed current-iPhone surface, the owner tapped the prepared Google Drive KV #2 adoption action. The request failed before resident adoption ingress with the browser error:
 
-`tests/cloud-kv-adoption-resident-transport.test.cjs` validates the prepared profile, bridge request boundaries, receiver fail-closed markers, public-page one-action path, and absence of the private Drive locator from the prepared public surface.
+```text
+Request failed closed: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.
+```
 
-`.github/workflows/cloud-kv-peer-manager.yml` now validates both the original cloud-peer request contract and the new resident adoption transport.
+This is not a governance denial and does not mutate the cloud vault. It identifies a legacy current-device Node storage shape: the registered `stegos-node-v1` database predates the `intr_outbox` object store expected by `queueIntrMaterializationRequest(...)`.
+
+The runtime observation narrows the transport blocker to local Node outbox persistence compatibility. The cloud adoption request itself has still not reached resident ingress and no `SITE-CLOUD-KV-*` request may be treated as emitted from this failed attempt.
+
+## Current remediation — event-ephemeral compatibility path
+
+Branch `kv-google-drive-adoption-legacy-node-fallback` adds a narrowly scoped fallback only when the Node queue fails specifically because the required IndexedDB object store is absent.
+
+The normal path remains:
+
+```text
+registered Node -> persisted intr_outbox -> generated InTr -> HB-derived carrier -> resident adoption receiver
+```
+
+The compatibility path is:
+
+```text
+registered Node identity -> generated InTr materialization request -> HB-derived carrier -> STEGOS_NODE_EVENT_EPHEMERAL -> resident adoption receiver
+```
+
+The fallback uses explicit schema:
+
+```text
+stegos.node_intr_event_ephemeral_trigger.v1
+transport_origin=STEGOS_NODE_EVENT_EPHEMERAL
+durable_outbox_persisted=false
+legacy_node_outbox_store_missing=true
+request_grants_execution_authority=false
+claim_or_fence_minted=false
+authority_effect=NONE_TRIGGER_ONLY
+```
+
+It does not silently claim a durable queue write. Any queue failure other than the exact missing-object-store condition still fails closed.
+
+The resident receipt binds `resident_transport_origin` to either `STEGOS_NODE_OUTBOX` or `STEGOS_NODE_EVENT_EPHEMERAL`; all provider/relationship/materialization effects remain false.
+
+## Validation target
+
+`tests/cloud-kv-adoption-resident-transport.test.cjs` now additionally verifies:
+
+- the missing-object-store classifier accepts the observed Safari `NotFoundError` form;
+- unrelated queue failures remain fail-closed;
+- the event-ephemeral trigger is hash-bound to the exact materialization request and registered Node/Interlock identity;
+- durable outbox persistence is explicitly false on fallback;
+- no execution, mutation, movement, replication, AI-corpus, credential, authority, or activation effect is introduced.
 
 ## Remaining sequence
 
-1. Run exact-head hosted validation for this slice and repair any failures.
+1. Run exact-head hosted validation for the compatibility fix and repair any failures.
 2. Merge and confirm Pages deployment.
-3. Current iPhone: open the deployed Cloud KV Peers page and tap the one prepared Google Drive KV #2 adoption-request button once.
-4. Capture the authentic generated `SITE-CLOUD-KV-*` request ID plus `resident_ingress_observed=true` result.
-5. Reconcile that authentic owner/runtime request evidence into Site and COSV without changing the vector beyond observed predicates.
+3. Retry the same prepared Google Drive KV #2 adoption button once on the current iPhone.
+4. Capture the authentic generated `SITE-CLOUD-KV-*` request ID, `resident_ingress_observed=true`, and `resident_transport_origin`.
+5. Reconcile that authentic request evidence into Site and canonical COSV without over-claiming provider execution.
 6. Bind the still-pending request to authentic Interlock/InTr governance/provider execution.
-7. Materialize the Google Drive vault as KV #2 only after provider/governance result evidence exists and provenance/private contents remain preserved.
-8. Add a new iCloud or other cloud-hosted KV as KV #3/#n.
-9. Resolve provider credentials through SKAP Vault only and prove CONNECT/VERIFY/READ/WRITE/SYNC/DISCONNECT.
-10. Prove relationship progression/downgrade/recovery and use cloud recovery/replication to mitigate `BEST_EFFORT_BROWSER_ORIGIN` durability.
-11. Publish ordinary My KV navigation/README when the live resident/cloud workflow is established.
+7. Materialize Google Drive as KV #2 only after authentic provider/governance evidence exists.
+8. Then continue provider authorization through SKAP Vault and relationship progression/recovery testing.
 
 ## Manual work
 
-None required until this branch validates, merges, and deploys. Do not reinstall the resident KV, clear Safari/stegverse.org website data, select Google Drive files, re-enter adoption hashes, or authorize a cloud provider yet.
+None until this remediation validates, merges, and deploys. Do not clear Safari/stegverse.org website data, reinstall the resident KV, rebuild the Node, re-enter hashes, or authorize Google Drive.

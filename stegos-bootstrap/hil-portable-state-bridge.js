@@ -62,6 +62,8 @@
   root.StegOSEcosystemChatServiceWorkerBridge.portableStateStoreForPackage = portableStateStoreForPackage;
 }(self));
 
-// Load the browser receiver through the already-loaded HIL bridge surface.
-// This preserves one service worker and one portable WorkerCoordinator state lineage.
+// Load both same-lineage HIL browser continuations through the already-loaded HIL
+// bridge surface. The accepted v16 receiver remains unchanged; ESRL is a separate
+// post-local-ready evidence route and reuses the same portable WorkerCoordinator state.
 importScripts("./hil-browser-receiver.js");
+importScripts("./hil-browser-esrl-lease.js");

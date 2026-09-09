@@ -1,0 +1,69 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-ERL-STEGSOCIALS-POST-PREP-20260908",
+      "session_worker_id": "chatgpt:site-erl-stegsocials-post-prep-20260908",
+      "task_id": "SS-EVIDENCE-COMPARISON-001",
+      "originating_goal": "Project the canonical StegSocials ERL-backed standard post-preparation capability into MyKV while preserving ERL provenance, private draft boundaries, and the separate premium automated-publication path.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "erl-stegsocials-post-prep-20260908",
+      "role": "INTEGRATION",
+      "state": "CLAIMED_FOR_INTEGRATION",
+      "normalized_work_key": "site-erl-stegsocials-post-prep",
+      "dependency_surface_keys": [
+        "kv:erl-global-availability",
+        "stegsocials:post-preparation-v1",
+        "site:stegsocials-post-preparation",
+        "site:stegsocials-platform-draft-directories"
+      ],
+      "claimed_paths": [
+        "docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md",
+        "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
+        "assets/my-kv-directory.js",
+        "my-kv-directory.html",
+        "assets/stegsocials-post-preparation.js",
+        "stegsocials-prepare.html",
+        "tests/stegsocials-post-preparation.test.cjs",
+        ".github/workflows/stegsocials-post-preparation.yml",
+        "README.md",
+        "data/session-work-claims.d/site-erl-stegsocials-post-prep-20260908.json"
+      ],
+      "handoff": "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
+      "handoff_revision": "SITE_PROJECTION_IMPLEMENTED_PENDING_README_AND_MERGE_20260908",
+      "claim_created_at": "2026-09-08T22:55:00-05:00",
+      "claim_expires_when": "PR_1136_MERGED_OR_CLOSED",
+      "expected_evidence": [
+        "canonical StegSocials post-preparation/v1 shape projected without competing ownership",
+        "ERL directory exposed at 02_Research/ERL",
+        "StegSocials Drafts directory exposed at 02_Research/StegSocials/Drafts",
+        "ERL file can enter standard preparation surface",
+        "standard automated/scheduled publication refused",
+        "credential-like material refused",
+        "provider_call_performed=false preserved",
+        "focused StegSocials Post Preparation workflow PASS",
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "README.md accurately maintained"
+      ],
+      "collision_boundaries": [
+        "Do not duplicate ERL evidence authority into Site",
+        "Do not replace canonical StegSocials schema or preparation semantics",
+        "Do not claim durable KV draft persistence from a displayed target path",
+        "Do not perform social provider calls from preparation UI",
+        "Do not accept or retain provider credentials in preparation bundles",
+        "Do not convert premium eligibility into publication authority",
+        "Do not interfere with KV provider materialization work or SS-KV-SKAP-SOCIAL-RELEASE-001"
+      ],
+      "next_task_after_release": "Add authenticated KV draft writer/readback integration and prove ERL/Drafts readback on authentically materialized KV instances while keeping automated provider publication in SS-KV-SKAP-SOCIAL-RELEASE-001.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_POST_PREPARATION",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

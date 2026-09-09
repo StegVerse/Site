@@ -17,6 +17,8 @@
     { id: "records", label: "Records", icon: "▤", path: "03_Records", description: "Private records and structured continuity documents." },
     { id: "projects", label: "Projects", icon: "◇", path: "05_Projects", description: "Project continuity, event records, and working context." },
     { id: "research", label: "Research", icon: "⌕", path: "02_Research", description: "Research notes, references, and inquiry continuity." },
+    { id: "erl", label: "ERL", icon: "◎", path: "02_Research/ERL", description: "Evidence and research artifacts available to this KV. ERL references may be used to prepare StegSocials drafts without changing ERL provenance." },
+    { id: "stegsocials-drafts", label: "StegSocials Drafts", icon: "✎", path: "02_Research/StegSocials/Drafts", description: "Private platform-shaped StegSocials preparation bundles. Draft preparation is standard; automated publication is a separately entitled premium capability." },
     { id: "archive", label: "Archive", icon: "□", path: "06_Archive", description: "Archived continuity material retained under your KV policy." }
   ];
 

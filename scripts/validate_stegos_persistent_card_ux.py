@@ -63,8 +63,8 @@ checks = {
     "authority effect none": 'authority_effect: "NONE"' in helper,
     "handoff present": "SITE-STEGOS-PERSISTENT-CARD-UX-1000" in handoff,
     "help pages complete": required_help.issubset({p.name for p in HELP.glob("*.html")}),
-    "offline shell wrapper generation v14": 'CACHE_NAME = "stegos-web-bootstrap-v14";' in service_worker,
-    "v14 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js")' in service_worker,
+    "offline shell wrapper generation v15": 'CACHE_NAME = "stegos-web-bootstrap-v15";' in service_worker,
+    "v15 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js")' in service_worker,
     "v13 predecessor retained": 'var CACHE_NAME = "stegos-web-bootstrap-v13";' in predecessor,
     "persistent helper explicitly cached": '"./persistent-card-ux.js"' in predecessor,
     "canonical recovery explicitly cached": '"./master-records-sv001-recovery.js"' in predecessor,
@@ -83,7 +83,7 @@ checks = {
     "manual fallback remains fail closed": "Manual exact-proof import remains a fail-closed fallback. SV001 must not be rerun." in auto_recovery,
     "root InTr custody gate preserved": "contemporaneous InTr admission required before Master Records custody" in predecessor,
     "historical retroactive authorization prohibited": "retroactive authorization forbidden" in predecessor,
-    "README documents v14 auto progression": "stegos-web-bootstrap-v14" in readme and "automatic machine-governed continuation" in readme_normalized,
+    "README documents v15 relay propagation": "stegos-web-bootstrap-v15" in readme and "automatic machine-governed continuation" in readme_normalized,
     "README preserves non-authority boundary": "recovery does not grant custody authority" in readme_normalized and "source/ci/merge" in readme_normalized,
 }
 
@@ -98,4 +98,4 @@ for asset in sorted(required_shell_assets):
 if failed:
     raise SystemExit("FAIL: " + ", ".join(sorted(set(failed))))
 
-print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, automatic current-governance continuation, and v14 propagation contract")
+print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, automatic current-governance continuation, and v15 configured-rendezvous propagation contract")

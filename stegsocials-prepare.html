@@ -16,25 +16,25 @@
 <a href="my-kv-directory.html?dir=erl">← Back to ERL</a>
 <section class="panel">
 <h1>Prepare a StegSocials post</h1>
-<p>Use an ERL artifact as research provenance, shape a private draft for a platform, save the prepared bundle into the current device-local KnowledgeVault when available, verify the exact stored bytes, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
+<p>Start from an ERL artifact, let the current device-local KV build a source-grounded draft, edit it as needed, save the preparation bundle to My KV, and copy the finished text for manual publication. Standard preparation does not contact a social provider or use provider credentials.</p>
 <div class="grid">
 <div class="field"><label for="erl-ref">ERL reference</label><input id="erl-ref" class="mono" autocomplete="off"></div>
 <div class="field"><label for="platform">Platform</label><select id="platform"><option value="LINKEDIN">LinkedIn</option><option value="FACEBOOK">Facebook</option><option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="OTHER">Other</option></select></div>
 <div class="field"><label for="account-ref">Account/page reference</label><input id="account-ref" autocomplete="off" placeholder="Optional"></div>
 <div class="field"><label for="evidence-ref">Post-specific evidence reference</label><input id="evidence-ref" class="mono" autocomplete="off" placeholder="Optional until evidence bundle exists"></div>
 </div>
-<div class="field" style="margin-top:12px"><label for="body">Draft text</label><textarea id="body" placeholder="Write or paste your draft here."></textarea></div>
+<div class="field" style="margin-top:12px"><label for="body">Draft text</label><textarea id="body" placeholder="Use Draft from ERL, or write/paste your own draft here."></textarea></div>
 <div class="grid" style="margin-top:12px">
 <div class="field"><label for="hashtags">Hashtags, space separated</label><input id="hashtags" placeholder="#StegVerse #AIGovernance"></div>
 <div class="field"><label for="source-link">Public source link</label><input id="source-link" autocomplete="off" placeholder="Optional"></div>
 </div>
 <p id="shape-guidance" class="note"></p>
-<div class="actions"><button id="prepare" class="sv-btn sv-btn-primary" type="button">Prepare draft</button><button id="save-kv" class="sv-btn sv-btn-primary" type="button" disabled>Save draft to My KV</button><button id="copy" class="sv-btn sv-btn-secondary" type="button" disabled>Copy post text</button><button id="copy-bundle" class="sv-btn sv-btn-secondary" type="button" disabled>Copy preparation bundle</button></div>
+<div class="actions"><button id="assist" class="sv-btn sv-btn-primary" type="button">Draft from ERL</button><button id="prepare" class="sv-btn sv-btn-secondary" type="button">Prepare edited draft</button><button id="save-kv" class="sv-btn sv-btn-primary" type="button" disabled>Save draft to My KV</button><button id="copy" class="sv-btn sv-btn-secondary" type="button" disabled>Copy post text</button><button id="copy-bundle" class="sv-btn sv-btn-secondary" type="button" disabled>Copy preparation bundle</button></div>
 <p id="status" class="status" role="status" aria-live="polite"></p>
 </section>
 <section class="panel premium">
 <h2>Premium automated posting</h2>
-<p>Automated and scheduled publication are separate premium capabilities. They are intentionally not executed from this preparation surface. Premium publication enters the separately governed release/provider path after entitlement and credential/runtime checks.</p>
+<p>Automated and scheduled publication are separate premium capabilities. They are intentionally not executed from this standard preparation surface.</p>
 </section>
 <section id="preview-panel" class="panel" hidden>
 <h2>Prepared draft</h2>
@@ -46,69 +46,40 @@
 <script src="assets/stegverse-node-continuity.js"></script>
 <script src="assets/generated/site-browser-intr-connectors.js"></script>
 <script src="assets/hb-intr-carrier.js"></script>
-<script src="stegos-node/device-kv-intr-sync.js?v=20260909-stegsocials-draft-r2"></script>
-<script src="assets/my-kv-device-kv-query-bridge.js?v=20260909-stegsocials-draft-r2"></script>
+<script src="stegos-node/device-kv-intr-sync.js?v=20260909-stegsocials-assist-r1"></script>
+<script src="assets/my-kv-device-kv-query-bridge.js?v=20260909-stegsocials-assist-r1"></script>
 <script src="assets/stegsocials-post-preparation.js"></script>
+<script src="assets/stegsocials-erl-draft-assistant.js"></script>
 <script src="assets/stegsocials-kv-draft-write-bridge.js"></script>
 <script src="assets/stegsocials-kv-exact-content-readback.js"></script>
 <script>
 (function(){
 "use strict";
-var api=window.StegVerseStegSocialsPreparation;
-var writer=window.StegVerseStegSocialsKVDraftWriter;
-var exactReadback=window.StegVerseStegSocialsKVExactReadback;
+var api=window.StegVerseStegSocialsPreparation,assistant=window.StegVerseStegSocialsERLDraftAssistant,writer=window.StegVerseStegSocialsKVDraftWriter,exactReadback=window.StegVerseStegSocialsKVExactReadback;
 var params=new URLSearchParams(location.search);
-var erl=document.getElementById("erl-ref"), platform=document.getElementById("platform"), account=document.getElementById("account-ref"), evidence=document.getElementById("evidence-ref"), body=document.getElementById("body"), hashtags=document.getElementById("hashtags"), source=document.getElementById("source-link"), prepare=document.getElementById("prepare"), saveKV=document.getElementById("save-kv"), copy=document.getElementById("copy"), copyBundle=document.getElementById("copy-bundle"), status=document.getElementById("status"), preview=document.getElementById("preview"), panel=document.getElementById("preview-panel"), draftPath=document.getElementById("draft-path"), kvEvidence=document.getElementById("kv-evidence"), guidance=document.getElementById("shape-guidance");
-var current=null;
-var ref=params.get("erl_ref")||"";
-if(ref){erl.value=ref.indexOf("02_Research/ERL/")===0?ref:"02_Research/ERL/"+ref.replace(/^\/+/,"");}
+var erl=document.getElementById("erl-ref"),platform=document.getElementById("platform"),account=document.getElementById("account-ref"),evidence=document.getElementById("evidence-ref"),body=document.getElementById("body"),hashtags=document.getElementById("hashtags"),source=document.getElementById("source-link"),assist=document.getElementById("assist"),prepare=document.getElementById("prepare"),saveKV=document.getElementById("save-kv"),copy=document.getElementById("copy"),copyBundle=document.getElementById("copy-bundle"),status=document.getElementById("status"),preview=document.getElementById("preview"),panel=document.getElementById("preview-panel"),draftPath=document.getElementById("draft-path"),kvEvidence=document.getElementById("kv-evidence"),guidance=document.getElementById("shape-guidance");
+var current=null,ref=params.get("erl_ref")||"";
+if(ref)erl.value=ref.indexOf("02_Research/ERL/")===0?ref:"02_Research/ERL/"+ref.replace(/^\/+/,"");
 if(params.get("platform"))platform.value=String(params.get("platform")).toUpperCase();
-function updateGuidance(){try{var g=api.platformGuidance(platform.value);guidance.textContent=g.soft_limit?g.label+" shaping guide: "+g.soft_limit+" character soft limit for this preparation surface.":g.label+" shaping guide: no local soft character limit is enforced.";}catch(e){guidance.textContent=e.message;}}
-platform.addEventListener("change",updateGuidance);updateGuidance();
 function parseTags(v){return String(v||"").trim().split(/\s+/).filter(Boolean);}
-function exactExpectation(result){
-  var full=String(result.canonical_path||"");
-  var slash=full.lastIndexOf("/");
-  if(slash<1)throw new Error("FAIL_CLOSED: admitted draft path invalid for exact-content verification");
-  return {canonical_path:full.slice(0,slash),name:result.admitted_entry&&result.admitted_entry.name||full.slice(slash+1),sha256:result.sha256,size_bytes:result.size_bytes};
+function updateGuidance(){try{var g=api.platformGuidance(platform.value);guidance.textContent=g.soft_limit?g.label+" shaping guide: "+g.soft_limit+" character soft limit.":g.label+" shaping guide: no local soft character limit is enforced.";}catch(e){guidance.textContent=e.message;}}
+platform.addEventListener("change",updateGuidance);updateGuidance();
+function buildCurrent(){
+  current=api.build({platform:platform.value,erl_ref:erl.value,body:body.value,account_ref:account.value||null,evidence_bundle_ref:evidence.value||"UNRESOLVED_POST_SPECIFIC_EVIDENCE",hashtags:parseTags(hashtags.value),source_links:source.value?[source.value]:[],source_refs:source.value?[source.value,erl.value]:[erl.value],tier:"STANDARD",publication_plan:"MANUAL",automated_posting_entitled:false});
+  preview.textContent=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");
+  draftPath.textContent="Target KV draft path: "+current.kv_context.draft_path;kvEvidence.textContent="";panel.hidden=false;copy.disabled=false;copyBundle.disabled=false;saveKV.disabled=false;return current;
 }
-prepare.addEventListener("click",function(){
-  try{
-    current=api.build({
-      platform:platform.value,
-      erl_ref:erl.value,
-      body:body.value,
-      account_ref:account.value||null,
-      evidence_bundle_ref:evidence.value||"UNRESOLVED_POST_SPECIFIC_EVIDENCE",
-      hashtags:parseTags(hashtags.value),
-      source_links:source.value?[source.value]:[],
-      source_refs:source.value?[source.value,erl.value]:[erl.value],
-      tier:"STANDARD",
-      publication_plan:"MANUAL",
-      automated_posting_entitled:false
-    });
-    preview.textContent=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");
-    draftPath.textContent="Target KV draft path: "+current.kv_context.draft_path;
-    kvEvidence.textContent="";
-    panel.hidden=false;copy.disabled=false;copyBundle.disabled=false;saveKV.disabled=false;
-    status.textContent="Draft prepared locally. No provider call was performed. Save it to My KV when the registered device-local KV receiver is available, or copy it for manual publication.";status.className="status";
-  }catch(e){current=null;panel.hidden=true;copy.disabled=true;copyBundle.disabled=true;saveKV.disabled=true;status.textContent=e.message;status.className="status error";}
+function exactExpectation(result){var full=String(result.canonical_path||""),slash=full.lastIndexOf("/");if(slash<1)throw new Error("FAIL_CLOSED: admitted draft path invalid for exact-content verification");return {canonical_path:full.slice(0,slash),name:result.admitted_entry&&result.admitted_entry.name||full.slice(slash+1),sha256:result.sha256,size_bytes:result.size_bytes};}
+assist.addEventListener("click",function(){
+  if(!assistant||typeof assistant.assist!=="function"){status.textContent="The ERL drafting assistant is unavailable.";status.className="status error";return;}
+  assist.disabled=true;status.textContent="Reading the selected ERL artifact from the current device-local KV and building a deterministic source-grounded draft…";status.className="status";
+  assistant.assist({erl_ref:erl.value,platform:platform.value}).then(function(result){body.value=result.body;hashtags.value=result.hashtags.join(" ");if(result.source_url)source.value=result.source_url;buildCurrent();status.textContent="ERL-assisted draft prepared locally from SHA-256-verified KV content. No AI provider or social provider call was performed. Edit anything you want, then save or copy it.";status.className="status";assist.disabled=false;}).catch(function(error){status.textContent=error&&error.message?error.message:"ERL-assisted drafting failed closed.";status.className="status error";assist.disabled=false;});
 });
+prepare.addEventListener("click",function(){try{buildCurrent();status.textContent="Edited draft prepared locally. No provider call was performed.";status.className="status";}catch(e){current=null;panel.hidden=true;copy.disabled=true;copyBundle.disabled=true;saveKV.disabled=true;status.textContent=e.message;status.className="status error";}});
 saveKV.addEventListener("click",function(){
-  if(!current)return;
-  if(!writer||typeof writer.saveDraft!=="function"){status.textContent="The My KV draft writer is unavailable.";status.className="status error";return;}
-  if(!exactReadback||typeof exactReadback.readExact!=="function"){status.textContent="The exact-content KV readback verifier is unavailable.";status.className="status error";return;}
-  saveKV.disabled=true;status.textContent="Requesting governed device-local KV admission and exact stored-content verification…";status.className="status";
-  writer.saveDraft(current).then(function(result){
-    return exactReadback.readExact(exactExpectation(result)).then(function(readback){return {admission:result,readback:readback};});
-  }).then(function(pair){
-    var result=pair.admission,readback=pair.readback;
-    if(readback.exact_content_bytes_readback_verified!==true)throw new Error("FAIL_CLOSED: exact stored-content verification incomplete");
-    kvEvidence.textContent="KV admission + exact-content readback verified: "+readback.sha256+" · "+readback.size_bytes+" bytes · device-local store observed · cloud-provider readback not claimed.";
-    status.textContent="Draft admitted to the current device-local My KV and the exact stored bytes were read back and SHA-256 verified. No social provider call was performed.";status.className="status";saveKV.disabled=false;
-  }).catch(function(error){
-    kvEvidence.textContent="";status.textContent=error&&error.message?error.message:"My KV draft admission/readback failed closed.";status.className="status error";saveKV.disabled=false;
-  });
+  if(!current)return;if(!writer||typeof writer.saveDraft!=="function"){status.textContent="The My KV draft writer is unavailable.";status.className="status error";return;}if(!exactReadback||typeof exactReadback.readExact!=="function"){status.textContent="The exact-content KV readback verifier is unavailable.";status.className="status error";return;}
+  saveKV.disabled=true;status.textContent="Saving to My KV and verifying the exact stored bytes…";status.className="status";
+  writer.saveDraft(current).then(function(result){return exactReadback.readExact(exactExpectation(result)).then(function(readback){return {admission:result,readback:readback};});}).then(function(pair){var readback=pair.readback;if(readback.exact_content_bytes_readback_verified!==true)throw new Error("FAIL_CLOSED: exact stored-content verification incomplete");kvEvidence.textContent="KV admission + exact-content readback verified: "+readback.sha256+" · "+readback.size_bytes+" bytes · device-local store observed.";status.textContent="Draft saved to My KV and the exact stored bytes were read back and SHA-256 verified. No social provider call was performed.";status.className="status";saveKV.disabled=false;}).catch(function(error){kvEvidence.textContent="";status.textContent=error&&error.message?error.message:"My KV draft admission/readback failed closed.";status.className="status error";saveKV.disabled=false;});
 });
 copy.addEventListener("click",function(){if(!current)return;var text=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");navigator.clipboard.writeText(text).then(function(){status.textContent="Post text copied. Manual publication remains under your control.";}).catch(function(){status.textContent="Clipboard access was unavailable; select the prepared text manually.";status.className="status error";});});
 copyBundle.addEventListener("click",function(){if(!current)return;navigator.clipboard.writeText(JSON.stringify(current,null,2)).then(function(){status.textContent="Preparation bundle copied. It contains no provider credential material.";}).catch(function(){status.textContent="Clipboard access was unavailable.";status.className="status error";});});

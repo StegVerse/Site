@@ -10,57 +10,26 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "stegsocials-kv-exact-content-readback-20260909",
       "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "MERGED_INTO_CANONICAL_WORKSTREAM",
       "normalized_work_key": "site-stegsocials-kv-exact-content-readback",
-      "dependency_surface_keys": [
-        "stegsocials:post-preparation-v1",
-        "kv:device-local-portable-admission",
-        "kv:device-local-exact-content-readback"
-      ],
-      "claimed_paths": [
-        "assets/stegsocials-kv-exact-content-readback.js",
-        "tests/stegsocials-kv-exact-content-readback.test.cjs",
-        ".github/workflows/stegsocials-kv-exact-content-readback.yml",
-        "docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md",
-        "data/session-work-claims.d/site-stegsocials-kv-exact-content-readback-20260909.json",
-        "data/session-work-claims.d/site-stegsocials-kv-draft-admission-20260908.json"
-      ],
+      "dependency_surface_keys": ["stegsocials:post-preparation-v1","kv:device-local-portable-admission","kv:device-local-exact-content-readback"],
+      "claimed_paths": ["assets/stegsocials-kv-exact-content-readback.js","tests/stegsocials-kv-exact-content-readback.test.cjs",".github/workflows/stegsocials-kv-exact-content-readback.yml","docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md","data/session-work-claims.d/site-stegsocials-kv-exact-content-readback-20260909.json","data/session-work-claims.d/site-stegsocials-kv-draft-admission-20260908.json"],
       "handoff": "docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md",
-      "handoff_revision": "DEVICE_LOCAL_EXACT_CONTENT_READBACK_SOURCE_IMPLEMENTED_20260909",
+      "handoff_revision": "DEVICE_LOCAL_EXACT_CONTENT_READBACK_MERGED_20260909",
       "claim_created_at": "2026-09-09T00:28:00-05:00",
       "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
-      "expected_evidence": [
-        "StegSocials draft path restricted to canonical platform Drafts lane",
-        "readback resolves exact device-local kv_files key",
-        "content_base64 is decoded to bytes",
-        "decoded byte length equals expected size",
-        "decoded-byte SHA-256 equals expected admitted SHA-256",
-        "stored metadata hash and size equal decoded content hash and size",
-        "credential_material_present=false",
-        "provider_operation_authorized=false",
-        "cloud_provider_readback_observed=false",
-        "provider_call_performed=false",
-        "focused exact-content readback workflow PASS",
-        "SESSION_WORK_CLAIMS_PASS",
-        "Site Handoff Orchestrator PASS",
-        "Site Bootstrap Validate PASS",
-        "Ecosystem Heartbeat Orchestration PASS"
-      ],
-      "collision_boundaries": [
-        "Do not duplicate ERL evidence authority",
-        "Do not replace canonical StegSocials post-preparation ownership",
-        "Do not create a second DEVICE_KV or InTr runtime",
-        "Do not treat same-origin IndexedDB readback as cloud-provider readback",
-        "Do not perform social-provider calls",
-        "Do not accept or retain provider credentials",
-        "Do not interfere with SS-KV-SKAP-SOCIAL-RELEASE-001"
-      ],
-      "next_task_after_release": "Integrate exact-content verification into the Save draft to My KV completion path, execute it on the current iPhone, retain authentic admission/readback evidence, then extend the same proof requirement to authentically materialized provider-backed KV instances.",
+      "expected_evidence": ["StegSocials draft path restricted to canonical platform Drafts lane","readback resolves exact device-local kv_files key","content_base64 is decoded to bytes","decoded byte length equals expected size","decoded-byte SHA-256 equals expected admitted SHA-256","stored metadata hash and size equal decoded content hash and size","credential_material_present=false","provider_operation_authorized=false","cloud_provider_readback_observed=false","provider_call_performed=false","focused exact-content readback workflow PASS","SESSION_WORK_CLAIMS_PASS","Site Handoff Orchestrator PASS","Site Bootstrap Validate PASS","Ecosystem Heartbeat Orchestration PASS"],
+      "collision_boundaries": ["Do not duplicate ERL evidence authority","Do not replace canonical StegSocials post-preparation ownership","Do not create a second DEVICE_KV or InTr runtime","Do not treat same-origin IndexedDB readback as cloud-provider readback","Do not perform social-provider calls","Do not accept or retain provider credentials","Do not interfere with SS-KV-SKAP-SOCIAL-RELEASE-001"],
+      "next_task_after_release": "Use verified ERL content itself to help construct standard platform-shaped drafts, while preserving manual publication as standard and automated provider publication as premium.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_DEVICE_LOCAL_KV_EXACT_READBACK",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1148,
+      "release_commit": "7a7d66045074cb066d1e948b24afede183e1413b",
+      "claim_released_at": "2026-09-09T01:02:00-05:00",
+      "archive_eligible": true
     }
   ]
 }

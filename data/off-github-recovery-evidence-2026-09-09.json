@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.site.off_github_recovery_evidence.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "observed_at": "2026-09-09",
+  "source_commit": "00fcf4149d4deb81066e2829618885cafadc2325",
+  "archive_sha256": "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f",
+  "archive_size_bytes": 6957389,
+  "manifest_entry_count": 3400,
+  "external_storage_medium": "GOOGLE_DRIVE",
+  "external_locator_disclosed": false,
+  "observations": {
+    "external_retention_observed": true,
+    "round_trip_download_observed": true,
+    "round_trip_byte_identity_verified": true,
+    "all_sha256sum_entries_verified": true,
+    "off_github_restore_observed": true,
+    "off_github_validation_observed": true,
+    "off_github_publication_observed": false,
+    "public_content_equivalence_observed": false
+  },
+  "validation_environment": {
+    "github_api_used_for_restore_or_validation": false,
+    "github_actions_used_for_restore_or_validation": false,
+    "network_required_for_validation": false,
+    "provider_credentials_required_for_validation": false
+  },
+  "validated_surfaces": [
+    "scripts/check_no_required_third_party_runtime.py",
+    "scripts/check_dns_edge_portability.py",
+    "scripts/check_source_publication_recovery.py",
+    "scripts/check_site_recovery_bundle_manifest.py",
+    "scripts/check_ecosystem_chat_gateway_activation.py",
+    "scripts/check_mr_sv001_intr_governance.py",
+    "scripts/check_stegos_ipod_bootstrap_projection.py"
+  ],
+  "proof_boundary": "External retention, round-trip restore, hash verification, and repository-local validation are observed. Publication, DNS/TLS recovery, public-content equivalence, and resident/provider-neutral public-rendezvous observation remain separate."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.site.third_party_dependency_inventory_supersession.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "updated_at": "2026-09-09",
+  "legacy_inventory": "data/third-party-dependency-inventory.json",
+  "current_runtime_source": "data/third-party-runtime-cutover-current.json",
+  "reconciliation_source": "data/third-party-dependency-reconciliation-2026-09-09.json",
+  "entries": {
+    "render-ecosystem-chat-gateway": {
+      "legacy_observation_classification": "REQUIRED_CURRENTLY",
+      "legacy_observation_current_required_use": true,
+      "temporal_class": "HISTORICAL_SUPERSEDED",
+      "current_classification": "OPTIONAL_FALLBACK",
+      "current_required_use": false,
+      "current_role": "OPTIONAL_EXPLICIT_FALLBACK_OR_HISTORICAL_ONLY",
+      "superseded_by": "data/third-party-runtime-cutover-current.json#provider_states.render",
+      "provenance_retained": true
+    },
+    "cloudflare-tunnel-steggate": {
+      "legacy_observation_classification": "REQUIRED_CURRENTLY",
+      "legacy_observation_current_required_use": true,
+      "temporal_class": "HISTORICAL_SUPERSEDED",
+      "current_classification": "OPTIONAL_FALLBACK",
+      "current_required_use": false,
+      "canonical_runtime_carrier": false,
+      "current_role": "OPTIONAL_EXPLICIT_FALLBACK_OR_HISTORICAL_ONLY",
+      "superseded_by": "data/third-party-runtime-cutover-current.json#provider_states.cloudflare_quick_tunnel",
+      "source_retirement_merges": [
+        "084477a684193ad1b45d4403aa57844c5135638e",
+        "07632a7dcbd12d16440322f33269a51413fa3049"
+      ],
+      "provenance_retained": true
+    }
+  },
+  "interpretation_rule": "Legacy REQUIRED_CURRENTLY observations remain historical provenance only and MUST NOT be interpreted as current runtime requirements after their supersession binding is present and validated.",
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

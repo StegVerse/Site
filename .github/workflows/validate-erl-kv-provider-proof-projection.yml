@@ -1,0 +1,22 @@
+name: Validate ERL KV Provider Proof Projection
+
+on:
+  pull_request:
+    paths:
+      - "data/erl-kv-provider-proof-projection.json"
+      - "scripts/check_erl_kv_provider_proof_projection.py"
+      - "docs/ERL_KV_PROVIDER_PROOF_SITE_PROJECTION_MIRROR_HANDOFF.md"
+      - "README.md"
+      - ".github/workflows/validate-erl-kv-provider-proof-projection.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python scripts/check_erl_kv_provider_proof_projection.py

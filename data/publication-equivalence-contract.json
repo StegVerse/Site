@@ -9,7 +9,8 @@
     "required_provider": null,
     "required_platform": null,
     "automatic_provider_selection": false,
-    "origin_must_be_explicitly_selected": true
+    "origin_must_be_explicitly_selected": true,
+    "selection_record": "data/publication-origin-selection-2026-09-09.json"
   },
   "materialization": {
     "include_top_level_public_files": true,
@@ -44,7 +45,9 @@
     "static_publication_artifact_materialized": false,
     "artifact_manifest_verified": false,
     "publication_observation_evidence_contract_installed": true,
-    "non_github_origin_selected": false,
+    "non_github_origin_selected": true,
+    "selected_origin_provider": "RENDER",
+    "selected_origin_materialized": false,
     "non_github_publication_observed": false,
     "exact_public_content_equivalence_observed": false,
     "tls_equivalence_observed": false

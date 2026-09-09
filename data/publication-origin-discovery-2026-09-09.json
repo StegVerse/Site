@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.site.publication_origin_discovery.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "observed_at": "2026-09-09",
+  "selection_policy": {
+    "automatic_provider_selection": false,
+    "explicit_selection_required": true,
+    "selected_origin": null
+  },
+  "observed_connected_candidates": [
+    {
+      "provider": "VERCEL",
+      "resource_type": "PROJECT",
+      "name": "site",
+      "existing": true,
+      "suitable_as_already_selected_origin": false,
+      "reason": "Canonical Site provider posture says Vercel is not the production/publication dependency and the recovery contract requires explicit admissible-origin selection. Existing project presence is not selection."
+    },
+    {
+      "provider": "RENDER",
+      "resource_type": "STATIC_SITE",
+      "name": "stegverse-va-claim-guide",
+      "source_repository": "StegVerse-Labs/Site",
+      "existing": true,
+      "suitable_as_already_selected_origin": false,
+      "reason": "This existing static site is scoped to the VA claim guide rather than the complete Site publication artifact and must not be repurposed implicitly."
+    }
+  ],
+  "discovery_result": "NO_EXISTING_EXPLICITLY_SELECTED_ADMISSIBLE_NON_GITHUB_SITE_ORIGIN",
+  "safe_next_action": "Select an admissible non-GitHub static publication origin explicitly, then publish STEGVERSE_SITE_STATIC_PUBLICATION_V1 and verify exact per-file equivalence before any DNS cutover.",
+  "publication_observed": false,
+  "content_equivalence_observed": false,
+  "dns_or_tls_mutation_performed": false,
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

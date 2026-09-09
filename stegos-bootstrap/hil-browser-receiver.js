@@ -39,7 +39,7 @@
     return pkg;
   }
 
-  function validateCheckout(receipt) {
+  function validateCheckout(receipt, pkg) {
     if (!receipt || receipt.schema !== "stegverse.workercoordinator-portable-checkout-receipt/v1") { fail("canonical checkout receipt required"); }
     if (receipt.task_id !== TASK_ID || receipt.worker_id !== WORKER_ID) { fail("checkout task/worker mismatch"); }
     if (!receipt.claim_id || !Number.isInteger(receipt.fencing_token) || receipt.fencing_token <= 24) { fail("fresh HIL claim/fence above G24 required"); }
@@ -48,7 +48,56 @@
     if (receipt.global_workercoordinator_authority !== true || receipt.stegos_device_task_authority !== false) { fail("checkout authority ownership mismatch"); }
     if (receipt.external_non_stegverse_machine_required !== false || receipt.parallel_workercoordinator_claim_issuance_allowed !== false) { fail("checkout machine/parallel issuance drift"); }
     if (receipt.authority_effect !== "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE") { fail("checkout authority effect mismatch"); }
+    if (pkg) {
+      if (receipt.portable_authority_epoch !== pkg.portable_authority_epoch) { fail("checkout portable authority epoch mismatch"); }
+      if (receipt.predecessor_registry_git_blob_sha !== pkg.predecessor_registry_git_blob_sha) { fail("checkout predecessor registry mismatch"); }
+      if (!pkg.source_binding || receipt.task_fragment_git_blob_sha !== pkg.source_binding.task_fragment_git_blob_sha || receipt.handoff_git_blob_sha !== pkg.source_binding.handoff_git_blob_sha || receipt.state_vector_git_blob_sha !== pkg.source_binding.state_vector_git_blob_sha) {
+        fail("checkout source lineage mismatch");
+      }
+    }
     return receipt;
+  }
+
+  function verifyCheckoutSelfHash(receipt) {
+    var body = {};
+    Object.keys(receipt).forEach(function (key) { if (key !== "receipt_sha256") { body[key] = receipt[key]; } });
+    return root.StegVersePortableWorkerCoordinator.sha256Hex(body).then(function (digest) {
+      if ("sha256:" + digest !== receipt.receipt_sha256) { fail("checkout receipt self-hash mismatch"); }
+      return receipt;
+    });
+  }
+
+  function resolveCheckout(pkg) {
+    var store = root.StegOSEcosystemChatServiceWorkerBridge.portableStateStoreForPackage(pkg);
+    return store.read().then(function (existing) {
+      if (!existing) {
+        return root.StegVersePortableWorkerCoordinator.checkout(pkg, store).then(function (checkout) {
+          return verifyCheckoutSelfHash(validateCheckout(checkout && checkout.receipt, pkg)).then(function (receipt) {
+            return { receipt: receipt, continuation_reused_existing_checkout: false };
+          });
+        });
+      }
+      if (existing.schema !== root.StegVersePortableWorkerCoordinator.stateSchema || existing.portable_authority_epoch !== pkg.portable_authority_epoch) { fail("retained portable state lineage mismatch"); }
+      if (existing.predecessor_registry_git_blob_sha !== pkg.predecessor_registry_git_blob_sha) { fail("retained predecessor registry mismatch"); }
+      if (existing.parallel_workercoordinator_claim_issuance_allowed !== false) { fail("retained parallel issuance state invalid"); }
+      var count = Number.isInteger(existing.checkout_count) ? existing.checkout_count : Math.max(0, Number(existing.generation || 0) - pkg.predecessor_generation_floor);
+      if (count === 0) {
+        return root.StegVersePortableWorkerCoordinator.checkout(pkg, store).then(function (checkout) {
+          return verifyCheckoutSelfHash(validateCheckout(checkout && checkout.receipt, pkg)).then(function (receipt) {
+            return { receipt: receipt, continuation_reused_existing_checkout: false };
+          });
+        });
+      }
+      if (count !== 1) { fail("retained HIL state has invalid checkout count"); }
+      if (existing.last_task_id !== TASK_ID || !existing.last_checkout_receipt) { fail("retained checkout is not this HIL task"); }
+      var retained = validateCheckout(existing.last_checkout_receipt, pkg);
+      if (existing.last_claim_id !== retained.claim_id || existing.checkout_tail_sha256 !== retained.receipt_sha256 || existing.generation !== retained.fencing_token) {
+        fail("retained HIL checkout state/receipt binding mismatch");
+      }
+      return verifyCheckoutSelfHash(retained).then(function (receipt) {
+        return { receipt: receipt, continuation_reused_existing_checkout: true };
+      });
+    });
   }
 
   function execute(body) {
@@ -61,34 +110,35 @@
     }
 
     var checkoutReceipt;
+    var continuationReused = false;
     var bindingEntry;
     return loadPackage().then(validatePackage).then(function (pkg) {
-      return root.StegVersePortableWorkerCoordinator.checkout(pkg, root.StegOSEcosystemChatServiceWorkerBridge.portableStateStoreForPackage(pkg));
-    }).then(function (checkout) {
-      checkoutReceipt = validateCheckout(checkout && checkout.receipt);
-      return root.StegVersePortableWorkerCoordinator.sha256Hex(checkoutReceipt).then(function (digest) {
-        if ("sha256:" + digest !== checkoutReceipt.receipt_sha256) { fail("checkout receipt self-hash mismatch"); }
-        return appendReceipt({
-          schema: "stegos.hil_browser_receiver_checkout_binding/v1",
-          state: "CHECKOUT_BOUND_BROWSER_RECEIVER",
-          task_id: TASK_ID,
-          worker_id: WORKER_ID,
-          node_id: body.node_id,
-          claim_id: checkoutReceipt.claim_id,
-          fencing_token: checkoutReceipt.fencing_token,
-          canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
-          execution_surface: "CURRENT_USER_IPHONE",
-          credential_authority: "TV/TVC",
-          github_token_runtime_authority: "NONE",
-          heartbeat_granted_authority: false,
-          global_workercoordinator_authority_owned_by_browser_receiver: false,
-          browser_receiver_minted_claim_fence: false,
-          installed_native_app_required: false,
-          external_non_stegverse_machine_required: false,
-          request_consumption_claimed: false,
-          authority_effect: "NONE_BINDING_ONLY",
-          created_at: new Date().toISOString()
-        });
+      return resolveCheckout(pkg);
+    }).then(function (resolved) {
+      checkoutReceipt = resolved.receipt;
+      continuationReused = resolved.continuation_reused_existing_checkout === true;
+      return appendReceipt({
+        schema: "stegos.hil_browser_receiver_checkout_binding/v1",
+        state: continuationReused ? "RETAINED_CHECKOUT_BOUND_BROWSER_RECEIVER" : "CHECKOUT_BOUND_BROWSER_RECEIVER",
+        task_id: TASK_ID,
+        worker_id: WORKER_ID,
+        node_id: body.node_id,
+        claim_id: checkoutReceipt.claim_id,
+        fencing_token: checkoutReceipt.fencing_token,
+        canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
+        continuation_reused_existing_checkout: continuationReused,
+        second_claim_minted: false,
+        execution_surface: "CURRENT_USER_IPHONE",
+        credential_authority: "TV/TVC",
+        github_token_runtime_authority: "NONE",
+        heartbeat_granted_authority: false,
+        global_workercoordinator_authority_owned_by_browser_receiver: false,
+        browser_receiver_minted_claim_fence: false,
+        installed_native_app_required: false,
+        external_non_stegverse_machine_required: false,
+        request_consumption_claimed: false,
+        authority_effect: "NONE_BINDING_ONLY",
+        created_at: new Date().toISOString()
       });
     }).then(function (entry) {
       bindingEntry = entry;
@@ -105,6 +155,8 @@
         fencing_token: checkoutReceipt.fencing_token,
         canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
         checkout_binding_entry_sha256: bindingEntry.entry_sha256,
+        continuation_reused_existing_checkout: continuationReused,
+        second_claim_minted: false,
         transition: EXPECTED_TRANSITION,
         transport: "SERVICE_WORKER_LOCAL_INTERCEPT",
         execution_surface: "CURRENT_USER_IPHONE",
@@ -131,6 +183,8 @@
           node_id: body.node_id,
           claim_id: checkoutReceipt.claim_id,
           fencing_token: checkoutReceipt.fencing_token,
+          continuation_reused_existing_checkout: continuationReused,
+          second_claim_minted: false,
           transition: EXPECTED_TRANSITION,
           execution_entry_sha256: executionEntry.entry_sha256,
           journal_replay_state: report.state,

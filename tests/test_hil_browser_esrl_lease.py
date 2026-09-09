@@ -49,11 +49,13 @@ def test_esrl_page_reuses_same_browser_context_and_exports_exact_json():
     assert 'link.download="hil-esrl-lease-open-"+evidence.browser_context_id+".json"' in page
 
 
-def test_service_worker_loads_esrl_successor_without_state_reset():
+def test_exact_v16_service_worker_loads_esrl_through_existing_hil_state_bridge():
     worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
+    bridge = (BOOT / "hil-portable-state-bridge.js").read_text(encoding="utf-8")
     assert 'importScripts("./hil-portable-state-bridge.js")' in worker
-    assert 'importScripts("./hil-browser-esrl-lease.js")' in worker
-    assert '"./hil-esrl-activate.html"' in worker
+    assert 'importScripts("./hil-browser-esrl-lease.js")' not in worker
     assert 'CACHE_NAME = "stegos-web-bootstrap-v16"' in worker
+    assert 'importScripts("./hil-browser-receiver.js")' in bridge
+    assert 'importScripts("./hil-browser-esrl-lease.js")' in bridge
     assert "indexedDB.deleteDatabase" not in worker
     assert "caches.delete" not in worker

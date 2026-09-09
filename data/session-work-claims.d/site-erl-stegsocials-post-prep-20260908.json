@@ -1,21 +1,29 @@
 {
   "schema": "stegverse.session-work-claim/v1",
-  "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "task_id": "SS-EVIDENCE-COMPARISON-001",
   "normalized_work_key": "site-erl-stegsocials-post-prep",
   "dependency_surface_keys": [
     "kv:erl-global-availability",
+    "stegsocials:post-preparation-v1",
     "site:stegsocials-post-preparation",
     "site:stegsocials-platform-draft-directories"
   ],
   "claimed_paths": [
     "docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md",
+    "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
+    "assets/my-kv-directory.js",
+    "my-kv-directory.html",
+    "assets/stegsocials-post-preparation.js",
+    "stegsocials-prepare.html",
+    "tests/stegsocials-post-preparation.test.cjs",
+    ".github/workflows/stegsocials-post-preparation.yml",
     "README.md",
-    "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
     "data/session-work-claims.d/site-erl-stegsocials-post-prep-20260908.json"
   ],
-  "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-  "cosv_id": "50000000102000",
-  "state": "CLAIMED",
-  "authority_effect": "NONE",
+  "handoff": "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
+  "canonical_handoff": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+  "cosv_id": "40000100100000",
+  "state": "CLAIMED_INTEGRATION",
+  "authority_effect": "NONE_PROJECTION_ONLY",
   "activation_effect": false
 }

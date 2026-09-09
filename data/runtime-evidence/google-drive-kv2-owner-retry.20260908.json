@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.site.runtime-evidence.google-drive-kv2-owner-retry/v1",
+  "goal_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "cosv_id": "50000000102000",
+  "observation_source": "owner-visible current-iPhone stegverse.org Cloud KV Peers surface",
+  "observation_kind": "AUTHENTIC_OWNER_VISIBLE_RESULT",
+  "request_id": "SITE-CLOUD-KV-4347408852127319cbda574f02e03edb",
+  "requested_peer": "KV #2",
+  "governance_state": "PENDING_INTERLOCK_INTR",
+  "resident_ingress_observed": true,
+  "instance_materialized": false,
+  "provider_operation_authorized": false,
+  "relationship_tier_before_materialization": "NOT_CONNECTED",
+  "private_content_rewrite": false,
+  "existing_identity_rewrite": false,
+  "resident_kv": {
+    "logical_name": "KV #1",
+    "instance_id": "kvi_0d5d4cfd531db51bbcf7fdfc0311f5dc",
+    "exact_readback": true,
+    "durability": "BEST_EFFORT_BROWSER_ORIGIN"
+  },
+  "existing_cloud_identity": {
+    "instance_id": "kvi_a31335d2cc3745fa987b635432cfed2c",
+    "current_ordinal": "KV #1",
+    "requested_peer_ordinal": "KV #2"
+  },
+  "not_observed_on_owner_visible_result": [
+    "resident_transport_origin",
+    "provider_execution_attempted",
+    "relationship_mutation_attempted",
+    "resident_materialization_observed"
+  ],
+  "claim_boundaries": [
+    "This evidence proves request emission and resident ingress only for the fields visible on the owner surface.",
+    "It does not prove Google Drive provider execution.",
+    "It does not prove KV #2 materialization.",
+    "It does not prove relationship mutation, data movement, replication, or AI corpus exposure.",
+    "It does not infer STEGOS_NODE_EVENT_EPHEMERAL merely because the compatibility repair was deployed; transport origin was not visible in the supplied result."
+  ],
+  "authority_effect": "NONE_EVIDENCE_ONLY",
+  "activation_effect": false
+}

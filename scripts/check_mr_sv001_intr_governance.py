@@ -19,6 +19,7 @@ def main() -> int:
     bootstrap_sw = (ROOT / "stegos-bootstrap/service-worker-v13-runtime.js").read_text(encoding="utf-8")
     auto_recovery = (ROOT / "stegos-bootstrap/master-records-auto-recovery.js").read_text(encoding="utf-8")
     gateway_config = json.loads((ROOT / "data/ecosystem-chat-gateway.json").read_text(encoding="utf-8"))
+    propagation = (ROOT / "docs/STEGOS_V15_CONFIGURED_RENDEZVOUS_PROPAGATION.md").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_normalized = readme.replace("-\n", "-").replace("\n", " ")
     handoff = (ROOT / "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md").read_text(encoding="utf-8")
@@ -168,8 +169,10 @@ def main() -> int:
             "README does not describe material governance/failure behavior")
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
             "README does not document no-retroactive-authorization and partial-admission failure semantics")
-    require("stegos-web-bootstrap-v15" in readme_normalized,
-            "README must describe the v15 configured-rendezvous propagation successor")
+    require("stegos-web-bootstrap-v15" in propagation and "configured" in propagation.lower() and "resident-rendezvous" in propagation,
+            "dedicated propagation contract must describe the v15 configured-rendezvous successor")
+    require("fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
+            "v15 propagation contract must preserve governance and terminal-source boundaries")
     require("automatic machine-governed continuation" in readme_normalized.lower(),
             "README must describe automatic continuation after exact G23 source availability")
     require("current governance" in handoff.lower() or "contemporaneous" in handoff.lower(), "handoff lacks contemporaneous governance")

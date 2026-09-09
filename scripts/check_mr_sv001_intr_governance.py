@@ -65,9 +65,9 @@ def main() -> int:
             "browser must obtain root InTr admission before nested custody POST")
 
     require('importScripts("./service-worker-v13-runtime.js")' in bootstrap_wrapper,
-            "v14 service worker wrapper must import exact v13 runtime predecessor")
-    require('CACHE_NAME = "stegos-web-bootstrap-v14"' in bootstrap_wrapper,
-            "v14 wrapper must advance cache generation so installed clients refresh continuation source")
+            "v15 service worker wrapper must import exact v13 runtime predecessor")
+    require('CACHE_NAME = "stegos-web-bootstrap-v15"' in bootstrap_wrapper,
+            "v15 wrapper must advance cache generation so installed clients refresh configured rendezvous source")
 
     for marker in [
         'var CACHE_NAME = "stegos-web-bootstrap-v13"',
@@ -117,9 +117,6 @@ def main() -> int:
     require("USER_ONLY" not in auto_recovery and "HUMAN_ONLY" not in auto_recovery,
             "automatic machine-owned continuation reintroduced a human authority gate")
 
-    # After authentic governance + custody/reconstruction PASS, Site may carry the
-    # resulting proof to the already-existing resident rendezvous. This transport is
-    # evidence-only and must never become a substitute for the fresh InTr decision.
     for marker in [
         'GATEWAY_CONFIG_URL = "../data/ecosystem-chat-gateway.json"',
         'SITE_CUSTODY_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"',
@@ -171,8 +168,8 @@ def main() -> int:
             "README does not describe material governance/failure behavior")
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
             "README does not document no-retroactive-authorization and partial-admission failure semantics")
-    require("stegos-web-bootstrap-v14" in readme_normalized,
-            "README must describe the v14 propagation successor")
+    require("stegos-web-bootstrap-v15" in readme_normalized,
+            "README must describe the v15 configured-rendezvous propagation successor")
     require("automatic machine-governed continuation" in readme_normalized.lower(),
             "README must describe automatic continuation after exact G23 source availability")
     require("current governance" in handoff.lower() or "contemporaneous" in handoff.lower(), "handoff lacks contemporaneous governance")
@@ -195,6 +192,7 @@ def main() -> int:
     print("MR_SV001_INTR_GOVERNANCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_CONFIGURED_GATEWAY_ROUTE_PASS")
+    print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_PASS")
     return 0
 
 

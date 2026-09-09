@@ -9,14 +9,17 @@ Upstream handoff: `StegVerse-Labs/StegCore/docs/STEGGATE_HOSTED_CARRIER_RETIREME
 
 ## Reconciled state
 
-StegCore PR #193 and PR #194 retired both historical GitHub-hosted StegGate runtime/carrier surfaces. Site already records the newer canonical cutover state in `data/third-party-runtime-cutover-current.json`: resident StegVerse runtime is canonical; Cloudflare quick tunnel and GitHub Actions runtime are not required; automatic third-party runtime selection is false.
+StegCore PR #193 and PR #194 retired both historical GitHub-hosted StegGate runtime/carrier surfaces. Site records the current cutover state in `data/third-party-runtime-cutover-current.json`: resident StegVerse runtime is canonical; Cloudflare quick tunnel and GitHub Actions runtime are not required; automatic third-party runtime selection is false.
 
-`data/third-party-dependency-inventory.json` still contains a stale `cloudflare-tunnel-steggate` entry marked `REQUIRED_CURRENTLY` with `current_required_use=true`. That stale inventory claim must not override the newer cutover record or the merged StegCore retirement handoff.
+The older `data/third-party-dependency-inventory.json` still records the pre-retirement Cloudflare-tunnel and Render requirement observations. Those entries are retained as historical inventory provenance and no longer determine current runtime-carrier state. `scripts/check_third_party_dependency_invariant.py` now loads the current cutover record and emits the effective runtime state explicitly so historical observations cannot silently reassert a retired runtime requirement.
 
-This continuation adds:
+This continuation now includes:
 
-- `data/third-party-dependency-reconciliation-2026-09-09.json`, which explicitly supersedes those stale Cloudflare quick-tunnel requirement claims and binds the exact StegCore retirement merge SHAs;
-- `scripts/check_third_party_dependency_reconciliation.py`, which fails if the Site cutover and reconciliation records diverge on resident-runtime identity, third-party runtime requirements, Cloudflare quick-tunnel role, GitHub Actions runtime role, or the exact upstream retirement merges.
+- `data/third-party-dependency-reconciliation-2026-09-09.json`, binding the exact StegCore retirement merge SHAs and superseding stale Cloudflare quick-tunnel requirement claims for current-state evaluation;
+- `scripts/check_third_party_dependency_reconciliation.py`, which fails if Site cutover and reconciliation records diverge on resident-runtime identity, third-party runtime requirements, Cloudflare quick-tunnel role, GitHub Actions runtime role, or exact upstream retirement merges;
+- `scripts/check_third_party_dependency_invariant.py`, which validates the current cutover alongside the historical inventory and reports current effective state separately from historical observations;
+- `.github/workflows/no-required-third-party-runtime.yml`, which now executes both reconciliation validators when inventory/cutover/reconciliation surfaces change;
+- the Site #497 pre-work claim bound to `task/site-497-steggate-inventory-reconcile-20260909` so PR orchestration can map the branch to the active workload.
 
 ## Current truth
 
@@ -35,12 +38,12 @@ Historical trycloudflare.com receipts remain provenance only. They are not curre
 
 ## Remaining work
 
-1. Rewrite the stale `cloudflare-tunnel-steggate` node in `data/third-party-dependency-inventory.json` itself so the legacy inventory directly matches the reconciled state.
-2. Wire the reconciliation validator into the repository validation path.
-3. Maintain `README.md` with the resident-runtime / optional-carrier distinction once the inventory rewrite is applied.
-4. Establish deterministic DNS/edge portability and recovery.
-5. Materialize and authentically observe a resident/provider-neutral public rendezvous before claiming public-carrier independence at runtime.
-6. Continue eliminating required GitHub source/publication/recovery dependence while retaining GitHub only as optional source/validation transport.
+1. Normalize the legacy dependency inventory metadata so pre-retirement provider observations are visibly marked superseded/historical without deleting provenance.
+2. Maintain `README.md` with the resident-runtime / optional-carrier distinction.
+3. Establish deterministic DNS/edge portability and recovery.
+4. Materialize and authentically observe a resident/provider-neutral public rendezvous before claiming public-carrier independence at runtime.
+5. Continue eliminating required GitHub source/publication/recovery dependence while retaining GitHub only as optional source/validation transport.
+6. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only after release conditions are actually met.
 
 ## Manual work
 

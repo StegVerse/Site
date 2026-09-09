@@ -1,8 +1,8 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `kv-n-device-kv-projection-admission`
-State: SOURCE_CONTRACT_MERGED / DEVICE_KV_RESIDENT_TRANSPORT_MERGED / PREPUBLICATION_UI_MERGED / CANONICAL_PROVIDER_SHAPE_MERGED / PHYSICAL_KV1_ADOPTED / DEVICE_KV_PROJECTION_ADMISSION_SOURCE_IN_PROGRESS / PUBLIC_NAV_README_BINDING_PENDING / KV2_PROVIDER_ACTIVATION_PENDING
+Branch: `device-local-kv-install`
+State: SOURCE_CONTRACT_MERGED / DEVICE_KV_TRANSPORT_MERGED / PHYSICAL_GOOGLE_DRIVE_KV_VERIFIED / DEVICE_LOCAL_KV_INSTALL_SOURCE_IMPLEMENTED / DEVICE_LOCAL_RUNTIME_INSTALL_PENDING / CLOUD_PEER_EXPANSION_NEXT / PUBLIC_NAV_README_BINDING_PENDING
 Updated: 2026-09-08
 Authority effect: NONE
 Activation effect: false
@@ -16,65 +16,76 @@ CANONICAL COSV HANDOFF: StegVerse-Labs/.github/KV_CONNECTION_REVALIDATION_COSV_M
 UPSTREAM CAPABILITY HANDOFF: StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md
 ```
 
-## Merged Site baseline
+## Architecture correction
 
-- PR #1109 merged bounded MyKV resident DEVICE_KV transport at `1c5396d186b2a8674f265733d91c542d472d20fd`.
-- PR #1110 merged the intentionally unlinked MyKV #1/#2/#n candidate UI at `5977b53c8ac43099b4d2cecf27cdc4c78e4c4882`.
-- PR #1113 merged canonical plural provider projection alignment at `774ce092ab00a3eaee337eb4a0a7f168cbecc6a0`; Site now consumes `instance.providers.items` and `instance.providers.pending_requests`, preserves provider/credential mutation false sentinels, and rejects singular `instance.provider` projections.
+The device-local resident KnowledgeVault and DEVICE_KV transport/cache are now distinct concepts.
 
-The existing MyKV resident reader returns `MY_KV_INSTANCE_SET_PROJECTION` only from resident `_System/my-kv-set-projection.json`. Provider and relationship requests remain `PENDING_INTERLOCK_INTR`. Provider execution, relationship mutation, data movement, replication, AI-corpus exposure, credential authority, and activation authority remain false.
+`stegverse-device-local-intr-v1` remains the transport/materialization database used by InTr/DEVICE_KV. It is not the owner's canonical local KnowledgeVault root.
 
-## Upstream KV #1 adoption source — merged
-
-`StegVerse-Labs/continuity-vault-kit` PR #203 merged at `4f2f47120ab162273abba6eae3e2155a46db2c16`. Its adoption tool requires the existing schema-1.1 installation receipt, binds apply mode to its exact SHA-256, refuses overwrite of existing instance/adoption/projection records, creates canonical `stegverse.kv.instance/v1` metadata, defaults relationship state to `NOT_CONNECTED`, emits the bounded `stegverse.kv.my-kv-set-projection/v1`, and preserves private content/original receipt bytes.
-
-## Authentic physical Google Drive KV #1 — materialized and verified
-
-The owner-controlled Google Drive KnowledgeVault was inspected before mutation. The original installation receipt remained 3,179 exact bytes and was bound at:
+The first-class resident KnowledgeVault uses a separate browser-origin IndexedDB database:
 
 ```text
-sha256:f00378cd1f68e08a39c837f2a80e7e105e822a321c0eea17a91318b4b6e5ea19
+stegverse-device-local-kv-v1
+  files
+  meta
 ```
 
-Pre-write checks found no `_System/Instances`, no `instance.json`, no `adoption.receipt.json`, and no `_System/my-kv-set-projection.json`. The bounded adoption bundle was then written in completion-safe order and raw-read back from Drive. Exact post-write hashes are:
+This prevents cloud projection/cache rows from being mistaken for the installed local vault and removes the normal requirement to repeatedly select cloud files just to reconstruct device state.
+
+## Device-local installation source
+
+`assets/device-local-kv-installer.js` installs the resident KV with one owner action. It first ensures the StegVerse Node exists, then requests persistent browser storage when supported, and creates three exact resident records in the dedicated device-local KV database:
 
 ```text
 _System/Instances/instance.json
-sha256:8bf5ba7d911a52506a582f064315c9831a84c0c5fbb6ec7a031c325a79af090a
-
+_System/installation.receipt.json
 _System/my-kv-set-projection.json
-sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4
-
-_System/Instances/adoption.receipt.json
-sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552
 ```
 
-The original installation receipt was raw-read again after the writes and remained the same 3,179-byte hash. Physical KV #1 now exists as a single-member `personal` KV set, relationship `NOT_CONNECTED`, no observed provider rows, no provider/relationship mutation authority, and no activation effect. Public source does not retain the private provider folder locator or physical instance identifier.
+The installer:
 
-## Current slice — resident DEVICE_KV projection admission
+- creates a unique `kvi_...` instance ID;
+- binds the resident KV to the current registered Node;
+- uses storage medium `device-local-browser-indexeddb`;
+- records locator `indexeddb:stegverse-device-local-kv-v1/files`;
+- initializes `KV #1` in set `personal`;
+- defaults relationship state to `NOT_CONNECTED`;
+- includes no provider rows, credentials, private content, provider mutation authority, relationship mutation authority, execution authority, or activation authority;
+- writes the three canonical JSON rows and then exact-reads all three back, verifying SHA-256 and byte length before reporting installation success;
+- returns an existing verified installation rather than overwriting it.
 
-The physical projection existing in Google Drive is not itself proof that the current browser's resident DEVICE_KV contains that projection. This branch adds a separate, narrow admission path:
+`device-kv-install.html` is the one-tap owner surface. It does not require a cloud file picker or provider credentials.
 
-- `assets/my-kv-set-projection-admission-bridge.js`
-- `assets/my-kv-set-projection-admission-receiver.js`
-- `tests/my-kv-set-projection-admission.test.cjs`
-- owner-mediated projection selection on `my-kv-instances.html`
+Validation:
 
-The bridge requires an owner-selected raw JSON file, validates it with the canonical Site MyKV validator, hashes the exact raw bytes, and transports only a `MY_KV_INSTANCE_SET_PROJECTION_ADMISSION` / `COMMIT_CANDIDATE` request through the registered Node + generated InTr + HB-derived carrier.
+```text
+tests/device-local-kv-installer.test.cjs
+.github/workflows/device-local-kv-install.yml
+```
 
-The dedicated admission receiver accepts only `MY_KV_SET_PROJECTION_REPLACE` targeting exactly `_System/my-kv-set-projection.json`. It verifies raw payload SHA-256 and size, parses and revalidates the canonical bounded projection, rejects private/credential/governance-receipt fields, stores the exact raw base64 in the existing DEVICE_KV `kv_files` store, reads the row back, and returns success only when key/hash/size/content all match exactly. It does not widen root `intr-service-worker.js` or modify Personal Profile/Form Profile semantics.
+## Existing Google Drive KV
 
-The admission record is a replaceable status projection rather than execution authority so future authentic KV #2/#n projection refreshes can be admitted without treating old status as immutable authority. Every replacement remains owner-mediated, validated, Node/InTr-bound, path-restricted, and exact-readback verified.
+The previously adopted Google Drive KnowledgeVault remains authentic evidence and is not rewritten or silently renumbered by this slice. Its installation receipt and adopted instance/projection records remain preserved.
 
-## Remaining sequence
+Because the owner has selected device-local-first architecture, the existing Google Drive instance must be treated as an independently rooted cloud KV when it is attached to the new resident set. Any ordinal reassignment needed to avoid an identity collision must be an explicit migration/adoption event with its own receipt; it must not be inferred from the browser.
 
-1. validate and merge the DEVICE_KV projection-admission source slice;
-2. on the current iPhone, open the MyKV instances surface and select the canonical `KnowledgeVault/_System/my-kv-set-projection.json`;
-3. require `PROJECTION_ADMITTED` plus `exact_readback_verified=true` and then `MY_KV_INSTANCE_SET_PROJECTION` readback showing exactly one KV #1 instance;
-4. bind the validated MyKV candidate into ordinary public My KV navigation and update repository README in the same publication change;
-5. only after the exact current-device readback proof, materialize/authorize real KV #2 through an owner-selected provider flow;
-6. prove provider CONNECT/VERIFY/READ/WRITE/SYNC/DISCONNECT and relationship `NOT_CONNECTED -> CONNECTED -> SYNCED -> AI_INTERACTION` using authentic admitted evidence, with downgrade/reconnect/recovery proofs.
+## Cloud-hosted expansion — next slice
+
+After the current iPhone has a verified resident KV, add cloud-hosted instances as peers rather than as browser bootstrap sources.
+
+Required sequence:
+
+1. resident KV exact installation/readback on current iPhone;
+2. add provider-neutral cloud-instance creation/adoption requests from the resident MyKV surface;
+3. materialize new cloud roots as `KV #2/#3/#n`, or explicitly migrate/adopt the existing Google Drive root into the next free ordinal without changing its private contents;
+4. keep each new cloud instance `NOT_CONNECTED` until a separate governed relationship transition is admitted;
+5. prove provider CONNECT/VERIFY/READ/WRITE/SYNC/DISCONNECT with authentic provider-result evidence and SKAP-held credential references;
+6. prove `NOT_CONNECTED -> CONNECTED -> SYNCED -> AI_INTERACTION` and downgrade/reconnect/recovery flows without collapsing provenance or authority.
+
+## Publication boundary
+
+This source slice creates a public install route but does not yet replace ordinary My KV navigation or README guidance. Public navigation/README should be updated in the same change that follows successful current-device installation proof.
 
 ## Manual work
 
-No manual action until this admission branch passes hosted validation and merges. Do not create KV #2 yet and do not manually edit any of the three physical KV #1 adoption artifacts. After merge, the only expected manual action is selecting the already-existing canonical `my-kv-set-projection.json` from the current iPhone Files/Google Drive picker on the MyKV instances surface; no credential entry is part of that step.
+None until this branch validates and merges. After deployment, the only expected owner action is opening `https://stegverse.org/device-kv-install.html` on the current iPhone and tapping **Install resident KV**. No cloud file selection and no credential entry are part of device-local installation.

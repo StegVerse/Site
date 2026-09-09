@@ -1,0 +1,66 @@
+name: Device Local KV Install
+
+on:
+  pull_request:
+    paths:
+      - "assets/device-local-kv-installer.js"
+      - "device-kv-install.html"
+      - "tests/device-local-kv-installer.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-device-local-kv-install-20260908.json"
+      - ".github/workflows/device-local-kv-install.yml"
+  push:
+    paths:
+      - "assets/device-local-kv-installer.js"
+      - "device-kv-install.html"
+      - "tests/device-local-kv-installer.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-device-local-kv-install-20260908.json"
+      - ".github/workflows/device-local-kv-install.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate device-local KV installer contract
+        run: node tests/device-local-kv-installer.test.cjs
+      - name: Validate browser source syntax
+        run: node --check assets/device-local-kv-installer.js
+      - name: Prove resident/cloud/transport separation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src=Path('assets/device-local-kv-installer.js').read_text(encoding='utf-8')
+          page=Path('device-kv-install.html').read_text(encoding='utf-8')
+          required=[
+            'stegverse-device-local-kv-v1',
+            'device-local-browser-indexeddb',
+            '_System/Instances/instance.json',
+            '_System/installation.receipt.json',
+            '_System/my-kv-set-projection.json',
+            'NOT_CONNECTED',
+            'provider_operation_authorized:false',
+            'relationship_mutation_authorized:false',
+            'authority_effect:"NONE"',
+            'activation_effect:false',
+            'exact_readback_verified:true',
+          ]
+          missing=[x for x in required if x not in src]
+          if missing: raise SystemExit('missing installer markers: '+', '.join(missing))
+          if 'stegverse-device-local-intr-v1' in src:
+            raise SystemExit('device-local KV must not reuse DEVICE_KV transport database')
+          page_required=['Install resident KV','cloud-hosted KnowledgeVaults can be added as independent peers','assets/device-local-kv-installer.js']
+          missing=[x for x in page_required if x not in page]
+          if missing: raise SystemExit('missing page markers: '+', '.join(missing))
+          print('DEVICE_LOCAL_KV_INSTALL=PASS')
+          print('DEVICE_LOCAL_KV_AND_DEVICE_KV_TRANSPORT=SEPARATE')
+          print('CLOUD_PROVIDER_AUTHORITY=NONE')
+          PY

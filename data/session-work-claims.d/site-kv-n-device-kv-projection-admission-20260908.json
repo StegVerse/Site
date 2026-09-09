@@ -10,31 +10,26 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "kv-n-device-kv-projection-admission",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED_AFTER_MERGE_SUPERSEDED_BY_DEVICE_LOCAL_KV",
       "normalized_work_key": "site-kv-n-device-kv-projection-admission",
       "dependency_surface_keys": ["site:my-kv-device-kv-projection-admission","site:my-kv-resident-exact-readback","kv:my-kv-set-projection"],
-      "claimed_paths": [
-        "assets/my-kv-set-projection-admission-bridge.js",
-        "assets/my-kv-set-projection-admission-receiver.js",
-        "my-kv-instances.html",
-        "tests/my-kv-set-projection-admission.test.cjs",
-        ".github/workflows/my-kv-instance-manager.yml",
-        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-        "data/session-work-claims.d/site-kv-n-device-kv-projection-admission-20260908.json",
-        "data/session-work-claims.d/site-kv-n-provider-shape-alignment-20260908.json"
-      ],
+      "claimed_paths": [],
       "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
-      "handoff_revision": "DEVICE_KV_PROJECTION_ADMISSION_PENDING_20260908",
+      "handoff_revision": "DEVICE_KV_PROJECTION_ADMISSION_MERGED_SUPERSEDED_20260908",
       "claim_created_at": "2026-09-08T18:32:00-05:00",
-      "claim_expires_when": "Release after bounded projection admission source passes MyKV and Site-wide validation and merges. Authentic same-device runtime readback remains required before activation is claimed.",
-      "expected_evidence": ["MY_KV_INSTANCE_SET_PROJECTION_ADMISSION class","canonical projection validation before write","write destination exactly _System/my-kv-set-projection.json","owner-selected raw payload SHA-256 bound","exact resident readback verified","private_content_included=false","credential_material_included=false","provider_mutation_authorized=false","relationship_mutation_authorized=false","provider execution false","relationship effects false","SESSION_WORK_CLAIMS_PASS","SITE_HANDOFF_ORCHESTRATION_PASS","Site Bootstrap Validate PASS","Ecosystem Heartbeat Orchestration PASS","My KV Multi-Instance Provider Manager PASS"],
-      "collision_boundaries": ["Do not widen the global intr-service-worker.js registry","Do not modify Personal Contact Profile or Personal Form Profile semantics","Do not write any KV path other than _System/my-kv-set-projection.json","Do not create or infer KV #2","Do not authenticate or execute provider operations","Do not materialize relationship transitions","Do not expose credentials, SKAP refs, private content, or governance receipt refs","No NON-TV/TVC secret/token","No GitHub-token runtime authority"],
-      "next_task_after_release": "Exercise exact current-device admission/readback of the physical KV #1 projection, then integrate public MyKV navigation/README and proceed to real KV #2 provider authorization only after readback proof.",
+      "claim_released_at": "2026-09-08T18:58:00-05:00",
+      "release_evidence": [
+        "Site PR #1114 merged at f928ca203a89566c6862c7b93b9f204ab36ba6c6",
+        "Pages build/deployment succeeded",
+        "Owner elected device-local KV-first architecture before exercising the repeated cloud-file picker"
+      ],
+      "next_task_after_release": "Install a first-class resident device-local KV in a database separate from DEVICE_KV transport/cache, then add cloud-hosted KVs as independent peers.",
       "credential_authority": "TV/TVC",
-      "credential_requirement": "NONE_FOR_PROJECTION_ADMISSION",
+      "credential_requirement": "NONE",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "archive_eligible": true
     }
   ]
 }

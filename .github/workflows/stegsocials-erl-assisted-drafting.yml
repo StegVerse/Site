@@ -1,0 +1,40 @@
+name: StegSocials ERL Assisted Drafting
+
+on:
+  pull_request:
+    paths:
+      - 'assets/stegsocials-erl-draft-assistant.js'
+      - 'stegsocials-prepare.html'
+      - 'tests/stegsocials-erl-draft-assistant.test.cjs'
+      - 'docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md'
+      - 'data/session-work-claims.d/site-stegsocials-erl-assisted-drafting-20260909.json'
+      - 'data/session-work-claims.d/site-stegsocials-kv-exact-content-readback-20260909.json'
+      - '.github/workflows/stegsocials-erl-assisted-drafting.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/stegsocials-erl-draft-assistant.js'
+      - 'stegsocials-prepare.html'
+      - 'tests/stegsocials-erl-draft-assistant.test.cjs'
+      - 'docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md'
+      - '.github/workflows/stegsocials-erl-assisted-drafting.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify bounded ERL-assisted drafting
+        run: node tests/stegsocials-erl-draft-assistant.test.cjs
+      - name: Verify standard preparation integration
+        run: |
+          grep -q 'Draft from ERL' stegsocials-prepare.html
+          grep -q 'StegVerseStegSocialsERLDraftAssistant' stegsocials-prepare.html
+          grep -q 'deterministic_local_assistance:true' assets/stegsocials-erl-draft-assistant.js
+          grep -q 'ai_provider_call_performed:false' assets/stegsocials-erl-draft-assistant.js
+          grep -q 'provider_call_performed:false' assets/stegsocials-erl-draft-assistant.js
+          grep -q 'publication_authority_effect:"NONE_PREPARATION_ONLY"' assets/stegsocials-erl-draft-assistant.js

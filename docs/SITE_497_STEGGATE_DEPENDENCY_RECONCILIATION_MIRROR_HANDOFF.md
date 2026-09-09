@@ -7,6 +7,7 @@ Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
 COSV: `50000000102000`
 Upstream handoff: `StegVerse-Labs/StegCore/docs/STEGGATE_HOSTED_CARRIER_RETIREMENT_MIRROR_HANDOFF.md`
 Current continuation branch: `task/site-497-readme-recovery-bundle-20260909`
+Current pull request: `#1154`
 
 ## Merged cleanup evidence
 
@@ -29,16 +30,35 @@ Legacy Render and Cloudflare-tunnel observations remain provenance and are expli
 
 `data/source-publication-recovery.json` and `scripts/check_source_publication_recovery.py` establish the merged `STEGVERSE_SITE_RECOVERY_BUNDLE_V1` contract. The contract requires an identified source snapshot, static publication files, domain binding, DNS/edge portability data, repository-local validators, dependency census, current handoff/task state, and a cryptographic path/hash manifest. It does not treat GitHub source hosting, Actions, Pages, or any replacement provider as canonical StegVerse state.
 
-## Recovery-bundle materialization continuation
+## Recovery-bundle materialization
 
-The current branch adds:
+PR #1154 adds:
 
 - `scripts/materialize_site_recovery_bundle.py`, which operates on a local checkout without network access or provider credentials, copies the deterministic repository snapshot into `build/site-recovery-bundle/source`, hashes every bundled file with SHA-256, and emits `manifest.json` plus `SHA256SUMS`;
 - `scripts/check_site_recovery_bundle_manifest.py`, which rematerializes the bundle, verifies every SHA-256 digest, validates required recovery content and fail-closed proof semantics, and refuses to treat repository/CI materialization as off-GitHub restore or publication proof;
-- `data/site-recovery-bundle-materialization.json`, which records the exact generated paths and current observation boundary;
-- direct root `README.md` maintenance describing the provider-independent runtime/recovery boundary.
+- `data/site-recovery-bundle-materialization.json`, which records the exact generated paths and the observed CI materialization boundary;
+- direct root `README.md` maintenance describing the provider-independent runtime/recovery boundary and canonical public surface `https://stegverse.org/`.
 
-CI materialization from an exact PR checkout will prove that a complete repository-source recovery bundle and path/hash manifest can be generated without GitHub API calls or provider credentials. It will not by itself prove off-GitHub retention, restore, validation, publication, DNS/TLS recovery, or resident public-rendezvous observation.
+Recovery bundle materialization and hash verification were authentically observed in No Required Third-Party Runtime run `34326685598` at head `bccbe2971f024c277ada01067b8a4c770bcd7abd`, then revalidated on exact PR #1154 head `6cf75c56e2781d65f7967d2ce04d2c82ce71befb` by run `34327632824`.
+
+Those observations prove deterministic repository-source bundle materialization and hash verification. They do not prove off-GitHub retention, restore, validation, publication, DNS/TLS recovery, or resident public-rendezvous observation.
+
+## Additional contamination repaired by PR #1154
+
+Exact-head validation exposed two stale assumptions outside the primary recovery-bundle files:
+
+1. `scripts/check_mr_sv001_intr_governance.py` still required the v15 wrapper cache identity even though current `stegos-bootstrap/service-worker.js` is v16. The checker now validates the v16 wrapper while preserving retained v15 configured-rendezvous provenance.
+2. `stegos-bootstrap/master-records-auto-recovery.js` still consumed retired gateway schema `1.2.0` and automatically selected a hosted fallback when sovereign local discovery failed. It now consumes gateway schema `1.3.0`, validates `SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS`, probes only sovereign loopback advertisements, verifies optional third-party fallbacks are explicit-opt-in/non-required, and does not automatically select any hosted fallback. If local rendezvous is unavailable, authentic custody/reconstruction PASS remains intact and evidence relay remains `PENDING_RETRY`.
+
+`scripts/check_stegos_ipod_bootstrap_projection.py` was advanced to enforce the current sovereign-local-only rendezvous semantics and reject the retired hosted-fallback markers.
+
+On exact head `6cf75c56e2781d65f7967d2ce04d2c82ce71befb`:
+
+- No Required Third-Party Runtime run `34327632824` = SUCCESS;
+- Validate StegOS Persistent Card UX run `34327632900` = SUCCESS;
+- Ecosystem Heartbeat Orchestration run `34327632714` = SUCCESS;
+- Site Bootstrap Validate run `34327632825` = SUCCESS;
+- Site Handoff Orchestrator run `34327632782` = SUCCESS.
 
 ## Current truth
 
@@ -51,8 +71,10 @@ legacy Cloudflare tunnel requirement observation = HISTORICAL_SUPERSEDED
 DNS/edge portability contract = MERGED_SOURCE_VALIDATED
 DNS/edge physical migration proof = PENDING
 source/publication recovery contract = MERGED_SOURCE_VALIDATED
-recovery bundle materializer = IMPLEMENTED_SOURCE_PENDING_VALIDATION
-recovery bundle SHA-256 manifest verification = IMPLEMENTED_SOURCE_PENDING_VALIDATION
+recovery bundle materialization = OBSERVED_IN_CI
+recovery bundle SHA-256 verification = OBSERVED_IN_CI
+Master Records proof rendezvous automatic hosted fallback = false
+Master Records proof rendezvous current config = SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS
 off-GitHub restore proof = PENDING
 off-GitHub publication proof = PENDING
 resident/provider-neutral public rendezvous proof = PENDING
@@ -60,7 +82,7 @@ resident/provider-neutral public rendezvous proof = PENDING
 
 ## Remaining work
 
-1. Validate and merge the README/recovery-bundle materialization branch.
+1. Merge PR #1154 after its final handoff-only exact-head validation clears.
 2. Retain a generated recovery bundle and its SHA-256 manifest outside GitHub; restore and validate it without GitHub API/Actions.
 3. Publish the verified static artifact through a non-GitHub origin and capture exact public-content equivalence evidence.
 4. Capture authentic registrar/nameserver state and perform a controlled DNS/edge recovery drill with TLS/public-content equivalence evidence.

@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "docs/hil-esrl-stale-navigation-postmerge-1173",
       "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
-      "handoff_revision": "c1b75e1a7ee095918db727a0da87688c544af5e4",
+      "handoff_revision": "PENDING_BRANCH_HEAD",
       "role": "POST_MERGE_HANDOFF_RECONCILIATION",
       "state": "RELEASED",
       "normalized_work_key": "site-hil-esrl-postmerge-handoff-1176",
@@ -21,7 +21,7 @@
         "README.md"
       ],
       "claim_created_at": "2026-09-09T09:39:00-05:00",
-      "claim_expires_when": "RELEASED after exact-head validation and merge of Site PR #1176 at c1b75e1a7ee095918db727a0da87688c544af5e4; the separate stale-navigation runtime claim remains active until public current-iPhone propagation is physically observed.",
+      "claim_expires_when": "Release after exact-head validation and merge of the post-merge handoff reconciliation; the separate stale-navigation runtime claim remains active until public current-iPhone propagation is physically observed.",
       "expected_evidence": [
         "canonical Site handoff records PR #1173 merge SHA",
         "canonical Site handoff records exact-head and post-merge validation evidence",
@@ -43,7 +43,10 @@
       "render_required": false,
       "authority_effect": false,
       "activation_effect": false,
-      "archive_eligible": false
+      "archive_eligible": false,
+      "pull_request": 1176,
+      "release_commit": "c1b75e1a7ee095918db727a0da87688c544af5e4",
+      "claim_released_at": "2026-09-09T09:40:00-05:00"
     }
   ]
 }

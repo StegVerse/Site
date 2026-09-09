@@ -30,11 +30,29 @@ def test_esrl_successor_requires_exact_g25_lineage_inputs():
     assert 'value.fencing_token <= 24' in src
     assert 'receipt.claim_id !== evidence.claim_id' in src
     assert 'receipt.fencing_token !== evidence.fencing_token' in src
-    assert 'receipt.receipt_sha256 !== evidence.canonical_checkout_receipt_sha256' in src
+    assert 'evidence.canonical_checkout_receipt_sha256 && receipt.receipt_sha256 !== evidence.canonical_checkout_receipt_sha256' in src
     assert 'state.checkout_count !== 1' in src
     assert 'state.last_task_id !== TASK_ID' in src
     assert 'body.browser_context_id !== evidence.browser_context_id' in src
     assert 'body.node_id !== evidence.node_id' in src
+
+
+def test_esrl_legacy_g25_result_derives_checkout_hash_only_from_retained_state():
+    src = (BOOT / "hil-browser-esrl-lease.js").read_text(encoding="utf-8")
+    assert 'value.canonical_checkout_receipt_sha256 !== undefined' in src
+    assert 'canonical checkout receipt hash invalid' in src
+    assert 'retained checkout receipt hash invalid' in src
+    assert 'evidence.canonical_checkout_receipt_sha256 = receipt.receipt_sha256' in src
+    assert 'if (evidence.canonical_checkout_receipt_sha256 && receipt.receipt_sha256 !== evidence.canonical_checkout_receipt_sha256)' in src
+    assert 'if (!/^[a-f0-9]{64}$/.test(String(value.execution_entry_sha256 || "")))' in src
+
+
+def test_hil_activation_result_now_carries_checkout_hash_for_future_continuations():
+    receiver = (BOOT / "hil-browser-receiver.js").read_text(encoding="utf-8")
+    result_block = receiver.split('schema: "stegos.hil_browser_receiver_activation_result/v1"', 1)[1].split('};', 1)[0]
+    assert 'canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256' in result_block
+    assert 'execution_entry_sha256: executionEntry.entry_sha256' in result_block
+    assert 'second_claim_minted: false' in result_block
 
 
 def test_esrl_page_reuses_same_browser_context_and_exports_exact_json():

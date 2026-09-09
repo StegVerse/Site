@@ -59,22 +59,21 @@
       "dependency_surface_keys": ["site:my-kv-directory","stegsocials:erl-assisted-drafting"],
       "claimed_paths": ["docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md","data/session-work-claims.d/site-stegsocials-erl-empty-resident-kv-clarity-20260909.json"],
       "handoff": "docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
-      "handoff_revision": "SITE_PR_1171_MERGED_29EB1889C067950FAE1C3485B3500F0E50D0214E",
+      "handoff_revision": "CURRENT_IPHONE_PROOF_NEXT_ACTION_ONLY_20260909",
       "claim_created_at": "2026-09-09T08:31:00-05:00",
       "claim_expires_when": "CURRENT_FINALIZATION_PR_MERGED_OR_CLOSED",
-      "release_evidence": [
-        "Site PR #1171 merged at 29eb1889c067950fae1c3485b3500f0e50d0214e",
-        "StegSocials ERL Assisted Drafting PASS",
-        "Site Handoff Orchestrator PASS",
-        "Site Bootstrap Validate PASS",
-        "Ecosystem Heartbeat Orchestration PASS"
-      ],
+      "expected_evidence": ["PR #1167 merge recorded","PR #1170 merge recorded","no merged reconciliation described as pending","current-iPhone corrected-page observation is next action","SESSION_WORK_CLAIMS_PASS","Site Handoff Orchestrator PASS","Site Bootstrap Validate PASS","Ecosystem Heartbeat Orchestration PASS"],
+      "collision_boundaries": ["Do not retry Google Drive KV #2 adoption","Do not infer cloud-KV readback from resident DEVICE_KV","Do not introduce provider credential operations","Do not change COSV"],
       "next_task_after_release": "Collect the corrected live current-iPhone My KV -> ERL observation; if the resident ERL directory remains empty, use the existing owner-controlled Files import and continue only after canonical KV admission/readback, then execute Prepare -> Draft from ERL -> Save draft to My KV -> exact saved-draft readback.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_HANDOFF_FINALIZATION",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1171,
+      "release_commit": "29eb1889c067950fae1c3485b3500f0e50d0214e",
+      "claim_released_at": "2026-09-09T08:34:00-05:00",
+      "archive_eligible": true
     }
   ]
 }

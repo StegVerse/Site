@@ -59,18 +59,33 @@ def main() -> None:
         expected_lines.append(f"{digest}  public/{rel}\n")
     if (OUT / "SHA256SUMS").read_text(encoding="utf-8") != "".join(expected_lines):
         die("SHA256SUMS differs from manifest")
+
+    # The artifact remains provider-neutral even after an external origin has been
+    # explicitly selected. Provider selection is repository control state, not a
+    # property or authority effect of the materialized artifact itself.
     if manifest.get("provider_selected") is not False:
         die("artifact incorrectly claims provider selection")
     if manifest.get("publication_observed") is not False:
         die("artifact incorrectly claims publication")
     if manifest.get("public_content_equivalence_observed") is not False:
         die("artifact incorrectly claims public equivalence")
+
     obs = contract.get("current_observation", {})
-    for key in ("non_github_origin_selected", "non_github_publication_observed", "exact_public_content_equivalence_observed", "tls_equivalence_observed"):
+    if obs.get("non_github_origin_selected") is not True:
+        die("explicit non-GitHub origin selection is not recorded")
+    if obs.get("selected_origin_provider") != "RENDER":
+        die("selected origin provider mismatch")
+    if obs.get("selected_origin_materialized") is not False:
+        die("contract prematurely claims origin materialization")
+    for key in ("non_github_publication_observed", "exact_public_content_equivalence_observed", "tls_equivalence_observed"):
         if obs.get(key) is not False:
             die(f"contract prematurely claims observation: {key}")
+
     print(f"SITE_PUBLICATION_ARTIFACT=PASS entries={len(entries)}")
-    print("NON_GITHUB_ORIGIN_SELECTED=false")
+    print("ARTIFACT_PROVIDER_SELECTED=false")
+    print("NON_GITHUB_ORIGIN_SELECTED=true")
+    print("SELECTED_ORIGIN_PROVIDER=RENDER")
+    print("SELECTED_ORIGIN_MATERIALIZED=false")
     print("NON_GITHUB_PUBLICATION_OBSERVED=false")
     print("EXACT_PUBLIC_CONTENT_EQUIVALENCE_OBSERVED=false")
 

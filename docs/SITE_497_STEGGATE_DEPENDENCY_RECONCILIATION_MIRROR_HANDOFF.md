@@ -6,88 +6,58 @@ Goal: `KV-CONNECTION-REVALIDATION-WORKER-001`
 Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
 COSV: `50000000102000`
 Upstream handoff: `StegVerse-Labs/StegCore/docs/STEGGATE_HOSTED_CARRIER_RETIREMENT_MIRROR_HANDOFF.md`
-Current continuation branch: `task/site-497-dns-edge-portability-20260909`
+Current continuation branch: `task/site-497-source-publication-recovery-20260909`
 
 ## Merged cleanup evidence
 
-Site PR #1146 merged at `f21ae88ba871c68fdcc00d371a7f87ecf8246152` after exact-head validation succeeded for No Required Third-Party Runtime `34316363873`, Site Bootstrap `34316363900`, Ecosystem Heartbeat `34316363902`, and Site Handoff Orchestrator `34316364026` / `34316385334`.
-
-Site PR #1149 merged at `448eb1b646703243e986a65cf86a969c992b1188` after exact-head validation succeeded for:
-
-- No Required Third-Party Runtime run `34317666399`;
-- Site Bootstrap Validate run `34317666471`;
-- Ecosystem Heartbeat Orchestration run `34317666466`;
-- Site Handoff Orchestrator run `34317666389`.
-
-PR #1149 added explicit `HISTORICAL_SUPERSEDED` bindings for the old Render and Cloudflare-tunnel requirement observations, retained their provenance, enforced those bindings against the current cutover in CI, and staged the exact provider-independence README text without claiming that root README integration was already complete.
+- Site PR #1146 merged at `f21ae88ba871c68fdcc00d371a7f87ecf8246152` after focused third-party runtime, Bootstrap, Ecosystem Heartbeat, and handoff-orchestrator validation passed.
+- Site PR #1149 merged at `448eb1b646703243e986a65cf86a969c992b1188` after No Required Third-Party Runtime `34317666399`, Site Bootstrap `34317666471`, Ecosystem Heartbeat `34317666466`, and Site Handoff Orchestrator `34317666389` passed. It added explicit `HISTORICAL_SUPERSEDED` bindings for legacy Render and Cloudflare-tunnel requirement observations.
+- Site PR #1151 merged at `a076a392c7776abf693b824f22b216d6d7c8e611` after No Required Third-Party Runtime `34317857608`, Site Bootstrap `34317857529`, Ecosystem Heartbeat `34317857462`, and Site Handoff Orchestrator `34317857517` passed. It added deterministic provider-neutral DNS/edge recovery intent plus fail-closed validation while preserving physical DNS/TLS migration as unproven.
 
 ## Reconciled runtime state
 
 StegCore PR #193 and PR #194 retired both historical GitHub-hosted StegGate runtime/carrier surfaces. Site records the current cutover state in `data/third-party-runtime-cutover-current.json`: resident StegVerse runtime is canonical; Cloudflare quick tunnel and GitHub Actions runtime are not required; automatic third-party runtime selection is false.
 
-The older `data/third-party-dependency-inventory.json` retains pre-retirement Render and Cloudflare-tunnel observations as provenance. `data/third-party-dependency-inventory-supersession.json` binds those exact legacy values as `HISTORICAL_SUPERSEDED`, points each to the current cutover source, and prevents the old `REQUIRED_CURRENTLY` observations from being interpreted as current runtime requirements.
+Legacy Render and Cloudflare-tunnel observations remain provenance and are explicitly `HISTORICAL_SUPERSEDED` through `data/third-party-dependency-inventory-supersession.json`.
 
-## DNS / edge portability continuation
+## DNS / edge portability
 
-The current branch adds `data/dns-edge-portability.json`, a provider-neutral recovery intent for `stegverse.org` bound to the repository `CNAME`, plus `scripts/check_dns_edge_portability.py` and focused workflow coverage.
+`data/dns-edge-portability.json` and `scripts/check_dns_edge_portability.py` establish deterministic provider-neutral recovery intent for `stegverse.org` bound to `CNAME` without claiming physical registrar migration, nameserver migration, TLS recovery, or outage equivalence.
 
-The contract establishes source-level portability without overclaiming physical migration proof:
+## Source / publication recovery continuation
 
-```text
-canonical public domain = stegverse.org
-DNS/edge canonical state owner = STEGVERSE
-required DNS provider = NONE
-required edge provider = NONE
-provider credential material in repository = false
-automatic provider mutation = false
-automatic cutover = false
-provider-neutral migration observed = false
-TLS recovery observed = false
-single-vendor outage equivalence observed = false
-```
+The current branch adds `data/source-publication-recovery.json` and `scripts/check_source_publication_recovery.py`.
 
-The deterministic recovery sequence requires canonical-domain verification, provider-neutral RRset materialization into a selected authoritative-DNS provider, TLS recovery verification, public-content verification, evidence capture, and only then retirement of the prior provider path. The manifest itself explicitly does not prove registrar independence, nameserver migration, TLS recovery, or outage equivalence.
+The contract requires a complete `STEGVERSE_SITE_RECOVERY_BUNDLE_V1` containing an identified source snapshot, static publication files, domain binding, DNS/edge portability data, repository-local validators, dependency census, current handoff/task state, and a cryptographic path/hash manifest. The bundle must be reconstructable without GitHub API, validatable without GitHub Actions, and contain no GitHub token, non-TV/TVC secret, or provider credentials.
 
-## Current cleanup surfaces
+Publication recovery is provider-neutral and requires explicit origin selection, local validation, static artifact materialization, DNS/edge binding, TLS verification, public-content equivalence, evidence capture, and only then retirement of the prior origin.
 
-- `data/third-party-runtime-cutover-current.json`
-- `data/third-party-dependency-reconciliation-2026-09-09.json`
-- `data/third-party-dependency-inventory-supersession.json`
-- `data/dns-edge-portability.json`
-- `scripts/check_no_required_third_party_runtime.py`
-- `scripts/check_third_party_dependency_invariant.py`
-- `scripts/check_third_party_dependency_reconciliation.py`
-- `scripts/check_dns_edge_portability.py`
-- `.github/workflows/no-required-third-party-runtime.yml`
-- `docs/SITE_497_README_PROVIDER_INDEPENDENCE_INSERT.md`
+The source contract explicitly does not claim that an off-GitHub restore or publication has already been observed.
 
 ## Current truth
 
 ```text
 canonical runtime = RESIDENT_STEGVERSE
 Cloudflare quick tunnel required = false
-Cloudflare quick tunnel canonical runtime carrier = false
 GitHub Actions runtime required = false
-GitHub Actions runtime authority = NONE
-automatic third-party runtime selection = false
-production continuity third-party dependency = false
-activation third-party dependency = false
 legacy Render requirement observation = HISTORICAL_SUPERSEDED
 legacy Cloudflare tunnel requirement observation = HISTORICAL_SUPERSEDED
-DNS/edge portability contract = IMPLEMENTED_SOURCE_PENDING_VALIDATION
+DNS/edge portability contract = MERGED_SOURCE_VALIDATED
+DNS/edge physical migration proof = PENDING
+source/publication recovery contract = IMPLEMENTED_SOURCE_PENDING_VALIDATION
+off-GitHub restore proof = PENDING
+off-GitHub publication proof = PENDING
 ```
-
-Historical trycloudflare.com and Render receipts/references remain provenance only. They are not current endpoint identity, current liveness, or evidence that either provider is required.
 
 ## Remaining work
 
-1. Validate and merge the DNS/edge portability branch.
+1. Validate and merge the source/publication recovery branch.
 2. Integrate `docs/SITE_497_README_PROVIDER_INDEPENDENCE_INSERT.md` into repository `README.md` without truncating unrelated README content.
-3. Capture authentic current registrar and authoritative nameserver inventory; then perform/record a controlled DNS/edge migration or equivalent recovery drill with TLS and public-content equivalence evidence.
-4. Materialize and authentically observe a resident/provider-neutral public rendezvous before claiming public-carrier independence at runtime.
-5. Continue eliminating required GitHub source/publication/recovery dependence while retaining GitHub only as optional source/validation transport.
-6. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only after release conditions are actually met.
+3. Materialize a complete recovery bundle and retain its hash manifest outside GitHub; prove restore/validation without GitHub API/Actions and publish through a non-GitHub origin.
+4. Capture authentic registrar/nameserver state and perform a controlled DNS/edge recovery drill with TLS/public-content equivalence evidence.
+5. Materialize and authentically observe a resident/provider-neutral public rendezvous.
+6. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only when release conditions are met.
 
 ## Manual work
 
-None currently. Do not change registrar, nameservers, DNS records, or Cloudflare tunnel configuration until a controlled migration/recovery drill is explicitly prepared and authenticated.
+None currently. Do not change registrar, nameservers, DNS records, publication origin, or Cloudflare tunnel configuration until the corresponding controlled recovery drill is explicitly prepared and authenticated.

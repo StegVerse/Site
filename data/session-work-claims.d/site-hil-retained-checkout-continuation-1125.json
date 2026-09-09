@@ -1,0 +1,56 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-RETAINED-CHECKOUT-CONTINUATION-1125-20260908",
+      "session_worker_id": "chatgpt:hil-retained-checkout-continuation-site-1125-20260908",
+      "task_id": "SITE-HIL-RETAINED-CHECKOUT-CONTINUATION-1125",
+      "originating_goal": "Project the StegOS retained HIL WorkerCoordinator checkout continuation repair to stegverse.org after physical current-iPhone execution proved the task package was already checked out.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/hil-retained-checkout-continuation-1125",
+      "handoff": "docs/HIL_BROWSER_RECEIVER_SITE_PROJECTION_MIRROR_HANDOFF.md",
+      "handoff_revision": "SUCCESSOR_RUNTIME_REPAIR_IN_PROGRESS",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-hil-retained-checkout-continuation-1125",
+      "dependency_surface_keys": [
+        "site:stegos-hil-browser-receiver-successor"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-retained-checkout-continuation-1125.json",
+        "docs/HIL_BROWSER_RECEIVER_SITE_PROJECTION_MIRROR_HANDOFF.md",
+        "stegos-bootstrap/hil-browser-receiver.js",
+        "tests/test_hil_browser_receiver_projection.py"
+      ],
+      "claim_created_at": "2026-09-08T21:16:00-05:00",
+      "claim_expires_when": "Release after exact-head Site validation passes, merge completes, public projection is observed serving the retained-checkout successor, and the user can retry physical current-iPhone activation.",
+      "expected_evidence": [
+        "exact StegOS retained-checkout browser receiver blob projected",
+        "single existing HIL checkout reused as downstream continuation",
+        "no second claim or fence minted",
+        "Site Bootstrap PASS",
+        "Site Handoff Orchestrator PASS",
+        "Ecosystem Heartbeat PASS",
+        "current-iPhone StegOS projection PASS"
+      ],
+      "collision_boundaries": [
+        "No second WorkerCoordinator",
+        "No second claim/fence",
+        "No second machine",
+        "No caller-supplied claim_id or fencing_token",
+        "No NON-TV/TVC secret or token",
+        "No GitHub runtime authority",
+        "No resident request-consumption claim from source, CI, merge, deployment, or checkout reuse"
+      ],
+      "next_task_after_release": "Retry SHWP-HIL-SOVEREIGN-RECEIVER-001 physical current-iPhone HIL activation and bind qualifying component evidence into canonical .github resident request consumption.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

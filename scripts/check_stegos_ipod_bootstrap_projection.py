@@ -144,10 +144,11 @@ def main() -> int:
         "mr_auto_progression_executor": "StegOSWebBootstrap.executeMasterRecordsSv001Custody",
         "mr_auto_progression_fail_closed": "EXACT_G23_PRESENT_MACHINE_GOVERNANCE_FAIL_CLOSED",
         "mr_auto_progression_no_authority_reuse": "successful_recovery_authorizes_transition: false",
-        "mr_rendezvous_sovereign_primary_mode": "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK",
-        "mr_rendezvous_sovereign_primary_transport": "SOVEREIGN_LOCAL_RESIDENT",
-        "mr_rendezvous_hosted_fallback_only": "HOSTED_FALLBACK_ONLY",
-        "mr_rendezvous_local_then_hosted": "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK",
+        "mr_rendezvous_mode": "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS",
+        "mr_rendezvous_static_hosted_disabled": 'config.enabled !== false',
+        "mr_rendezvous_local_only_selection": "FIRST_VALID_SOVEREIGN_LOCAL_ONLY",
+        "mr_rendezvous_optional_fallback_explicit": "selection_requires_explicit_runtime_opt_in",
+        "mr_rendezvous_no_automatic_hosted_fallback": "hosted fallback not automatically selected",
         "mr_rendezvous_loopback_127": 'url.hostname === "127.0.0.1"',
         "mr_rendezvous_loopback_localhost": 'url.hostname === "localhost"',
         "mr_rendezvous_primary_probe": "probeSovereignResident(config, 0)",
@@ -173,6 +174,14 @@ def main() -> int:
         if marker not in combined:
             failures.append(f"missing authority/activation marker {label}: {marker}")
 
+    for retired in (
+        "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK",
+        "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK",
+        "hostedFallbackOrigin",
+    ):
+        if retired in auto_recovery:
+            failures.append(f"retired Master Records rendezvous marker remains active: {retired}")
+
     local_branch = ""
     if 'url.pathname === LOCAL_PATH' in service_worker_predecessor:
         local_branch = service_worker_predecessor.split('url.pathname === LOCAL_PATH', 1)[1].split('if (event.request.method !== "GET")', 1)[0]
@@ -190,7 +199,7 @@ def main() -> int:
             failures.append(f"prohibited credential/runtime marker projected: {marker}")
 
     report = {
-        "schema_version": "1.16.0",
+        "schema_version": "1.17.0",
         "status": "FAIL" if failures else "PASS",
         "source_repository": UPSTREAM_REPO,
         "source_commit": UPSTREAM_COMMIT,
@@ -210,8 +219,9 @@ def main() -> int:
         "second_non_stegverse_machine_required": False,
         "network_egress_required_for_device_model": False,
         "render_production_authority": False,
-        "render_transport_role": "HOSTED_FALLBACK_ONLY",
-        "resident_rendezvous_primary_transport": "SOVEREIGN_LOCAL_RESIDENT",
+        "render_transport_role": "OPTIONAL_EXPLICIT_OPT_IN_ONLY",
+        "resident_rendezvous_primary_transport": "SOVEREIGN_LOCAL_DISCOVERY_ONLY",
+        "resident_rendezvous_automatic_hosted_fallback": False,
         "native_resident_activation_projection": True,
         "native_resident_activation_requires_user_mediated_app_open": True,
         "native_resident_activation_proves_listener_ready": False,
@@ -238,7 +248,7 @@ def main() -> int:
         "sv001_auto_continuation_creates_scheduler": False,
         "hb32_grants_execution_authority": False,
         "hil_browser_protocol": "HIL_BROWSER_EVIDENCE_V16",
-        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V16_HIL_PROTOCOL_PIN_PLUS_SOVEREIGN_PRIMARY_NATIVE_ACTIVATION_HOSTED_FALLBACK_ONLY_USING_EXISTING_HB32_INTR_RUNTIME",
+        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V16_HIL_PROTOCOL_PIN_PLUS_SOVEREIGN_LOCAL_ONLY_RENDEZVOUS_USING_EXISTING_HB32_INTR_RUNTIME",
         "failures": failures,
     }
     REPORT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

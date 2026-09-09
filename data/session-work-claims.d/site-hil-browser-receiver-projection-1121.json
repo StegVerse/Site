@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/hil-browser-receiver-projection-1121",
       "handoff": "docs/HIL_BROWSER_RECEIVER_SITE_PROJECTION_MIRROR_HANDOFF.md",
-      "handoff_revision": "PENDING_INITIAL_HANDOFF",
+      "handoff_revision": "85558d33701aa62131571fb14354d74fd8dbaae1",
       "role": "IMPLEMENTATION",
       "state": "CLAIMED_FOR_IMPLEMENTATION",
       "normalized_work_key": "site-hil-browser-receiver-projection-1121",

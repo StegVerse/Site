@@ -64,6 +64,7 @@
       "claim_expires_when": "CURRENT_FINALIZATION_PR_MERGED_OR_CLOSED",
       "expected_evidence": ["PR #1167 merge recorded","PR #1170 merge recorded","no merged reconciliation described as pending","current-iPhone corrected-page observation is next action","SESSION_WORK_CLAIMS_PASS","Site Handoff Orchestrator PASS","Site Bootstrap Validate PASS","Ecosystem Heartbeat Orchestration PASS"],
       "collision_boundaries": ["Do not retry Google Drive KV #2 adoption","Do not infer cloud-KV readback from resident DEVICE_KV","Do not introduce provider credential operations","Do not change COSV"],
+      "next_task_after_release": "Collect the corrected live current-iPhone My KV -> ERL observation; if the resident ERL directory remains empty, use the existing owner-controlled Files import and continue only after canonical KV admission/readback, then execute Prepare -> Draft from ERL -> Save draft to My KV -> exact saved-draft readback.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_HANDOFF_FINALIZATION",
       "non_tv_tvc_secret_or_token_used": false,

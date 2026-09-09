@@ -23,15 +23,17 @@ The merged branch retired the stale branch-coordinate failure, bound the Site cu
 
 StegCore PR #193 and PR #194 retired both historical GitHub-hosted StegGate runtime/carrier surfaces. Site records the current cutover state in `data/third-party-runtime-cutover-current.json`: resident StegVerse runtime is canonical; Cloudflare quick tunnel and GitHub Actions runtime are not required; automatic third-party runtime selection is false.
 
-The older `data/third-party-dependency-inventory.json` still records pre-retirement Cloudflare-tunnel and Render requirement observations. Those entries remain historical inventory provenance and no longer determine current runtime-carrier state. `scripts/check_third_party_dependency_invariant.py` loads the current cutover record and emits effective runtime state explicitly so historical observations cannot silently reassert a retired runtime requirement.
+The older `data/third-party-dependency-inventory.json` retains pre-retirement Render and Cloudflare-tunnel observations as provenance. `data/third-party-dependency-inventory-supersession.json` now binds those exact legacy values as `HISTORICAL_SUPERSEDED`, points each to the current cutover source, preserves provenance, and prevents the old `REQUIRED_CURRENTLY` observations from being interpreted as current runtime requirements. `scripts/check_third_party_dependency_reconciliation.py` validates those supersession bindings against both the legacy inventory and current cutover.
 
-The canonical merged reconciliation includes:
+The canonical cleanup surfaces now include:
 
 - `data/third-party-dependency-reconciliation-2026-09-09.json`, binding the exact StegCore retirement merge SHAs and superseding stale Cloudflare quick-tunnel requirement claims for current-state evaluation;
-- `scripts/check_third_party_dependency_reconciliation.py`, which fails if Site cutover and reconciliation records diverge on resident-runtime identity, third-party runtime requirements, Cloudflare quick-tunnel role, GitHub Actions runtime role, or exact upstream retirement merges;
+- `data/third-party-dependency-inventory-supersession.json`, carrying explicit temporal/supersession metadata for legacy Render and Cloudflare-tunnel observations without deleting provenance;
+- `scripts/check_third_party_dependency_reconciliation.py`, which fails if Site cutover, reconciliation, legacy inventory, or supersession metadata diverge;
 - `scripts/check_third_party_dependency_invariant.py`, which validates the current cutover alongside the historical inventory and reports current effective state separately from historical observations;
-- `.github/workflows/no-required-third-party-runtime.yml`, which executes both reconciliation validators when inventory/cutover/reconciliation surfaces change;
-- the Site #497 pre-work claim, now rebound to `task/site-497-post-merge-cleanup-20260909` for continued cleanup.
+- `.github/workflows/no-required-third-party-runtime.yml`, which executes the reconciliation and invariant validators when inventory/cutover/supersession surfaces change;
+- `docs/SITE_497_README_PROVIDER_INDEPENDENCE_INSERT.md`, the exact repository README maintenance text prepared for integration;
+- the Site #497 pre-work claim bound to `task/site-497-post-merge-cleanup-20260909` for continued cleanup.
 
 ## Current truth
 
@@ -44,18 +46,19 @@ GitHub Actions runtime authority = NONE
 automatic third-party runtime selection = false
 production continuity third-party dependency = false
 activation third-party dependency = false
+legacy Render requirement observation = HISTORICAL_SUPERSEDED
+legacy Cloudflare tunnel requirement observation = HISTORICAL_SUPERSEDED
 ```
 
-Historical trycloudflare.com receipts remain provenance only. They are not current endpoint identity, current liveness, or evidence that Cloudflare is required.
+Historical trycloudflare.com and Render receipts/references remain provenance only. They are not current endpoint identity, current liveness, or evidence that either provider is required.
 
 ## Remaining work
 
-1. Normalize legacy dependency-inventory metadata so pre-retirement provider observations are visibly marked superseded/historical without deleting provenance.
-2. Maintain `README.md` with the resident-runtime / optional-carrier distinction.
-3. Establish deterministic DNS/edge portability and recovery.
-4. Materialize and authentically observe a resident/provider-neutral public rendezvous before claiming public-carrier independence at runtime.
-5. Continue eliminating required GitHub source/publication/recovery dependence while retaining GitHub only as optional source/validation transport.
-6. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only after release conditions are actually met.
+1. Integrate `docs/SITE_497_README_PROVIDER_INDEPENDENCE_INSERT.md` into repository `README.md` without truncating unrelated README content.
+2. Establish deterministic DNS/edge portability and recovery.
+3. Materialize and authentically observe a resident/provider-neutral public rendezvous before claiming public-carrier independence at runtime.
+4. Continue eliminating required GitHub source/publication/recovery dependence while retaining GitHub only as optional source/validation transport.
+5. Propagate verified provider-independence invariants to StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki only after release conditions are actually met.
 
 ## Manual work
 

@@ -61,3 +61,7 @@
   root.StegOSEcosystemChatServiceWorkerBridge = root.StegOSEcosystemChatServiceWorkerBridge || {};
   root.StegOSEcosystemChatServiceWorkerBridge.portableStateStoreForPackage = portableStateStoreForPackage;
 }(self));
+
+// Load the browser receiver through the already-loaded HIL bridge surface.
+// This preserves one service worker and one portable WorkerCoordinator state lineage.
+importScripts("./hil-browser-receiver.js");

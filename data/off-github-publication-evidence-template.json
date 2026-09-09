@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.site.off_github_publication_evidence.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "source_recovery_bundle": {
+    "source_commit": "00fcf4149d4deb81066e2829618885cafadc2325",
+    "archive_sha256": "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f",
+    "manifest_entry_count": 3400
+  },
+  "publication_artifact": {
+    "format": "STEGVERSE_SITE_STATIC_PUBLICATION_V1",
+    "manifest_sha256": null,
+    "path_count": null
+  },
+  "publication_origin": {
+    "provider_identity": null,
+    "origin_url": null,
+    "github_hosted": false,
+    "provider_is_canonical_state_owner": false,
+    "runtime_authority": "NONE",
+    "activation_effect": "NONE"
+  },
+  "observation": {
+    "publication_observed": false,
+    "tls_observed": false,
+    "public_content_equivalence_observed": false,
+    "canonical_domain_observed": false
+  },
+  "equivalence": {
+    "comparison_method": "EXACT_PATH_AND_SHA256",
+    "expected_manifest_sha256": null,
+    "observed_manifest_sha256": null,
+    "expected_path_count": null,
+    "observed_path_count": null,
+    "mismatched_paths": [],
+    "missing_paths": [],
+    "unexpected_paths": []
+  },
+  "tls": {
+    "hostname": "stegverse.org",
+    "certificate_observed": false,
+    "certificate_fingerprint_sha256": null,
+    "not_before": null,
+    "not_after": null
+  },
+  "provenance": {
+    "observed_at": null,
+    "observation_surface": null,
+    "receipt_ref": null
+  },
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

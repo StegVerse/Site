@@ -1,0 +1,58 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-BROWSER-RECEIVER-PROJECTION-1121-20260908",
+      "session_worker_id": "chatgpt:hil-browser-receiver-site-1121-20260908",
+      "task_id": "SITE-HIL-BROWSER-RECEIVER-PROJECTION-1121",
+      "originating_goal": "Project the merged StegOS same-device HIL browser receiver to stegverse.org so current-iPhone HIL activation no longer depends on a signed native app.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/hil-browser-receiver-projection-1121",
+      "handoff": "docs/HIL_BROWSER_RECEIVER_SITE_PROJECTION_MIRROR_HANDOFF.md",
+      "handoff_revision": "85558d33701aa62131571fb14354d74fd8dbaae1",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-hil-browser-receiver-projection-1121",
+      "dependency_surface_keys": [
+        "site:stegos-hil-browser-receiver-successor"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-browser-receiver-projection-1121.json",
+        "docs/HIL_BROWSER_RECEIVER_SITE_PROJECTION_MIRROR_HANDOFF.md",
+        "stegos-bootstrap/hil-browser-receiver.js",
+        "stegos-bootstrap/hil-activate.html",
+        "stegos-bootstrap/hil-portable-state-bridge.js",
+        "tests/test_hil_browser_receiver_projection.py"
+      ],
+      "claim_created_at": "2026-09-08T20:54:00-05:00",
+      "claim_expires_when": "Release after exact-head Site validation passes, merge completes, and the public HTTPS HIL activation page is directly observed serving the browser-receiver successor; physical execution remains separate.",
+      "expected_evidence": [
+        "exact StegOS hil-browser-receiver.js blob projected",
+        "public activation page uses /stegos-bootstrap/portable-workercoordinator/hil-browser",
+        "existing single Site service worker loads browser receiver through the HIL state bridge",
+        "Site Bootstrap PASS",
+        "current-iPhone projection PASS",
+        "Site Handoff Orchestrator PASS",
+        "Ecosystem Heartbeat PASS",
+        "public HIL activation URL observed non-404 with browser receiver copy"
+      ],
+      "collision_boundaries": [
+        "No second service worker or second WorkerCoordinator",
+        "No signed app or TestFlight dependency",
+        "No caller-supplied claim_id or fencing_token",
+        "No NON-TV/TVC secret or token",
+        "No GitHub runtime authority",
+        "No request-consumption claim from source, CI, merge, deployment, or page load"
+      ],
+      "next_task_after_release": "Return to SHWP-HIL-SOVEREIGN-RECEIVER-001 physical current-iPhone execution and canonical .github evidence binding.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

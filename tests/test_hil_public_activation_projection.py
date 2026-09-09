@@ -8,10 +8,12 @@ BOOT = ROOT / "stegos-bootstrap"
 def test_hil_public_activation_surface_is_projected():
     html = (BOOT / "hil-activate.html").read_text(encoding="utf-8")
     assert "SHWP-HIL-SOVEREIGN-RECEIVER-001" in html
-    assert "/stegos-bootstrap/portable-workercoordinator/hil" in html
-    assert "stegverse://hil/activate?envelope=" in html
-    assert 'claim_id' not in html
-    assert 'fencing_token' not in html
+    assert "/stegos-bootstrap/portable-workercoordinator/hil-browser" in html
+    assert "stegverse://hil/activate?envelope=" not in html
+    assert "No signed app, TestFlight install, second machine" in html
+    request_body = html.split('body: JSON.stringify({', 1)[1].split('})', 1)[0]
+    assert 'claim_id' not in request_body
+    assert 'fencing_token' not in request_body
 
 
 def test_hil_portable_package_preserves_canonical_boundaries():
@@ -39,11 +41,14 @@ def test_service_worker_loads_hil_on_existing_v15_contract():
 def test_hil_bridge_reuses_existing_portable_state_key_without_second_worker():
     state_bridge = (BOOT / "hil-portable-state-bridge.js").read_text(encoding="utf-8")
     hil_bridge = (BOOT / "hil-portable-native-bridge.js").read_text(encoding="utf-8")
+    browser_receiver = (BOOT / "hil-browser-receiver.js").read_text(encoding="utf-8")
     assert "PORTABLE_WC_STATE_KEY" in state_bridge
     assert "portableStateStoreForPackage" in state_bridge
+    assert 'importScripts("./hil-browser-receiver.js")' in state_bridge
     assert "new Worker" not in state_bridge
     assert "new SharedWorker" not in state_bridge
     assert "navigator.serviceWorker.register" not in hil_bridge
-    assert "StegVersePortableWorkerCoordinator.checkout" in hil_bridge
-    assert "request_consumption_claimed: false" in hil_bridge
-    assert "native_receiver_execution_observed: false" in hil_bridge
+    assert "navigator.serviceWorker.register" not in browser_receiver
+    assert "StegVersePortableWorkerCoordinator.checkout" in browser_receiver
+    assert "request_consumption_claimed: false" in browser_receiver
+    assert "browser_receiver_execution_observed: true" in browser_receiver

@@ -17,8 +17,8 @@
 </head>
 <body>
   <h1>StegOS HIL</h1>
-  <p>This same-device action establishes or reuses the StegOS node, obtains the HIL claim/fence from the canonical portable WorkerCoordinator, then opens the installed StegOS app with the complete receipt-bound activation envelope.</p>
-  <p>No claim or fencing token is entered on this page.</p>
+  <p>This same-device action establishes or reuses the StegOS node, obtains the HIL claim/fence from the canonical portable WorkerCoordinator, and executes the bounded HIL receiver directly on this iPhone's existing StegOS service-worker surface.</p>
+  <p>No signed app, TestFlight install, second machine, claim ID, or fencing token is required.</p>
   <p>Authority: <span class="value">WorkerCoordinator → claim/fence; InTr → transition; TV/TVC → credentials</span></p>
   <button id="activate-hil" type="button">Activate HIL on this iPhone</button>
   <pre id="hil-state">READY_FOR_USER_ACTION</pre>
@@ -28,26 +28,15 @@
     (function () {
       "use strict";
       var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
-      var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil";
+      var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil-browser";
       var button = document.getElementById("activate-hil");
       var state = document.getElementById("hil-state");
 
-      function show(value) {
-        state.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
-      }
-
-      function base64url(text) {
-        var bytes = new TextEncoder().encode(text);
-        var binary = "";
-        for (var i = 0; i < bytes.length; i += 1) { binary += String.fromCharCode(bytes[i]); }
-        return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-      }
+      function show(value) { state.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2); }
 
       function ensureControllingWorker() {
         return window.StegOSWebBootstrap.registerOfflineShell().then(function () {
-          if (!(navigator.serviceWorker && navigator.serviceWorker.ready)) {
-            throw new Error("Service worker is unavailable on this iPhone browser surface.");
-          }
+          if (!(navigator.serviceWorker && navigator.serviceWorker.ready)) { throw new Error("Service worker is unavailable on this iPhone browser surface."); }
           return navigator.serviceWorker.ready;
         }).then(function () {
           if (!navigator.serviceWorker.controller) {
@@ -60,7 +49,7 @@
 
       if (sessionStorage.getItem("stegos-hil-reload-once") === "1") {
         sessionStorage.removeItem("stegos-hil-reload-once");
-        show("SERVICE_WORKER_READY_FOR_HIL_CHECKOUT");
+        show("SERVICE_WORKER_READY_FOR_HIL_EXECUTION");
       }
 
       button.addEventListener("click", function () {
@@ -69,7 +58,7 @@
         ensureControllingWorker().then(function () {
           return window.StegOSWebBootstrap.establishNode();
         }).then(function (nodeState) {
-          show("REQUESTING_CANONICAL_HIL_CHECKOUT");
+          show("EXECUTING_CANONICAL_HIL_ON_THIS_IPHONE");
           return fetch(ROUTE, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -84,13 +73,14 @@
           });
         }).then(function (response) {
           return response.json().then(function (payload) {
-            if (!response.ok) { throw new Error(payload.reason || "HIL checkout failed"); }
+            if (!response.ok) { throw new Error(payload.reason || "HIL same-device execution failed"); }
             return payload;
           });
-        }).then(function (envelope) {
-          show(envelope);
-          var encoded = base64url(JSON.stringify(envelope));
-          window.location.href = "stegverse://hil/activate?envelope=" + encodeURIComponent(encoded);
+        }).then(function (result) {
+          if (result.state !== "BROWSER_HIL_LOCAL_READY_OBSERVED" || result.browser_receiver_execution_observed !== true) {
+            throw new Error("HIL receiver did not produce local-ready execution evidence");
+          }
+          show(result);
         }).catch(function (error) {
           if (String(error && error.message ? error.message : error).indexOf("reloading") !== -1) { return; }
           button.disabled = false;

@@ -78,12 +78,12 @@ def test_esrl_page_auto_resumes_once_and_persists_exact_lease_result():
     assert 'localStorage.removeItem(RESULT_KEY)' in page
 
 
-def test_v17_service_worker_preserves_hil_protocol_and_repairs_stale_esrl_navigation():
+def test_exact_v16_service_worker_refreshes_stale_esrl_navigation_without_resetting_state():
     worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
     bridge = (BOOT / "hil-portable-state-bridge.js").read_text(encoding="utf-8")
     assert 'importScripts("./hil-portable-state-bridge.js")' in worker
     assert 'importScripts("./hil-browser-esrl-lease.js")' not in worker
-    assert 'CACHE_NAME = "stegos-web-bootstrap-v17"' in worker
+    assert 'CACHE_NAME = "stegos-web-bootstrap-v16"' in worker
     assert 'var ESRL_PAGE_PATH = "/stegos-bootstrap/hil-esrl-activate.html"' in worker
     assert '"./hil-esrl-activate.html"' in worker
     assert 'self.clients.matchAll({ type: "window", includeUncontrolled: true })' in worker

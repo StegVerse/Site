@@ -1,0 +1,56 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-GOOGLE-DRIVE-KV2-OWNER-RETRY-RECONCILE-20260908",
+      "session_worker_id": "chatgpt:site-google-drive-kv2-owner-retry-reconcile-20260908",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "originating_goal": "Reconcile the authentic current-iPhone Google Drive KV #2 adoption retry after request emission and resident ingress were visibly observed, without inferring provider execution, materialization, or transport origin not shown by the owner-visible result.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "reconcile-google-drive-kv2-owner-retry-20260908",
+      "role": "EVIDENCE_RECONCILIATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-google-drive-kv2-owner-retry-reconcile",
+      "dependency_surface_keys": ["site:cloud-kv-peer-manager","site:resident-intr-transport","kv:google-drive-existing-peer","cosv:50000000102000"],
+      "claimed_paths": [
+        "data/runtime-evidence/google-drive-kv2-owner-retry.20260908.json",
+        "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-google-drive-kv2-legacy-node-fallback-20260908.json",
+        "data/session-work-claims.d/site-google-drive-kv2-owner-retry-reconcile-20260908.json"
+      ],
+      "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+      "handoff_revision": "GOOGLE_DRIVE_KV2_OWNER_RETRY_INGRESS_OBSERVED_20260908",
+      "claim_created_at": "2026-09-08T21:33:00-05:00",
+      "claim_expires_when": "Release after the owner-visible retry evidence is recorded, exact-head validation passes, and the evidence reconciliation merges. Downstream provider/governance execution remains a separate task.",
+      "expected_evidence": [
+        "SITE-CLOUD-KV request ID recorded exactly",
+        "PENDING_INTERLOCK_INTR recorded exactly",
+        "resident_ingress_observed true",
+        "requested peer KV #2",
+        "instance_materialized false",
+        "provider_operation_authorized false",
+        "transport origin explicitly not inferred when absent from owner-visible result",
+        "no provider execution or relationship mutation over-claim",
+        "Site Handoff Orchestrator PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "Site Bootstrap Validate PASS"
+      ],
+      "collision_boundaries": [
+        "Do not infer STEGOS_NODE_EVENT_EPHEMERAL from deployment alone",
+        "Do not claim provider execution from resident ingress acknowledgement",
+        "Do not materialize or rename the Google Drive vault from this evidence reconciliation",
+        "Do not move data, replicate data, expose AI corpus, or rewrite private contents",
+        "Do not request provider credentials in this evidence-only reconciliation",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Bind request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb to authentic downstream Interlock/InTr governance/provider execution and only materialize Google Drive as KV #2 after explicit downstream evidence exists.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_OWNER_RETRY_EVIDENCE_RECONCILIATION",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

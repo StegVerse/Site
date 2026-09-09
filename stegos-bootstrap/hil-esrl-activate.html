@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HIL ESRL Lease Evidence</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:760px;margin:0 auto;padding:24px;background:#0b0f14;color:#eef2f7}button{padding:12px 14px;margin:6px 6px 6px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#121923;padding:14px;border-radius:8px}code{overflow-wrap:anywhere}.muted{opacity:.78}.ok{font-weight:700}
+</style>
+</head>
+<body>
+<h1>HIL ESRL Lease Evidence</h1>
+<p class="muted">This page continues the same standalone-Safari HIL context after the accepted local-ready execution. It does not mint another claim/fence or claim broader HIL completion.</p>
+<p id="context"></p>
+<button id="open">Open ESRL lease</button>
+<button id="copy" disabled>Copy evidence JSON</button>
+<button id="download" disabled>Download evidence JSON</button>
+<pre id="result">No ESRL evidence yet.</pre>
+<script>
+(function(){
+  "use strict";
+  var SOURCE_KEY="stegos-hil-last-success-v1";
+  var PROTOCOL="HIL_BROWSER_ESRL_V1";
+  var ROUTE="/stegos-bootstrap/portable-workercoordinator/hil-esrl-v1";
+  var WORKER_SCRIPT="./service-worker.js?hil_receiver_protocol=v16&hil_esrl=v1";
+  var evidence=null;
+  var source=null;
+  var result=document.getElementById("result");
+  var context=document.getElementById("context");
+  var copy=document.getElementById("copy");
+  var download=document.getElementById("download");
+
+  function fail(message){throw new Error("FAIL_CLOSED: "+message);}
+  function loadSource(){
+    try{source=JSON.parse(localStorage.getItem(SOURCE_KEY)||"null");}catch(_){source=null;}
+    if(!source||source.schema!=="stegos.hil_browser_receiver_activation_result/v1"||source.state!=="BROWSER_HIL_LOCAL_READY_OBSERVED"){fail("same-context HIL local-ready evidence is not present");}
+    if(source.hil_browser_protocol!=="HIL_BROWSER_EVIDENCE_V16"){fail("stored HIL browser protocol mismatch");}
+    if(!source.browser_context_id||!source.node_id){fail("stored browser/node identity missing");}
+    context.textContent="Context: "+source.browser_context_id+" · node: "+source.node_id+" · fence: G"+source.fencing_token;
+    return source;
+  }
+  function ensureWorker(){
+    if(!("serviceWorker" in navigator)){fail("service worker unavailable");}
+    return navigator.serviceWorker.register(WORKER_SCRIPT,{scope:"./",updateViaCache:"none"}).then(function(reg){return reg.update().then(function(){return navigator.serviceWorker.ready;});}).then(function(){
+      if(!navigator.serviceWorker.controller){return new Promise(function(resolve){navigator.serviceWorker.addEventListener("controllerchange",function once(){navigator.serviceWorker.removeEventListener("controllerchange",once);resolve();});});}
+    });
+  }
+  function render(value){
+    evidence=value;
+    result.textContent=JSON.stringify(value,null,2);
+    copy.disabled=false;download.disabled=false;
+  }
+  document.getElementById("open").addEventListener("click",function(){
+    try{loadSource();}catch(error){result.textContent=String(error.message||error);return;}
+    ensureWorker().then(function(){
+      return fetch(ROUTE,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Cache-Control":"no-store"},body:JSON.stringify({hil_esrl_protocol:PROTOCOL,browser_context_id:source.browser_context_id,node_id:source.node_id,browser_evidence:source})});
+    }).then(function(response){return response.json().then(function(value){if(!response.ok){throw new Error(value.reason||"ESRL request failed");}return value;});}).then(function(value){
+      if(value.schema!=="stegverse.hil-browser-esrl-lease-open/v1"||value.state!=="LEASE_OPEN"||value.lease_state!=="LEASE_OPEN"){fail("lease-open result invalid");}
+      if(value.browser_context_id!==source.browser_context_id||value.node_id!==source.node_id||value.claim_id!==source.claim_id||value.fencing_token!==source.fencing_token){fail("lease/source binding mismatch");}
+      render(value);
+    }).catch(function(error){result.textContent=String(error.message||error);});
+  });
+  copy.addEventListener("click",function(){if(!evidence){return;}navigator.clipboard.writeText(JSON.stringify(evidence,null,2)+"\n");});
+  download.addEventListener("click",function(){if(!evidence){return;}var blob=new Blob([JSON.stringify(evidence,null,2)+"\n"],{type:"application/json"});var link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="hil-esrl-lease-open-"+evidence.browser_context_id+".json";link.click();setTimeout(function(){URL.revokeObjectURL(link.href);},0);});
+  try{loadSource();}catch(error){result.textContent=String(error.message||error);}
+}());
+</script>
+</body>
+</html>

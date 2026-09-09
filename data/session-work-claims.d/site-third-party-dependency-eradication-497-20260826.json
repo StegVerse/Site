@@ -8,7 +8,7 @@
       "task_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
       "originating_goal": "Eliminate required third-party dependencies from canonical Site build, runtime, publication, package, recovery, continuity, and governance paths while preserving third-party services only as optional fallback/interoperability surfaces.",
       "repository": "StegVerse-Labs/Site",
-      "branch": "task/site-497-publication-equivalence-20260909",
+      "branch": "task/site-497-publication-origin-selection-20260909",
       "role": "ACTIVE_IMPLEMENTATION",
       "state": "CLAIMED",
       "normalized_work_key": "site-497-third-party-dependency-eradication",
@@ -27,7 +27,8 @@
         "site:recovery-bundle-materialization",
         "site:master-records-proof-rendezvous-provider-cutover",
         "site:off-github-recovery-bundle-retention",
-        "site:provider-neutral-publication-equivalence"
+        "site:provider-neutral-publication-equivalence",
+        "site:publication-origin-explicit-selection"
       ],
       "claimed_paths": [
         "data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json",
@@ -39,6 +40,7 @@
         "data/site-recovery-bundle-materialization.json",
         "data/off-github-recovery-evidence-2026-09-09.json",
         "data/publication-equivalence-contract.json",
+        "data/publication-origin-discovery-2026-09-09.json",
         "scripts/check_third_party_dependency_invariant.py",
         "scripts/check_no_required_third_party_runtime.py",
         "scripts/check_dns_edge_portability.py",
@@ -77,7 +79,7 @@
         "scripts/advance_math_solver_public_activation.py"
       ],
       "handoff": "docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md",
-      "handoff_revision": "7a32080b6ce6cc072d1d18d041220244aceec948",
+      "handoff_revision": "78c2cc8f3a83069939112c1457a4c4b5b1148dff",
       "claim_created_at": "2026-08-26T21:30:00Z",
       "claim_expires_when": "SATISFIED_OR_TRANSFERRED",
       "expected_evidence": [
@@ -101,6 +103,8 @@
         "off-GitHub restore and repository-local validation from externally retained bundle",
         "provider-neutral deterministic static publication artifact and per-file hash manifest",
         "exact-content equivalence validator that does not select a provider or claim publication",
+        "connected publication-origin inventory proving whether an admissible origin is already explicitly selected",
+        "explicit origin selection before any new deployment or DNS mutation",
         "offline/mirrored package-build proof",
         "per-provider outage/deletion equivalence proof",
         "simultaneous optional-provider outage proof",
@@ -121,6 +125,8 @@
         "Do not claim off-GitHub restore merely from external retention",
         "Do not claim off-GitHub recovery from a repository-local hash manifest alone",
         "Do not automatically select a publication provider",
+        "Do not repurpose the existing Render VA claim guide static site as the full Site origin",
+        "Do not treat the existing Vercel site project as an explicit admissible selection",
         "Do not claim publication or content equivalence from artifact materialization alone",
         "Source/CI cutover does not count as authentic sovereign runtime observation"
       ],

@@ -1,0 +1,57 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-CONTROLLER-REFRESH-1133-20260908",
+      "session_worker_id": "chatgpt:hil-controller-refresh-site-1133-20260908",
+      "task_id": "SITE-HIL-CONTROLLER-REFRESH-1133",
+      "originating_goal": "Eliminate standalone-Safari stale service-worker/import skew before exact HIL browser evidence export while preserving the authentic G25 checkout lineage.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/hil-controller-refresh-and-readme-1133",
+      "handoff": "docs/HIL_BROWSER_EVIDENCE_EXPORT_MIRROR_HANDOFF.md",
+      "handoff_revision": "f23bb5e70b1ffbb38d2fe966e5576d8f60db73a3",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-hil-controller-refresh-1133",
+      "dependency_surface_keys": ["site:hil-browser-evidence-export"],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-controller-refresh-1133.json",
+        "data/session-work-claims.d/site-hil-browser-evidence-export-1128.json",
+        "docs/HIL_BROWSER_EVIDENCE_EXPORT_MIRROR_HANDOFF.md",
+        "stegos-bootstrap/hil-activate.html",
+        "tests/test_hil_browser_evidence_export.py",
+        "README.md"
+      ],
+      "claim_created_at": "2026-09-08T22:54:00-05:00",
+      "claim_expires_when": "Release after exact-head Site validation, merge, and public propagation of the controller-refresh repair; authentic physical exported evidence remains separately required.",
+      "expected_evidence": [
+        "exact resident request id/hash remains bound",
+        "service-worker registration bypasses HTTP cache for update resolution",
+        "registration update is requested before HIL execution",
+        "updated controller replacement is observed or execution fails closed",
+        "HIL POST bypasses HTTP cache",
+        "existing browser context and portable WorkerCoordinator checkout state are preserved",
+        "Site validation PASS",
+        "README accurately describes current v15 HIL refresh behavior"
+      ],
+      "collision_boundaries": [
+        "No second WorkerCoordinator",
+        "No second service worker registration scope",
+        "No replacement claim/fence",
+        "No IndexedDB reset",
+        "No browser-context conflation",
+        "No GitHub runtime authority",
+        "No request-consumption promotion from source, CI, merge, or deployment"
+      ],
+      "next_task_after_release": "Obtain exact exported physical standalone-Safari HIL JSON and feed it to canonical .github browser-evidence intake validation.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

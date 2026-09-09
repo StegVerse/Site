@@ -38,38 +38,47 @@ def main() -> int:
     discovery_source = DISCOVERY.read_text(encoding="utf-8")
     health = HEALTH.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
-    if config.get("schema_version") != "1.1.0":
+    if config.get("schema_version") != "1.2.0":
         return fail("schema_version mismatch")
-    if config.get("mode") != "GOVERNED_GATEWAY_WITH_LOCAL_FALLBACK":
-        return fail("gateway mode mismatch")
+    if config.get("mode") != "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK":
+        return fail("gateway mode must keep sovereign/local resident primary")
+    if config.get("endpoint_role") != "HOSTED_FALLBACK_ONLY":
+        return fail("static hosted endpoint must be fallback-only")
     if config.get("fallback") != "LOCAL_CLASSIFICATION":
         return fail("fallback must remain LOCAL_CLASSIFICATION")
     endpoint = config.get("endpoint", "")
     health_endpoint = config.get("health_endpoint", "")
     if config.get("enabled") is True:
         if not endpoint.startswith("https://") or not endpoint.endswith("/api/ecosystem-chat"):
-            return fail("enabled static endpoint must be HTTPS and end with /api/ecosystem-chat")
+            return fail("enabled hosted fallback endpoint must be HTTPS and end with /api/ecosystem-chat")
         if not health_endpoint.startswith("https://") or not health_endpoint.endswith("/health"):
-            return fail("enabled static health endpoint must be HTTPS and end with /health")
+            return fail("enabled hosted fallback health endpoint must be HTTPS and end with /health")
     discovery = config.get("discovery", {})
     if discovery.get("enabled") is not True:
         return fail("node discovery must be enabled")
     if discovery.get("required_node_id") != "ecosystem-chat-portable-node":
         return fail("portable-node identity binding mismatch")
+    if discovery.get("selection_policy") != "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK":
+        return fail("discovery selection must prefer sovereign/local resident")
     advertisement_endpoints = discovery.get("advertisement_endpoints")
     if not isinstance(advertisement_endpoints, list) or not advertisement_endpoints:
         return fail("node advertisement endpoints missing")
     for value in advertisement_endpoints:
         if not valid_advertisement_endpoint(value):
             return fail(f"invalid node advertisement endpoint: {value}")
-    required_loopback = {
+    required_loopback = [
         "http://127.0.0.1:8000/api/stegverse-node",
         "http://localhost:8000/api/stegverse-node",
-    }
-    if not required_loopback.issubset(set(advertisement_endpoints)):
-        return fail("verified loopback node candidates missing")
-    if discovery.get("fallback") != "STATIC_GATEWAY_CONFIG":
-        return fail("discovery fallback must remain STATIC_GATEWAY_CONFIG")
+    ]
+    if advertisement_endpoints[:2] != required_loopback:
+        return fail("verified sovereign loopback candidates must be first")
+    if not endpoint.startswith("https://stegverse-ecosystem-chat-gateway.onrender.com/"):
+        return fail("expected hosted fallback endpoint identity missing")
+    hosted_advertisement = "https://stegverse-ecosystem-chat-gateway.onrender.com/api/stegverse-node"
+    if hosted_advertisement not in advertisement_endpoints[2:]:
+        return fail("Render advertisement may exist only after sovereign/local candidates")
+    if discovery.get("fallback") != "STATIC_HOSTED_GATEWAY_FALLBACK":
+        return fail("discovery fallback must be explicitly hosted-only")
     boundary = config.get("authority_boundary", {})
     for key in [
         "site_execution_authority",

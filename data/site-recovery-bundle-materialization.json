@@ -17,7 +17,14 @@
   "github_actions_required": false,
   "provider_credentials_required": false,
   "repository_source_materialization_supported": true,
-  "ci_materialization_observed": false,
+  "ci_materialization_observed": true,
+  "ci_materialization_evidence": {
+    "workflow": "No Required Third-Party Runtime",
+    "run_id": 34326685598,
+    "observed_head": "bccbe2971f024c277ada01067b8a4c770bcd7abd",
+    "step": "Materialize and verify deterministic recovery bundle",
+    "conclusion": "success"
+  },
   "off_github_materialization_observed": false,
   "off_github_restore_observed": false,
   "off_github_validation_observed": false,

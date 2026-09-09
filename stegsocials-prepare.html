@@ -16,7 +16,7 @@
 <a href="my-kv-directory.html?dir=erl">← Back to ERL</a>
 <section class="panel">
 <h1>Prepare a StegSocials post</h1>
-<p>Use an ERL artifact as research provenance, shape a private draft for a platform, save the prepared bundle into the current device-local KnowledgeVault when available, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
+<p>Use an ERL artifact as research provenance, shape a private draft for a platform, save the prepared bundle into the current device-local KnowledgeVault when available, verify the exact stored bytes, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
 <div class="grid">
 <div class="field"><label for="erl-ref">ERL reference</label><input id="erl-ref" class="mono" autocomplete="off"></div>
 <div class="field"><label for="platform">Platform</label><select id="platform"><option value="LINKEDIN">LinkedIn</option><option value="FACEBOOK">Facebook</option><option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="OTHER">Other</option></select></div>
@@ -46,15 +46,17 @@
 <script src="assets/stegverse-node-continuity.js"></script>
 <script src="assets/generated/site-browser-intr-connectors.js"></script>
 <script src="assets/hb-intr-carrier.js"></script>
-<script src="stegos-node/device-kv-intr-sync.js?v=20260908-stegsocials-draft-r1"></script>
-<script src="assets/my-kv-device-kv-query-bridge.js?v=20260908-stegsocials-draft-r1"></script>
+<script src="stegos-node/device-kv-intr-sync.js?v=20260909-stegsocials-draft-r2"></script>
+<script src="assets/my-kv-device-kv-query-bridge.js?v=20260909-stegsocials-draft-r2"></script>
 <script src="assets/stegsocials-post-preparation.js"></script>
 <script src="assets/stegsocials-kv-draft-write-bridge.js"></script>
+<script src="assets/stegsocials-kv-exact-content-readback.js"></script>
 <script>
 (function(){
 "use strict";
 var api=window.StegVerseStegSocialsPreparation;
 var writer=window.StegVerseStegSocialsKVDraftWriter;
+var exactReadback=window.StegVerseStegSocialsKVExactReadback;
 var params=new URLSearchParams(location.search);
 var erl=document.getElementById("erl-ref"), platform=document.getElementById("platform"), account=document.getElementById("account-ref"), evidence=document.getElementById("evidence-ref"), body=document.getElementById("body"), hashtags=document.getElementById("hashtags"), source=document.getElementById("source-link"), prepare=document.getElementById("prepare"), saveKV=document.getElementById("save-kv"), copy=document.getElementById("copy"), copyBundle=document.getElementById("copy-bundle"), status=document.getElementById("status"), preview=document.getElementById("preview"), panel=document.getElementById("preview-panel"), draftPath=document.getElementById("draft-path"), kvEvidence=document.getElementById("kv-evidence"), guidance=document.getElementById("shape-guidance");
 var current=null;
@@ -64,6 +66,12 @@ if(params.get("platform"))platform.value=String(params.get("platform")).toUpperC
 function updateGuidance(){try{var g=api.platformGuidance(platform.value);guidance.textContent=g.soft_limit?g.label+" shaping guide: "+g.soft_limit+" character soft limit for this preparation surface.":g.label+" shaping guide: no local soft character limit is enforced.";}catch(e){guidance.textContent=e.message;}}
 platform.addEventListener("change",updateGuidance);updateGuidance();
 function parseTags(v){return String(v||"").trim().split(/\s+/).filter(Boolean);}
+function exactExpectation(result){
+  var full=String(result.canonical_path||"");
+  var slash=full.lastIndexOf("/");
+  if(slash<1)throw new Error("FAIL_CLOSED: admitted draft path invalid for exact-content verification");
+  return {canonical_path:full.slice(0,slash),name:result.admitted_entry&&result.admitted_entry.name||full.slice(slash+1),sha256:result.sha256,size_bytes:result.size_bytes};
+}
 prepare.addEventListener("click",function(){
   try{
     current=api.build({
@@ -89,12 +97,17 @@ prepare.addEventListener("click",function(){
 saveKV.addEventListener("click",function(){
   if(!current)return;
   if(!writer||typeof writer.saveDraft!=="function"){status.textContent="The My KV draft writer is unavailable.";status.className="status error";return;}
-  saveKV.disabled=true;status.textContent="Requesting governed device-local KV admission and admitted-hash readback…";status.className="status";
+  if(!exactReadback||typeof exactReadback.readExact!=="function"){status.textContent="The exact-content KV readback verifier is unavailable.";status.className="status error";return;}
+  saveKV.disabled=true;status.textContent="Requesting governed device-local KV admission and exact stored-content verification…";status.className="status";
   writer.saveDraft(current).then(function(result){
-    kvEvidence.textContent="KV admission observed: "+result.sha256+" · "+result.size_bytes+" bytes · exact content-byte readback pending a dedicated content-read primitive.";
-    status.textContent="Draft admitted to the current device-local My KV and its stored hash/size were read back successfully. No social provider call was performed.";status.className="status";saveKV.disabled=false;
+    return exactReadback.readExact(exactExpectation(result)).then(function(readback){return {admission:result,readback:readback};});
+  }).then(function(pair){
+    var result=pair.admission,readback=pair.readback;
+    if(readback.exact_content_bytes_readback_verified!==true)throw new Error("FAIL_CLOSED: exact stored-content verification incomplete");
+    kvEvidence.textContent="KV admission + exact-content readback verified: "+readback.sha256+" · "+readback.size_bytes+" bytes · device-local store observed · cloud-provider readback not claimed.";
+    status.textContent="Draft admitted to the current device-local My KV and the exact stored bytes were read back and SHA-256 verified. No social provider call was performed.";status.className="status";saveKV.disabled=false;
   }).catch(function(error){
-    kvEvidence.textContent="";status.textContent=error&&error.message?error.message:"My KV draft admission failed closed.";status.className="status error";saveKV.disabled=false;
+    kvEvidence.textContent="";status.textContent=error&&error.message?error.message:"My KV draft admission/readback failed closed.";status.className="status error";saveKV.disabled=false;
   });
 });
 copy.addEventListener("click",function(){if(!current)return;var text=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");navigator.clipboard.writeText(text).then(function(){status.textContent="Post text copied. Manual publication remains under your control.";}).catch(function(){status.textContent="Clipboard access was unavailable; select the prepared text manually.";status.className="status error";});});

@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "data" / "third-party-dependency-inventory.json"
+CUTOVER = ROOT / "data" / "third-party-runtime-cutover-current.json"
 
 CLASSIFICATIONS = {
     "REQUIRED_CURRENTLY", "OPTIONAL_FALLBACK", "HISTORICAL_ONLY",
@@ -47,13 +48,17 @@ ACTIVE_ROOT_FILES = {
     "package.json", "package-lock.json", "pnpm-lock.yaml", "yarn.lock",
 }
 ACTIVE_DATA_NAME_RE = re.compile(
-    r"(?:config|gateway|activation|deployment|runtime|route|profile|endpoint|provider).*\\.json$",
+    r"(?:config|gateway|activation|deployment|runtime|route|profile|endpoint|provider).*\.json$",
     re.I,
 )
 
 
 def read_inventory():
     return json.loads(INVENTORY.read_text(encoding="utf-8"))
+
+
+def read_cutover():
+    return json.loads(CUTOVER.read_text(encoding="utf-8"))
 
 
 def provider_key(node):
@@ -93,7 +98,7 @@ def path_is_allowed(path, entries):
     return False
 
 
-def validate(inv):
+def validate_inventory(inv):
     errors = []
     if inv.get("schema") != "stegverse.site.third_party_dependency_inventory.v1":
         errors.append("unexpected inventory schema")
@@ -128,6 +133,63 @@ def validate(inv):
         if not node.get("evidence_paths"):
             errors.append(f"{p}: evidence_paths must not be empty")
     return errors
+
+
+def validate_current_cutover(cutover):
+    errors = []
+    if cutover.get("goal_id") != "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION":
+        errors.append("cutover goal_id is not Site #497")
+    if cutover.get("cosv_id") != "50000000102000":
+        errors.append("cutover COSV is not 50000000102000")
+    if cutover.get("canonical_runtime") != "RESIDENT_STEGVERSE":
+        errors.append("current canonical runtime is not RESIDENT_STEGVERSE")
+    if cutover.get("production_continuity_third_party_dependency") is not False:
+        errors.append("current cutover still requires a third-party production runtime")
+    if cutover.get("activation_third_party_dependency") is not False:
+        errors.append("current cutover still requires a third-party activation runtime")
+    if cutover.get("automatic_third_party_runtime_selection") is not False:
+        errors.append("automatic third-party runtime selection is still enabled")
+
+    states = cutover.get("provider_states", {})
+    for provider in ("render", "vercel", "netlify"):
+        if states.get(provider, {}).get("required") is not False:
+            errors.append(f"current cutover still marks {provider} required")
+    quick = states.get("cloudflare_quick_tunnel", {})
+    if quick.get("required") is not False:
+        errors.append("current cutover still marks Cloudflare quick tunnel required")
+    if quick.get("canonical_runtime_carrier") is not False:
+        errors.append("current cutover still marks Cloudflare quick tunnel canonical")
+    if quick.get("stegcore_primary_hosted_carrier_retirement_merge") != "084477a684193ad1b45d4403aa57844c5135638e":
+        errors.append("current cutover missing primary hosted-carrier retirement merge")
+    if quick.get("stegcore_fallback_hosted_carrier_retirement_merge") != "07632a7dcbd12d16440322f33269a51413fa3049":
+        errors.append("current cutover missing fallback hosted-carrier retirement merge")
+    gh = states.get("github_actions_runtime", {})
+    if gh.get("required") is not False or gh.get("runtime_authority") != "NONE":
+        errors.append("GitHub Actions still required or authoritative in current cutover")
+    return errors
+
+
+def effective_runtime_state(inv, cutover):
+    historical_claims = {}
+    for node in inv.get("providers", []):
+        if node.get("id") in {"render-ecosystem-chat-gateway", "cloudflare-tunnel-steggate"}:
+            historical_claims[node["id"]] = {
+                "classification": node.get("classification"),
+                "current_required_use": node.get("current_required_use"),
+            }
+    states = cutover.get("provider_states", {})
+    return {
+        "historical_inventory_claims": historical_claims,
+        "current_cutover": {
+            "render_required": states.get("render", {}).get("required"),
+            "cloudflare_quick_tunnel_required": states.get("cloudflare_quick_tunnel", {}).get("required"),
+            "cloudflare_quick_tunnel_canonical": states.get("cloudflare_quick_tunnel", {}).get("canonical_runtime_carrier"),
+            "github_actions_runtime_required": states.get("github_actions_runtime", {}).get("required"),
+            "github_actions_runtime_authority": states.get("github_actions_runtime", {}).get("runtime_authority"),
+        },
+        "effective_source": "data/third-party-runtime-cutover-current.json",
+        "historical_inventory_rewrites_current_state": False,
+    }
 
 
 def is_active_surface(rel: str) -> bool:
@@ -177,7 +239,8 @@ def main():
     args = ap.parse_args()
 
     inv = read_inventory()
-    errors = validate(inv)
+    cutover = read_cutover()
+    errors = validate_inventory(inv) + validate_current_cutover(cutover)
     findings = scan(inv, scope=args.scope)
     pending = sum(len(v) for v in findings.values())
     result = "FAIL" if errors or (args.strict_scan and pending) else (
@@ -186,9 +249,11 @@ def main():
     report = {
         "schema": "stegverse.site.third_party_dependency_invariant_report.v1",
         "goal_id": inv.get("goal_id"),
+        "cosv_id": cutover.get("cosv_id"),
         "structure_pass": not errors,
         "strict_scan_requested": args.strict_scan,
         "scan_scope": args.scope,
+        "effective_runtime_state": effective_runtime_state(inv, cutover),
         "unclassified_reference_file_count": pending,
         "unclassified_references": findings,
         "errors": errors,

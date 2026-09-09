@@ -1,0 +1,36 @@
+name: KV TestFlight Projection Entry
+
+on:
+  pull_request:
+    paths:
+      - 'assets/kv-testflight-projection-entry.js'
+      - 'assets/kv-testflight-projection-export.js'
+      - 'kv-testflight-projection.html'
+      - 'tests/kv-testflight-projection-entry.test.cjs'
+      - 'docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md'
+      - 'data/session-work-claims.d/site-kv-testflight-projection-entry-001-20260909.json'
+      - '.github/workflows/kv-testflight-projection-entry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate projection adapter regression contract
+        run: node --test tests/kv-testflight-projection-entry.test.cjs
+      - name: Confirm no credential or runtime authority introduced
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'credential_authority==="TV/TVC"' assets/kv-testflight-projection-entry.js
+          grep -q 'github_token_runtime_authority==="NONE"' assets/kv-testflight-projection-entry.js
+          grep -q 'browser_identity_authority:false' assets/kv-testflight-projection-entry.js
+          ! grep -q 'navigator.userAgent' assets/kv-testflight-projection-entry.js
+          ! grep -q 'localStorage' kv-testflight-projection.html
+          ! grep -q 'sessionStorage' kv-testflight-projection.html
+          echo 'KV_TESTFLIGHT_PROJECTION_ENTRY_SOURCE_VALIDATION=PASS'
+          echo 'AUTHORITY_EFFECT=NONE_PROJECTION_ONLY'

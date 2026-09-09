@@ -9,20 +9,21 @@ Current parent COSV: `50000000103000`
 
 ## Purpose
 
-Project and repair a current-iPhone browser successor for the already-implemented same-device HIL ESRL local lease transition. The successor is intentionally separate from the accepted G25 browser request-consumption path.
+Carry the already-accepted current-iPhone G25 HIL browser state into the next independent ESRL `LEASE_OPEN` observation without minting another claim/fence or resetting the retained standalone-Safari context.
 
 Accepted upstream physical state remains:
 
 ```text
 HIL_BROWSER_EVIDENCE_V16
 -> BROWSER_HIL_LOCAL_READY_OBSERVED
--> exact current-iPhone browser context
+-> current-iPhone standalone Safari
+-> exact retained browser context/node
 -> retained canonical HIL checkout G25
 -> journal replay PASS
 -> canonical .github request-consumption receipt SATISFIED
 ```
 
-This work adds the next independent evidence surface:
+The ESRL successor remains:
 
 ```text
 same stored local-ready result
@@ -30,7 +31,6 @@ same stored local-ready result
 + same browser context/node
 + exact request id/hash
 + journal replay PASS
--> browser ESRL state machine
 -> REQUESTED
 -> ADMITTED
 -> PROVISIONING
@@ -39,98 +39,80 @@ same stored local-ready result
 -> stegverse.hil-browser-esrl-lease-open/v1
 ```
 
-## Physical observation and repair
+Route: `/stegos-bootstrap/portable-workercoordinator/hil-esrl-v1`  
+Protocol: `HIL_BROWSER_ESRL_V1`
 
-After Site PR `#1159` merged, the same standalone-Safari G25 context reached the public ESRL page with the exact retained browser context, node, and G25 fence. Pressing **Open ESRL lease** failed closed with:
+## Completed source repairs
+
+### Checkout-hash / digest compatibility
+
+The first authentic physical ESRL attempt retained browser context `ctx_d151139d2db1eeecb6512f5844058246`, node `stegnode-web-f24e3bfb7f5343cb37323187a88e51f3`, and fence `G25`, but failed closed with `canonical checkout receipt hash required`.
+
+Investigation established that the already-accepted G25 activation-result envelope omitted `canonical_checkout_receipt_sha256` and carried its authentic `execution_entry_sha256` as raw 64-hex. Site PR `#1165`, merged at `7a72c94b3e4fc246424975d97729c4f2220fbef0`, repaired that compatibility boundary by deriving a missing checkout hash only from the exact retained portable WorkerCoordinator state after task/claim/fence/checkout-count/tail validation, preserving the raw execution digest, and including the checkout hash directly in future activation results. No replacement G25 checkout or claim/fence was created.
+
+### Automatic same-context continuation
+
+Site PR `#1169`, merged at `9751d100250c5a3905a363e08c9d9bed47d54ff7`, made `hil-esrl-activate.html` automatically invoke the ESRL route on page load when the exact retained G25 source state is present and there is no valid same-context retained ESRL result. It persists only an exact `LEASE_OPEN` result under `stegos-hil-esrl-last-success-v1`, removes stale/mismatched retained ESRL evidence, and retains manual retry/copy/download only as fallbacks.
+
+### Stale standalone-Safari navigation convergence
+
+A later authentic current-iPhone observation showed that standalone Safari could still display the older **Open ESRL lease** page with `No ESRL evidence yet.` until the button was tapped, even though repository source already contained the automatic-resume page. This identified a distinct service-worker/page convergence defect rather than loss of G25 state.
+
+The source cause was the inherited cache-first navigation path: an already-controlled Safari client could continue receiving the older cached ESRL HTML. The stale page's button could therefore become an accidental trigger for obtaining the current worker/page generation.
+
+Site PR `#1173` repaired that defect and is **MERGED** at `61865d7649fc39669caa39008568764f8b7c45b4`.
+
+The repair:
+
+- retains `CACHE_NAME = "stegos-web-bootstrap-v16"` and the admitted `HIL_BROWSER_EVIDENCE_V16` contract;
+- explicitly adds `./hil-esrl-activate.html` to the existing wrapper shell so the predecessor install path refreshes the current ESRL bytes;
+- preserves `skipWaiting()` and `clients.claim()`;
+- after activation, enumerates same-origin window clients and re-navigates only an already-open `/stegos-bootstrap/hil-esrl-activate.html` client;
+- allows the refreshed page's already-merged auto-resume logic to execute without the stale button serving as the convergence mechanism;
+- does not delete IndexedDB, localStorage, portable WorkerCoordinator state, retained evidence, or G25 claim/fence lineage.
+
+Exact-head PR validation passed before merge:
+
+- `Validate StegOS Persistent Card UX` run `34364465283` — SUCCESS;
+- `No Required Third-Party Runtime` run `34364465495` — SUCCESS;
+- `Site Handoff Orchestrator` run `34364465573` — SUCCESS;
+- `Ecosystem Heartbeat Orchestration` run `34364465326` — SUCCESS;
+- `Site Bootstrap Validate - No Non-TV/TVC Credential Authority` run `34364465667` — SUCCESS.
+
+Post-merge push validation on merge SHA also includes `Validate StegOS Persistent Card UX` run `34364653678` — SUCCESS and `No Required Third-Party Runtime` run `34364653358` — SUCCESS.
+
+The initial PR validation failures were repaired rather than bypassed: the merged auto-resume claim was terminalized from stale `CLAIMED` to `RELEASED`, eliminating the dependency-surface collision, and the exact new service-worker Git blob `a27fb3d98f32924452da9b19921b9824d3d2a7c3` was added to the projection validator's explicit successor allowlist.
+
+## Current evidence boundary
+
+Repository source merge and CI are now complete for the stale-navigation remediation. Public current-iPhone propagation of the new page/worker bytes is still a separate physical observation. The current execution environment could not independently resolve `stegverse.org`, so that tool limitation is not used as evidence either for or against public propagation.
+
+The stale-navigation claim therefore remains active until current public bytes are physically observed in the retained standalone-Safari context. Do not clear Safari/site data and do not create a replacement G25 claim/fence.
+
+Expected public behavior after convergence:
 
 ```text
-FAIL_CLOSED: canonical checkout receipt hash required
+current ESRL page loads
+-> button label is Retry ESRL lease (fallback only)
+-> retained exact G25 source is restored
+-> ESRL attempt begins automatically
+-> if successful: exact LEASE_OPEN JSON appears
+-> Copy evidence JSON / Download evidence JSON become enabled
 ```
 
-This is authentic physical evidence of a source-envelope compatibility defect, not evidence of checkout loss. Inspection established two exact shape mismatches between the already-accepted G25 activation-result envelope and the initial ESRL successor:
-
-1. `hil-browser-receiver.js` wrote `canonical_checkout_receipt_sha256` into the retained checkout-binding and execution receipts, but omitted it from the final `stegos.hil_browser_receiver_activation_result/v1` object stored by `hil-activate.html`.
-2. the authentic G25 `execution_entry_sha256` is a raw 64-hex digest, while the initial ESRL successor incorrectly required a `sha256:` URI for that field. The canonical `.github` ESRL intake intentionally compares the raw execution-entry digest exactly to the accepted G25 request-consumption receipt.
-
-The repair preserves the physical G25 state instead of asking the user to reset or replace it:
-
-- historical same-context G25 activation results may omit `canonical_checkout_receipt_sha256`;
-- the ESRL route derives that missing value only from the retained portable WorkerCoordinator state's exact `last_checkout_receipt.receipt_sha256` after task, claim, fence, checkout-count, state-tail, execution-surface, and credential-boundary validation;
-- if the source result already contains a checkout hash, any mismatch still fails closed;
-- the retained checkout hash itself must remain a canonical `sha256:` URI;
-- raw 64-hex `execution_entry_sha256` is accepted and carried unchanged into `source_execution_entry_sha256` for exact `.github` intake parity;
-- future `HIL_BROWSER_EVIDENCE_V16` activation results now include `canonical_checkout_receipt_sha256` directly.
-
-No second checkout, second claim/fence, browser-state reset, synthetic receipt hash, or transformed execution digest is introduced.
-
-## Source surfaces
-
-- `stegos-bootstrap/hil-browser-receiver.js`
-- `stegos-bootstrap/hil-browser-esrl-lease.js`
-- `stegos-bootstrap/hil-esrl-activate.html`
-- `stegos-bootstrap/service-worker.js`
-- `tests/test_hil_browser_esrl_lease.py`
-- `data/session-work-claims.d/site-hil-browser-esrl-lease-1156.json`
-- `data/session-work-claims.d/site-hil-esrl-checkout-hash-repair-1156.json`
-- `data/session-work-claims.d/site-hil-esrl-auto-resume-1156.json`
-- `data/session-work-claims.d/site-hil-esrl-stale-navigation-1156.json`
-
-The existing `HIL_BROWSER_EVIDENCE_V16` receiver is not repurposed. The ESRL route remains:
-
-`/stegos-bootstrap/portable-workercoordinator/hil-esrl-v1`
-
-Protocol:
-
-`HIL_BROWSER_ESRL_V1`
+Copy/download remains user-mediated because iOS Safari can block unsolicited file export. The lease itself must not depend on that export gesture.
 
 ## Fail-closed binding
 
-The ESRL route requires all of the following from the same physical browser context:
+The ESRL route still requires the exact source schema/state/protocol, canonical task/request identity and request hash, browser context and node, G25 claim/fence, journal replay `PASS`, authentic source execution digest, exactly one retained checkout, checkout-tail parity, valid checkout receipt hash, `CURRENT_USER_IPHONE`, `TV/TVC`, and GitHub runtime authority `NONE`.
 
-- source schema `stegos.hil_browser_receiver_activation_result/v1`;
-- source state `BROWSER_HIL_LOCAL_READY_OBSERVED`;
-- exact `HIL_BROWSER_EVIDENCE_V16` source protocol;
-- exact canonical task/request ID and request SHA256;
-- browser-context and node identity;
-- existing claim/fence above G24;
-- journal replay `PASS`;
-- exact execution-entry SHA256 in the authentic G25 raw-digest form;
-- exactly one retained HIL checkout in the portable WorkerCoordinator state;
-- exact retained claim/fence and checkout-tail parity;
-- valid retained canonical checkout receipt SHA256;
-- exact equality with a source-provided checkout hash when one is present;
-- `CURRENT_USER_IPHONE`, `TV/TVC`, and GitHub runtime authority `NONE` boundaries.
-
-The lease ID is deterministically derived from the exact bound inputs. No caller chooses it.
-
-## Automatic same-context continuation
-
-To eliminate avoidable manual interaction, `hil-esrl-activate.html` now automatically attempts the ESRL route on page load whenever the exact retained G25 source result is present and there is not already a valid retained ESRL result for that same context/node/claim/fence. A single in-flight guard prevents duplicate concurrent attempts.
-
-A successful exact `LEASE_OPEN` result is persisted under `stegos-hil-esrl-last-success-v1` and restored on later page loads only after the same source-binding checks pass. A stale or mismatched retained ESRL result is deleted instead of reused. The **Retry ESRL lease** button remains as a manual fallback, but opening/reloading the page is sufficient to initiate the repaired lease attempt.
-
-Automatic continuation does not auto-download evidence because iOS Safari may block unsolicited downloads. Exact JSON copy/download remains available after successful lease observation.
-
-## Stale standalone-Safari page convergence repair
-
-A later physical observation on the same retained G25 context showed a distinct propagation/convergence defect: the page still rendered the older **Open ESRL lease** control and `No ESRL evidence yet.` state, while current repository source already contained the automatic-resume page. On that stale page, the current service worker and evidence did not appear until the button was tapped.
-
-The source-level cause is the generic cache-first navigation behavior inherited from `service-worker-v13-runtime.js`: an already-controlled Safari client may continue receiving the previously cached ESRL HTML even after the repository page advances. Because the older ESRL page is itself the code that registers/updates the current worker only when its button path executes, this can make the manual click act as an accidental code-convergence trigger.
-
-The repair stays inside the existing v16 wrapper rather than advancing the HIL protocol or creating a replacement runtime:
-
-- `CACHE_NAME` remains `stegos-web-bootstrap-v16`, preserving all existing validators and the admitted `HIL_BROWSER_EVIDENCE_V16` protocol contract;
-- `./hil-esrl-activate.html` is now explicitly added to the wrapper shell so the predecessor install handler refreshes the exact current ESRL bytes when the wrapper updates;
-- the wrapper continues `skipWaiting()` and `clients.claim()`;
-- after activation, it enumerates same-origin window clients and re-navigates only an already-open `/stegos-bootstrap/hil-esrl-activate.html` client;
-- that one-time activation re-navigation causes the refreshed cached page to load, where the already-merged auto-resume logic runs immediately;
-- IndexedDB, localStorage, portable WorkerCoordinator state, G25 claim/fence lineage, and retained evidence are not reset or deleted.
-
-This repair removes the lease button as the mechanism required to obtain current page/worker code. The button remains a retry fallback after convergence.
+A missing or mismatched source field fails closed. A historical source that omitted the checkout hash may recover it only from the exact retained checkout after the full lineage checks. No caller chooses the deterministic lease ID.
 
 ## Explicit non-claims
 
-The source output keeps these independent states false:
+Source, CI, merge, service-worker installation, page load, automatic retry, cache convergence, or repository validation do not establish authentic ESRL runtime success.
+
+The source output keeps independent downstream predicates false until separately observed:
 
 ```text
 public_https_rendezvous_observed=false
@@ -142,32 +124,31 @@ tvc_lifecycle_receipt_observed=false
 broader_hil_lifecycle_complete=false
 ```
 
-Public HTTPS observation remains downstream optional for routine local lease opening.
+The parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED` is discharged only after the exact physical component-produced `stegverse.hil-browser-esrl-lease-open/v1` JSON is exported and accepted by the canonical `.github` intake, followed by canonical worker/task/COSV reconciliation.
 
-## Evidence/export boundary
+## Source surfaces
 
-`hil-esrl-activate.html` reads only the existing same-context `stegos-hil-last-success-v1` result and refuses to continue without it. It exposes copy/download of the exact returned `stegverse.hil-browser-esrl-lease-open/v1` JSON and persistently restores only an exact same-context successful result.
-
-Source, CI, merge, service-worker installation, page load, automatic retry, cache convergence, or deployment do **not** satisfy the parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`.
-
-The blocker may be discharged only after:
-
-1. this continuation and convergence behavior is merged and publicly propagated;
-2. the same standalone-Safari context executes the ESRL route without clearing site data;
-3. the exact component-produced JSON is exported;
-4. the canonical `.github` fail-closed ESRL intake accepts that artifact;
-5. canonical worker/task/COSV state is reconciled from the accepted evidence.
+- `stegos-bootstrap/hil-browser-receiver.js`
+- `stegos-bootstrap/hil-browser-esrl-lease.js`
+- `stegos-bootstrap/hil-esrl-activate.html`
+- `stegos-bootstrap/service-worker.js`
+- `tests/test_hil_browser_esrl_lease.py`
+- `scripts/check_stegos_ipod_bootstrap_projection.py`
+- `data/session-work-claims.d/site-hil-browser-esrl-lease-1156.json`
+- `data/session-work-claims.d/site-hil-esrl-checkout-hash-repair-1156.json`
+- `data/session-work-claims.d/site-hil-esrl-auto-resume-1156.json`
+- `data/session-work-claims.d/site-hil-esrl-stale-navigation-1156.json`
 
 ## README maintenance
 
-`README.md` was re-reviewed against the stale-navigation repair. It already states that the current service-worker propagation generation is `stegos-web-bootstrap-v16`, that the v16 wrapper imports the released v13 runtime plus the HIL portable bridges, and that the HIL activation surface uses `HIL_BROWSER_EVIDENCE_V16`. Those statements remain accurate because this repair intentionally keeps v16 and changes only which ESRL page is pre-cached/re-navigated during wrapper convergence. No README prose change is required for accuracy at this stage.
+`README.md` was re-reviewed after PR `#1173`. Its statements that the current propagation generation remains `stegos-web-bootstrap-v16`, that the wrapper imports the released v13 runtime plus HIL portable bridges, and that the HIL activation surface uses `HIL_BROWSER_EVIDENCE_V16` remain accurate. No README prose change is required for this repair.
 
 ## Remaining parent blockers
 
-Until authentic ESRL evidence is accepted, the parent remains at exactly three blockers:
+Exactly three parent evidence obligations remain until authentic runtime artifacts discharge them:
 
 1. `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`
 2. `POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED`
 3. `TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN`
 
-No parent COSV change is made by source repair, automatic page continuation, or cache convergence alone.
+Parent COSV remains `50000000103000`; source repair and merge alone do not change it.

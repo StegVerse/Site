@@ -36,7 +36,7 @@ async function sha(text){const d=await crypto.subtle.digest('SHA-256',Buffer.fro
   assert.throws(()=>api.normalizeRef('02_Research/ERL/../escape.md'),/traversal/);
   assert.throws(()=>api.normalizeRef('02_Research/ERL/sub/file.md'),/one bounded root artifact/);
   await assert.rejects(()=>api.parseVerifiedRow({...row,sha256:'sha256:'+'0'.repeat(64)},{erl_ref:'02_Research/ERL/nsa.md',platform:'LINKEDIN'}),/SHA-256 mismatch/);
-  await assert.rejects(()=>api.parseVerifiedRow({...row,credential_material_present:true},{erl_ref:'02_Research/ERL/nsa.md',platform:'LINKEDIN'}),/credential boundary/);
+  assert.throws(()=>api.parseVerifiedRow({...row,credential_material_present:true},{erl_ref:'02_Research/ERL/nsa.md',platform:'LINKEDIN'}),/credential boundary/);
 
   console.log(JSON.stringify({status:'PASS',erl_assisted_draft:true,provider_call_performed:false,ai_provider_call_performed:false}));
 })().catch(e=>{console.error(e.stack||e);process.exit(1);});

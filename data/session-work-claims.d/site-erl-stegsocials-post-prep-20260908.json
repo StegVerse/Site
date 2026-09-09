@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "normalized_work_key": "site-erl-stegsocials-post-prep",
+  "dependency_surface_keys": [
+    "kv:erl-global-availability",
+    "site:stegsocials-post-preparation",
+    "site:stegsocials-platform-draft-directories"
+  ],
+  "claimed_paths": [
+    "docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md",
+    "README.md",
+    "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/site-erl-stegsocials-post-prep-20260908.json"
+  ],
+  "handoff": "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md",
+  "cosv_id": "50000000102000",
+  "state": "CLAIMED",
+  "authority_effect": "NONE",
+  "activation_effect": false
+}

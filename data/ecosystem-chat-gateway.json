@@ -1,30 +1,43 @@
 {
-  "schema_version": "1.2.0",
-  "mode": "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK",
-  "enabled": true,
-  "endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/api/ecosystem-chat",
-  "health_endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/health",
-  "endpoint_role": "HOSTED_FALLBACK_ONLY",
+  "schema_version": "1.3.0",
+  "mode": "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS",
+  "enabled": false,
+  "endpoint": null,
+  "health_endpoint": null,
+  "endpoint_role": "SOVEREIGN_DISCOVERY_ONLY",
   "timeout_ms": 20000,
   "fallback": "LOCAL_CLASSIFICATION",
   "discovery": {
     "enabled": true,
     "required_node_id": "ecosystem-chat-portable-node",
-    "selection_policy": "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK",
+    "selection_policy": "FIRST_VALID_SOVEREIGN_LOCAL_ONLY",
     "advertisement_endpoints": [
       "http://127.0.0.1:8000/api/stegverse-node",
-      "http://localhost:8000/api/stegverse-node",
-      "https://stegverse-ecosystem-chat-gateway.onrender.com/api/stegverse-node"
+      "http://localhost:8000/api/stegverse-node"
     ],
     "timeout_ms": 1800,
-    "fallback": "STATIC_HOSTED_GATEWAY_FALLBACK"
+    "fallback": "LOCAL_CLASSIFICATION_FAIL_CLOSED"
   },
+  "optional_third_party_fallbacks": [
+    {
+      "id": "render-ecosystem-chat-gateway",
+      "provider": "Render",
+      "endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/api/ecosystem-chat",
+      "health_endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/health",
+      "enabled_by_default": false,
+      "selection_requires_explicit_runtime_opt_in": true,
+      "production_continuity_dependency": false,
+      "activation_dependency": false,
+      "authority_effect": "NONE"
+    }
+  ],
   "authority_boundary": {
     "site_execution_authority": false,
     "gateway_execution_authority": false,
     "gateway_receipt_is_final": false,
     "master_records_authority": false,
     "node_discovery_grants_authority": false,
-    "node_advertisement_is_publication_authority": false
+    "node_advertisement_is_publication_authority": false,
+    "third_party_fallback_grants_authority": false
   }
 }

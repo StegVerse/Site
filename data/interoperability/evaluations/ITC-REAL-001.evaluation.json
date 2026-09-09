@@ -1,0 +1,104 @@
+{
+  "evaluation_id": "SV-IEL-ITC-REAL-001",
+  "protocol": "Conectrr Intent Transition Contract",
+  "protocol_version": "1.0-draft",
+  "artifact": {
+    "path": "data/conectrr-itc/ITC-REAL-001.canonical.json",
+    "sha256": null,
+    "source_class": "EXTERNAL_SUPPLIED"
+  },
+  "declared_scope": [
+    "discovery explanation",
+    "recommendation handoff",
+    "downstream interoperability input",
+    "non-governing",
+    "non-executable"
+  ],
+  "results": {
+    "structural_conformance": {
+      "status": "PASS",
+      "reason": "All required top-level ITC v1.0 sections are present."
+    },
+    "boundary_validity": {
+      "status": "PASS_PRELIMINARY",
+      "reason": "No affirmative consent, authority, admissibility, commitment, governance, execution, or outcome decision was found in the supplied sample."
+    },
+    "explainability": {
+      "status": "PARTIAL_PASS",
+      "reason": "Intent, ranking criteria, reasoning, confidence, uncertainty, and provenance are understandable, but evidence remains internally summarized."
+    },
+    "reconstructability": {
+      "status": "PARTIAL_FAIL",
+      "reason": "Constraint semantics, alternatives, stable source identity, and independently resolvable evidence are insufficient for full downstream reconstruction."
+    },
+    "identity_stability": {
+      "status": "NOT_ESTABLISHED",
+      "reason": "The export receives a new ITC identifier and timestamp, while the supplied result reference appears malformed and no stable source-event identity is defined."
+    },
+    "immutability": {
+      "status": "NOT_ESTABLISHED",
+      "reason": "The source document explicitly describes immutability as simulated and provides no canonical digest or append-only preservation proof."
+    },
+    "minimality": {
+      "status": "NOT_TESTED",
+      "reason": "No field-removal or section-removal experiment has yet established the smallest sufficient handoff."
+    },
+    "replayability": {
+      "status": "NOT_ESTABLISHED",
+      "reason": "The artifact explains the recommendation but does not yet establish deterministic reproduction from independently available inputs."
+    },
+    "independent_reproduction": {
+      "status": "NOT_ESTABLISHED",
+      "reason": "This is a StegVerse internal downstream evaluation of an external artifact, not an independent implementation reproduction."
+    },
+    "production_observation": {
+      "status": "NOT_ESTABLISHED",
+      "reason": "No production execution or downstream action is claimed or required for the discovery-layer test."
+    }
+  },
+  "evidence_class": {
+    "execution_class": "INTERNAL_EXECUTION",
+    "publicly_inspectable": true,
+    "independently_reproduced": false,
+    "production_observed": false
+  },
+  "findings": [
+    {
+      "finding_id": "ITC-F001",
+      "classification": "DEMONSTRATED_BY_CURRENT_VERSION",
+      "summary": "The discovery/governance boundary appears to hold for the supplied actual recommendation.",
+      "evidence_refs": ["data/conectrr-itc/ITC-REAL-001.canonical.json"]
+    },
+    {
+      "finding_id": "ITC-F002",
+      "classification": "INTENTIONALLY_UNRESOLVED",
+      "summary": "True cryptographic immutability is not implemented in the current MVP.",
+      "evidence_refs": ["docs/conectrr/ITC-SPECIFICATION-v1.0-draft.receipt.md"]
+    },
+    {
+      "finding_id": "ITC-F003",
+      "classification": "CANDIDATE_NORMATIVE_CHANGE",
+      "summary": "Separate stable discovery-event identity from emission identity and bind canonical content with a digest.",
+      "evidence_refs": ["docs/conectrr/ITC-v1.1-candidate-design-goals.md"]
+    },
+    {
+      "finding_id": "ITC-F004",
+      "classification": "CANDIDATE_NORMATIVE_CHANGE",
+      "summary": "Represent absent, unknown, defaulted, unavailable, and not-applicable constraints explicitly.",
+      "evidence_refs": ["docs/conectrr/ITC-v1.1-candidate-design-goals.md"]
+    },
+    {
+      "finding_id": "ITC-F005",
+      "classification": "CANDIDATE_NORMATIVE_CHANGE",
+      "summary": "Provide privacy-preserving evidence receipts or digests with resolvability classification.",
+      "evidence_refs": ["docs/conectrr/ITC-v1.1-candidate-design-goals.md"]
+    },
+    {
+      "finding_id": "ITC-F006",
+      "classification": "CANDIDATE_NORMATIVE_CHANGE",
+      "summary": "Use empirical field-removal tests to establish practical minimality.",
+      "evidence_refs": ["docs/conectrr/ITC-v1.1-candidate-design-goals.md"]
+    }
+  ],
+  "disposition": "DEFER"
+}

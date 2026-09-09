@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/interoperability/evaluation-record.schema.json",
+  "title": "Interoperability Evaluation Record",
+  "type": "object",
+  "required": [
+    "evaluation_id",
+    "protocol",
+    "protocol_version",
+    "artifact",
+    "declared_scope",
+    "results",
+    "evidence_class",
+    "disposition"
+  ],
+  "properties": {
+    "evaluation_id": {"type": "string", "minLength": 1},
+    "protocol": {"type": "string", "minLength": 1},
+    "protocol_version": {"type": "string", "minLength": 1},
+    "artifact": {
+      "type": "object",
+      "required": ["path", "source_class"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "source_class": {
+          "enum": ["EXTERNAL_SUPPLIED", "INTERNAL_GENERATED", "PUBLIC_RETRIEVED"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "declared_scope": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "results": {
+      "type": "object",
+      "required": [
+        "structural_conformance",
+        "boundary_validity",
+        "explainability",
+        "reconstructability",
+        "identity_stability",
+        "immutability",
+        "minimality"
+      ],
+      "properties": {
+        "structural_conformance": {"$ref": "#/$defs/result"},
+        "boundary_validity": {"$ref": "#/$defs/result"},
+        "explainability": {"$ref": "#/$defs/result"},
+        "reconstructability": {"$ref": "#/$defs/result"},
+        "identity_stability": {"$ref": "#/$defs/result"},
+        "immutability": {"$ref": "#/$defs/result"},
+        "minimality": {"$ref": "#/$defs/result"},
+        "replayability": {"$ref": "#/$defs/result"},
+        "independent_reproduction": {"$ref": "#/$defs/result"},
+        "production_observation": {"$ref": "#/$defs/result"}
+      },
+      "additionalProperties": false
+    },
+    "evidence_class": {
+      "type": "object",
+      "required": ["execution_class", "publicly_inspectable", "independently_reproduced", "production_observed"],
+      "properties": {
+        "execution_class": {"enum": ["INTERNAL_EXECUTION", "EXTERNAL_EXECUTION", "MIXED_EXECUTION"]},
+        "publicly_inspectable": {"type": "boolean"},
+        "independently_reproduced": {"type": "boolean"},
+        "production_observed": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding_id", "classification", "summary"],
+        "properties": {
+          "finding_id": {"type": "string"},
+          "classification": {
+            "enum": [
+              "DEMONSTRATED_BY_CURRENT_VERSION",
+              "INTENTIONALLY_UNRESOLVED",
+              "CANDIDATE_NORMATIVE_CHANGE",
+              "OPTIONAL_OR_IMPLEMENTATION_SPECIFIC"
+            ]
+          },
+          "summary": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "disposition": {"enum": ["PASS", "PASS_WITH_LIMITATIONS", "DEFER", "FAIL"]}
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "enum": ["PASS", "PASS_PRELIMINARY", "PARTIAL_PASS", "PARTIAL_FAIL", "FAIL", "NOT_ESTABLISHED", "NOT_TESTED"]
+        },
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

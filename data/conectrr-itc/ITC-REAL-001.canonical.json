@@ -1,0 +1,132 @@
+{
+  "artifact_class": "EXTERNAL_ARTIFACT",
+  "source_system": "Conectrr",
+  "source_engine": "PEOPLE_DISCOVERY",
+  "received_via": "direct participant message",
+  "received_at": "2026-07-26",
+  "evaluation_status": "PENDING_FULL_BOUNDARY_TEST",
+  "independently_reproduced": false,
+  "production_observed": false,
+  "source_document_title": "Canonical ITC Generated from an Actual Conectrr Recommendation",
+  "itc": {
+    "itc_version": "1.0-draft",
+    "itc_record_metadata": {
+      "itc_id": "1dbcad33-2719-4189-bf9f-d73b86b65295",
+      "emitted_at": "2026-07-26T02:45:47.683Z",
+      "emitted_by_engine": "PEOPLE_DISCOVERY",
+      "engine_version": "1.0.0",
+      "specification_version": "1.0.0",
+      "supersedes_itc_id": null
+    },
+    "intent": {
+      "primary_intent": "DÃ©couvrir des opportunitÃ©s professionnelles",
+      "secondary_intent": "Mobiliser des compÃ©tences linguistiques pour faciliter la communication interculturelle",
+      "intent_summary": "User declared intent: DÃ©couvrir des opportunitÃ©s professionnelles",
+      "intent_confidence": 75
+    },
+    "criteria": {
+      "match_dimensions_evaluated": [
+        "location_relevance",
+        "skill_alignment",
+        "intent_alignment",
+        "outcome_intelligence",
+        "interest_alignment"
+      ],
+      "dimension_weights": {
+        "location_relevance": 0.13,
+        "skill_alignment": 0.22,
+        "intent_alignment": 0.30,
+        "outcome_intelligence": 0.20,
+        "interest_alignment": 0.15
+      },
+      "user_preferences_applied": {
+        "match_preferences": [],
+        "geographic_preferences": [],
+        "search_preferences": []
+      }
+    },
+    "constraints": {
+      "visibility_level_respected": null,
+      "availability_status_respected": null,
+      "ai_participation_respected": {},
+      "profile_visibility_rules_applied": {}
+    },
+    "recommendation": {
+      "result_type": "person",
+      "result_reference": "PEOPLE_DISCOVERY_Multilingual_linguist_Multilingualism (EN/",
+      "match_category": "direct",
+      "revealed_fields": [
+        "intent_summary",
+        "skills",
+        "interests",
+        "current_projects",
+        "goals",
+        "location",
+        "organization",
+        "contact_info"
+      ],
+      "withheld_fields": []
+    },
+    "match_reasoning": {
+      "explanation_bullets": [
+        "Strong alignment with your stated goals and intent profile.",
+        "Shared skill areas include: Multilingualism (EN/FR/ES), Traduction, Communication interculturelle.",
+        "Common interests: Linguistique, Culture, Bridging cultures.",
+        "Based in Viana.",
+        "Works as: Multilingual linguist.",
+        "This is a direct match â€” high overlap with your goals and profile."
+      ],
+      "confidence_level": "high",
+      "ranking_context": "Evaluated 111 candidates, filtered to 1, final rank position 0."
+    },
+    "evidence_references": [
+      {
+        "evidence_type": "internal",
+        "evidence_source": "Conectrr Network",
+        "evidence_summary": "Discovery engine result with compatibility scoring"
+      }
+    ],
+    "alternatives_considered": [],
+    "confidence": {
+      "overall_confidence": 95,
+      "dimension_confidence": {
+        "intent_alignment": 95,
+        "skill_alignment": 100,
+        "interest_alignment": 100,
+        "location_relevance": 85
+      }
+    },
+    "uncertainties": [
+      "Alternatives considered are not currently persisted by the discovery engine",
+      "User discovery visibility level was not set â€” default assumptions may have been applied"
+    ],
+    "unresolved_dependencies": [
+      {
+        "dependency_type": "identity_verification",
+        "dependency_description": "Whether the recommended party has completed identity verification is not resolved at discovery time",
+        "blocking": false
+      },
+      {
+        "dependency_type": "trust_profile",
+        "dependency_description": "Trust profile (reputation score, trust level) for the recommended party is not available in the ITC",
+        "blocking": false
+      }
+    ],
+    "provenance": {
+      "discovery_engine": "PEOPLE_DISCOVERY",
+      "engine_configuration_version": "1.0.0",
+      "emission_timestamp": "2026-07-26T02:45:47.683Z",
+      "input_data_sources": [
+        "Conectrr Network"
+      ],
+      "itc_specification_version": "1.0-draft"
+    }
+  },
+  "source_disclosures": {
+    "actual_recommendation": true,
+    "privacy_substitutions_applied": true,
+    "immutability": "SIMULATED_MVP",
+    "cryptographic_signing": false,
+    "append_only_storage": false
+  }
+}

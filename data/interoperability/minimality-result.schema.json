@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/interoperability/minimality-result.schema.json",
+  "title": "Interoperability Minimality Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "result_version",
+    "fixture_id",
+    "source_evaluation_id",
+    "removed_path",
+    "classification",
+    "baseline_failures",
+    "removal_caused_failures",
+    "boundary_preserved",
+    "reconstruction_preserved",
+    "evidence"
+  ],
+  "properties": {
+    "result_version": {"const": "0.1.0"},
+    "fixture_id": {"type": "string", "minLength": 1},
+    "source_evaluation_id": {"type": "string", "minLength": 1},
+    "removed_path": {"type": "string", "minLength": 1},
+    "classification": {
+      "enum": ["REQUIRED", "CONDITIONALLY_REQUIRED", "REDUNDANT", "OPTIONAL", "UNDETERMINED"]
+    },
+    "baseline_failures": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "removal_caused_failures": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "IDENTITY_FAILURE",
+          "INTENT_RECONSTRUCTION_FAILURE",
+          "RECOMMENDATION_RECONSTRUCTION_FAILURE",
+          "REASONING_RECONSTRUCTION_FAILURE",
+          "CONSTRAINT_STATE_AMBIGUITY",
+          "EVIDENCE_OPACITY",
+          "UNCERTAINTY_LOSS",
+          "BOUNDARY_COLLAPSE",
+          "DOWNSTREAM_ACTION_AMBIGUITY"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "boundary_preserved": {"type": "boolean"},
+    "reconstruction_preserved": {"type": "boolean"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_class", "reproduced", "test_reference", "notes"],
+      "properties": {
+        "execution_class": {"enum": ["INTERNAL_EXECUTION", "INDEPENDENT_EXECUTION"]},
+        "reproduced": {"type": "boolean"},
+        "test_reference": {"type": ["string", "null"]},
+        "notes": {"type": "string"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"classification": {"const": "REQUIRED"}}},
+      "then": {
+        "properties": {
+          "removal_caused_failures": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"classification": {"enum": ["REDUNDANT", "OPTIONAL"]}}},
+      "then": {
+        "properties": {
+          "removal_caused_failures": {"maxItems": 0},
+          "boundary_preserved": {"const": true},
+          "reconstruction_preserved": {"const": true}
+        }
+      }
+    }
+  ]
+}

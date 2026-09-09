@@ -1,0 +1,45 @@
+name: Interoperability Evidence Validation
+
+on:
+  pull_request:
+    paths:
+      - "data/interoperability/**"
+      - "data/conectrr-itc/**"
+      - "scripts/check_conectrr_real_itc.py"
+      - "scripts/validate_interoperability_evaluation.py"
+      - "scripts/validate_normative_promotion.py"
+      - ".github/workflows/interoperability-evidence-validation.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/interoperability/**"
+      - "data/conectrr-itc/**"
+      - "scripts/check_conectrr_real_itc.py"
+      - "scripts/validate_interoperability_evaluation.py"
+      - "scripts/validate_normative_promotion.py"
+      - ".github/workflows/interoperability-evidence-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Conectrr canonical ITC
+        run: python scripts/check_conectrr_real_itc.py
+
+      - name: Validate interoperability evidence ledger
+        run: python scripts/validate_interoperability_evaluation.py
+
+      - name: Validate normative promotion register
+        run: python scripts/validate_normative_promotion.py

@@ -1,0 +1,56 @@
+{
+  "register_version": "0.1.0",
+  "protocol": "Conectrr Intent Transition Contract",
+  "target_version": "1.1-working-draft",
+  "governing_rule": "No normative change without demonstrated evidence",
+  "candidates": [
+    {
+      "proposal_id": "ITC-11-STABLE-IDENTITY",
+      "title": "Stable discovery-event identity",
+      "promotion_state": "CANDIDATE_DOCUMENTED",
+      "source_finding_id": "ITC-REAL-001-IDENTITY",
+      "problem_statement": "Repeated exports create new ITC identifiers without a stable identity for the underlying discovery event.",
+      "proposed_normative_rule": null,
+      "problem_reproduced": false,
+      "conformance_test_passed": false,
+      "boundary_preserved": true,
+      "boundary_equivalences": []
+    },
+    {
+      "proposal_id": "ITC-11-CONSTRAINT-STATES",
+      "title": "Explicit constraint-state semantics",
+      "promotion_state": "CANDIDATE_DOCUMENTED",
+      "source_finding_id": "ITC-REAL-001-CONSTRAINTS",
+      "problem_statement": "Null and empty constraint values conflate unknown, not configured, default applied, not applicable, and unavailable states.",
+      "proposed_normative_rule": null,
+      "problem_reproduced": false,
+      "conformance_test_passed": false,
+      "boundary_preserved": true,
+      "boundary_equivalences": []
+    },
+    {
+      "proposal_id": "ITC-11-EVIDENCE-RECEIPT",
+      "title": "Privacy-preserving evidence receipt",
+      "promotion_state": "CANDIDATE_DOCUMENTED",
+      "source_finding_id": "ITC-REAL-001-EVIDENCE",
+      "problem_statement": "Internal evidence references explain provenance but cannot presently support bounded independent verification.",
+      "proposed_normative_rule": null,
+      "problem_reproduced": false,
+      "conformance_test_passed": false,
+      "boundary_preserved": true,
+      "boundary_equivalences": []
+    },
+    {
+      "proposal_id": "ITC-11-MINIMALITY",
+      "title": "Empirical minimality testing",
+      "promotion_state": "CANDIDATE_DOCUMENTED",
+      "source_finding_id": "ITC-REAL-001-MINIMALITY",
+      "problem_statement": "The current schema is declared minimal, but field-removal testing has not established the smallest practical interoperable handoff.",
+      "proposed_normative_rule": null,
+      "problem_reproduced": false,
+      "conformance_test_passed": false,
+      "boundary_preserved": true,
+      "boundary_equivalences": []
+    }
+  ]
+}

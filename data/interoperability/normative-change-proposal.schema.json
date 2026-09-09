@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/interoperability/normative-change-proposal.schema.json",
+  "title": "Normative Interoperability Change Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "change_id",
+    "protocol",
+    "target_version",
+    "affected_clause_or_field",
+    "evidence_class",
+    "evidence_references",
+    "observed_limitation",
+    "reproduction_status",
+    "boundary_impact",
+    "compatibility_impact",
+    "implementation_status",
+    "test_status",
+    "disposition"
+  ],
+  "properties": {
+    "change_id": {"type": "string", "minLength": 1},
+    "protocol": {"type": "string", "minLength": 1},
+    "target_version": {"type": "string", "minLength": 1},
+    "affected_clause_or_field": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "evidence_class": {
+      "enum": [
+        "REPRODUCIBLE_INTEROPERABILITY_FINDING",
+        "DOWNSTREAM_RECONSTRUCTION_REQUIREMENT",
+        "INDEPENDENTLY_OBSERVED_LIMITATION",
+        "REPRODUCED_BOUNDARY_FAILURE",
+        "MATERIAL_IMPLEMENTATION_DIVERGENCE"
+      ]
+    },
+    "evidence_references": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "observed_limitation": {"type": "string", "minLength": 1},
+    "proposed_change": {"type": "string"},
+    "reproduction_status": {"enum": ["NOT_ATTEMPTED", "INTERNAL_ONLY", "REPRODUCED", "INDEPENDENTLY_REPRODUCED"]},
+    "boundary_impact": {"enum": ["NONE", "PRESERVES_BOUNDARY", "STRENGTHENS_BOUNDARY", "BOUNDARY_RISK", "BOUNDARY_COLLAPSE"]},
+    "compatibility_impact": {"enum": ["UNKNOWN", "NONE", "BACKWARD_COMPATIBLE", "CONDITIONALLY_COMPATIBLE", "BREAKING"]},
+    "implementation_status": {"enum": ["NOT_STARTED", "PROTOTYPE", "IMPLEMENTED", "WITHDRAWN"]},
+    "test_status": {"enum": ["NOT_DEFINED", "DEFINED", "INTERNAL_PASS", "EXTERNAL_PASS", "FAILED"]},
+    "disposition": {"enum": ["CANDIDATE", "EVIDENCE_PENDING", "EVIDENCE_SUFFICIENT", "ACCEPTED_NORMATIVE", "ACCEPTED_OPTIONAL", "REJECTED", "SUPERSEDED"]},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"disposition": {"const": "ACCEPTED_NORMATIVE"}}},
+      "then": {
+        "properties": {
+          "reproduction_status": {"enum": ["REPRODUCED", "INDEPENDENTLY_REPRODUCED"]},
+          "boundary_impact": {"enum": ["NONE", "PRESERVES_BOUNDARY", "STRENGTHENS_BOUNDARY"]},
+          "test_status": {"enum": ["INTERNAL_PASS", "EXTERNAL_PASS"]}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"boundary_impact": {"const": "BOUNDARY_COLLAPSE"}}},
+      "then": {"properties": {"disposition": {"enum": ["REJECTED", "SUPERSEDED"]}}}
+    }
+  ]
+}

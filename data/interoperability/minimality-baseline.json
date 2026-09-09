@@ -1,0 +1,48 @@
+{
+  "baseline_id": "ITC-REAL-001-MIN-BASELINE",
+  "protocol": "Conectrr Intent Transition Contract",
+  "protocol_version": "1.0-draft",
+  "source_artifact": "data/conectrr-itc/ITC-REAL-001.canonical.json",
+  "execution_class": "INTERNAL_EXECUTION",
+  "baseline_limitations": [
+    {
+      "finding_id": "ITC-FIND-CONSTRAINT-STATE-AMBIGUITY",
+      "dimension": "constraint_reconstruction",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The constraints object is structurally present but populated with null or empty values that do not distinguish not configured, unavailable, not applicable, defaulted, unenforced, or unrecorded states."
+    },
+    {
+      "finding_id": "ITC-FIND-EVIDENCE-OPACITY",
+      "dimension": "evidence_reconstruction",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The evidence reference identifies an internal source but is not independently resolvable from the artifact alone."
+    },
+    {
+      "finding_id": "ITC-FIND-ALTERNATIVES-ABSENT",
+      "dimension": "ranking_reconstruction",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The record reports 111 candidates evaluated but does not preserve alternatives or filter-reason detail."
+    },
+    {
+      "finding_id": "ITC-FIND-IDENTITY-UNSTABLE",
+      "dimension": "identity",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The recommendation reference appears malformed and repeated exports create new ITC identifiers without a stable source-event identity."
+    },
+    {
+      "finding_id": "ITC-FIND-IMMUTABILITY-SIMULATED",
+      "dimension": "immutability",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The source document states that immutability is simulated and cryptographic or append-only preservation is not established."
+    },
+    {
+      "finding_id": "ITC-FIND-UNICODE-CORRUPTION",
+      "dimension": "serialization_integrity",
+      "status": "PRESENT_IN_CANONICAL",
+      "description": "The received artifact contains mojibake in French text and punctuation."
+    }
+  ],
+  "comparison_rule": "A removal fixture may only attribute failures newly introduced relative to this baseline. Existing baseline limitations must be reported separately and must not be counted as removal-caused failures.",
+  "independent_reproduction": false,
+  "production_observed": false
+}

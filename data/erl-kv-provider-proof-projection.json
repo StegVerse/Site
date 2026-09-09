@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.erl-kv-provider-proof-projection/v1",
+  "task_id": "SS-ERL-KV-PROPAGATION-VERIFICATION-001",
+  "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "upstream": {
+    "erl_integration_commit": "722a11cf2ada6205a31e3678d489254fb736e8f7",
+    "erl_provider_evidence_commit": "8569d8b811b787cd49ee3f38c352c46fb86c3bca",
+    "master_records_custody_commit": "3e1bc4f2f98bde1932261c2ce96ca42fa9952a19",
+    "stegsocials_consumer_commit": "41f1eae88f12d461df6a72fbb3edce90966c0fd9",
+    "provider_folder_id": "1esoETwRd5A2YgdVTMskCSgzTOpuRyIV5",
+    "provider_operation_receipt_sha256": "bb74904fcd8169829c78bdc1c0d64905b33243c2c22852565c13e614abcd1fa8"
+  },
+  "proof": {
+    "native_writer_execution_proven": true,
+    "provider_write_execution_proven": true,
+    "manifest_written_last": true,
+    "exact_provider_byte_readback_verified": true,
+    "provider_operation_receipt_retained": true,
+    "master_records_custody_reconstructed": true
+  },
+  "nonclaims": {
+    "runtime_activation_claimed": false,
+    "publication_claimed": false,
+    "deployment_claimed": false,
+    "downstream_propagation_inferred_from_documentation": false,
+    "credential_material_present": false
+  },
+  "authority_effect": "NONE_REFERENCE_ONLY",
+  "consumer": {
+    "repository": "StegVerse-Labs/Site",
+    "role": "MYKV_ERL_AND_STEGSOCIALS_PREPARATION_PROJECTION",
+    "applicability": "UPDATE_REQUIRED",
+    "state": "UPSTREAM_PROOF_REFERENCED_NOT_RUNTIME_ACTIVATION"
+  }
+}

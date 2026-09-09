@@ -84,6 +84,73 @@
     });
   }
 
+  function isLoopbackAdvertisement(value) {
+    try {
+      var url = new URL(value, root.location.href);
+      return url.protocol === "http:" && (url.hostname === "127.0.0.1" || url.hostname === "localhost") && url.pathname.endsWith("/api/stegverse-node");
+    } catch (_) { return false; }
+  }
+
+  function validateRendezvousConfig(config) {
+    var boundary = config && config.authority_boundary;
+    var discovery = config && config.discovery;
+    var hosted = config && config.hosted_fallback;
+    if (!config || config.schema_version !== "1.2.0" || config.mode !== "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK" ||
+        config.primary_transport !== "SOVEREIGN_LOCAL_RESIDENT" || config.enabled !== true || typeof config.endpoint !== "string" ||
+        !hosted || hosted.role !== "HOSTED_FALLBACK_ONLY" ||
+        !discovery || discovery.enabled !== true || discovery.selection !== "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK" ||
+        !Array.isArray(discovery.advertisement_endpoints) || discovery.advertisement_endpoints.length < 2 ||
+        !isLoopbackAdvertisement(discovery.advertisement_endpoints[0]) || !isLoopbackAdvertisement(discovery.advertisement_endpoints[1]) ||
+        !boundary || boundary.site_execution_authority !== false || boundary.gateway_execution_authority !== false ||
+        boundary.master_records_authority !== false || boundary.node_discovery_grants_authority !== false) {
+      throw new Error("canonical sovereign-first rendezvous configuration mismatch");
+    }
+    return config;
+  }
+
+  function validateNodeAdvertisement(value, expectedNodeId, advertisementUrl) {
+    if (!value || value.schema !== "stegverse.node.endpoint-advertisement.v1" || value.node_id !== expectedNodeId ||
+        value.capability_id !== "ecosystem-chat-gateway" || value.health_bound !== true ||
+        value.authority_granted !== false || value.publication_authority !== false || value.execution_authority !== false) {
+      throw new Error("sovereign resident node advertisement invalid");
+    }
+    var origin = new URL(advertisementUrl, root.location.href).origin;
+    if (!origin.startsWith("http://127.0.0.1") && !origin.startsWith("http://localhost")) {
+      throw new Error("primary resident advertisement is not sovereign loopback");
+    }
+    return origin;
+  }
+
+  function probeSovereignResident(config, index) {
+    var endpoints = config.discovery.advertisement_endpoints.slice(0, 2);
+    if (index >= endpoints.length) { return Promise.resolve(null); }
+    var advertisementUrl = endpoints[index];
+    var timeoutMs = Number(config.discovery.timeout_ms || 1800);
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = root.setTimeout(function () { if (controller) { controller.abort(); } }, timeoutMs);
+    return fetch(advertisementUrl, {
+      method: "GET", credentials: "omit", cache: "no-store", redirect: "error",
+      signal: controller ? controller.signal : undefined,
+      headers: { "Accept": "application/json" }
+    }).then(function (response) {
+      if (!response.ok) { throw new Error("sovereign resident advertisement unavailable"); }
+      return response.json();
+    }).then(function (value) {
+      return validateNodeAdvertisement(value, config.discovery.required_node_id, advertisementUrl);
+    }).catch(function () {
+      return probeSovereignResident(config, index + 1);
+    }).finally(function () { root.clearTimeout(timer); });
+  }
+
+  function hostedFallbackOrigin(config) {
+    var endpoint = new URL(config.endpoint, root.location.href);
+    if (endpoint.protocol !== "https:") { throw new Error("hosted rendezvous fallback must use HTTPS"); }
+    if (!config.hosted_fallback || config.hosted_fallback.role !== "HOSTED_FALLBACK_ONLY") {
+      throw new Error("hosted rendezvous endpoint is not explicitly fallback-only");
+    }
+    return endpoint.origin;
+  }
+
   function residentRendezvousBaseUrl() {
     if (gatewayBasePromise) { return gatewayBasePromise; }
     gatewayBasePromise = fetch(GATEWAY_CONFIG_URL, {
@@ -92,16 +159,10 @@
     }).then(function (response) {
       if (!response.ok) { throw new Error("canonical gateway configuration unavailable"); }
       return response.json();
-    }).then(function (config) {
-      var boundary = config && config.authority_boundary;
-      if (!config || config.enabled !== true || typeof config.endpoint !== "string" ||
-          !boundary || boundary.site_execution_authority !== false || boundary.gateway_execution_authority !== false ||
-          boundary.master_records_authority !== false || boundary.node_discovery_grants_authority !== false) {
-        throw new Error("canonical gateway configuration boundary mismatch");
-      }
-      var endpoint = new URL(config.endpoint, root.location.href);
-      if (endpoint.protocol !== "https:") { throw new Error("resident rendezvous gateway must use HTTPS"); }
-      return endpoint.origin;
+    }).then(validateRendezvousConfig).then(function (config) {
+      return probeSovereignResident(config, 0).then(function (localOrigin) {
+        return localOrigin || hostedFallbackOrigin(config);
+      });
     }).catch(function (error) {
       gatewayBasePromise = null;
       throw error;

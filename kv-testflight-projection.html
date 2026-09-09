@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>StegVerse KV TestFlight Projection</title>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;margin:0 auto;padding:20px;max-width:720px}button,a{font:inherit;padding:14px 16px;border:1px solid #777;border-radius:12px;display:inline-block;margin:8px 0}pre{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem}.state{font-weight:700}</style>
+</head>
+<body>
+<h1>KV TestFlight Projection</h1>
+<p>This page does not create KV admission authority. It uses the existing current-device Device→KV InTr lane to request the resident KV installation status for the single purpose <code>CURRENT_IPHONE_TESTFLIGHT_SIGNING</code>, requires the authentic <code>INGRESS_ADMITTED</code> receipt and validated KV installation, observes only required browser capabilities, and then derives the exact non-authorizing projection context.</p>
+<p>State: <span id="state" class="state">READY</span></p>
+<button id="materialize" type="button">Create KV Projection Context</button>
+<a id="save" hidden download="stegverse-kv-testflight-projection.json">Save Projection JSON</a>
+<pre id="output"></pre>
+<script src="assets/stegverse-node-continuity.js"></script>
+<script src="assets/generated/site-browser-intr-connectors.js"></script>
+<script src="assets/hb-intr-carrier.js"></script>
+<script src="stegos-node/device-kv-intr-sync.js?v=20260909-kv-testflight-r1"></script>
+<script src="assets/kv-testflight-projection-entry.js?v=20260909-r1"></script>
+<script src="assets/kv-testflight-projection-export.js?v=20260909-r1"></script>
+<script>
+(function(){
+"use strict";
+var button=document.getElementById("materialize"),save=document.getElementById("save"),state=document.getElementById("state"),output=document.getElementById("output"),url=null;
+button.addEventListener("click",function(){
+  button.disabled=true;save.hidden=true;state.textContent="REQUESTING_KV_ADMISSION";output.textContent="";
+  if(url){URL.revokeObjectURL(url);url=null;}
+  var bridge=window.StegVerseKVTestFlightProjectionExport;
+  if(!bridge||typeof bridge.materialize!=="function"){state.textContent="FAIL_CLOSED";output.textContent="KV projection adapter unavailable";button.disabled=false;return;}
+  bridge.materialize().then(function(result){
+    state.textContent="PROJECTION_CONTEXT_READY";
+    var text=JSON.stringify(result.projection_context,null,2)+"\n";
+    url=URL.createObjectURL(new Blob([text],{type:"application/json"}));
+    save.href=url;save.hidden=false;
+    output.textContent=JSON.stringify({schema:result.schema,state:result.state,projection_schema:result.projection_context.schema,purpose:result.projection_context.purpose,entry_state:result.projection_context.entry_state,browser_capability_state:result.projection_context.browser_capability_state,kv_installation_receipt_sha256:result.evidence.kv_installation_receipt_sha256,authority_effect:result.authority_effect},null,2);
+  }).catch(function(error){state.textContent="FAIL_CLOSED";output.textContent=String(error&&error.message?error.message:error);}).finally(function(){button.disabled=false;});
+});
+window.addEventListener("pagehide",function(){if(url)URL.revokeObjectURL(url);});
+})();
+</script>
+</body>
+</html>

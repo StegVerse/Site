@@ -236,8 +236,8 @@ jobs:
               'schedule' + ':',
               'repository:' + ' StegVerse-org/LLM-adapter',
               'pip install -e ' + "'./adapter-source[service]'",
-              'pip install jsonschema',
-              'python3 -m pip install jsonschema',
+              'pip ' + 'install jsonschema',
+              'python3 -m pip ' + 'install jsonschema',
           ]
           assert 'permissions: {}' in workflow
           assert 'Refuse credential-bearing environment' in workflow

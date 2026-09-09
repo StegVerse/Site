@@ -10,9 +10,9 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/hil-esrl-checkout-hash-1156",
       "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
-      "handoff_revision": "PENDING_BRANCH_HEAD",
+      "handoff_revision": "7a72c94b3e4fc246424975d97729c4f2220fbef0",
       "role": "IMPLEMENTATION_REPAIR",
-      "state": "CLAIMED",
+      "state": "RELEASED",
       "normalized_work_key": "site-hil-esrl-checkout-hash-repair-1156",
       "dependency_surface_keys": ["site:hil-browser-esrl-lease-open"],
       "claimed_paths": [
@@ -25,7 +25,8 @@
         "README.md"
       ],
       "claim_created_at": "2026-09-09T03:51:00-05:00",
-      "claim_expires_when": "Release after exact-head validation, merge, public propagation, and confirmation that the same retained G25 context reaches the ESRL route without clearing site data or minting another claim/fence.",
+      "claim_released_at": "2026-09-09T08:17:00-05:00",
+      "claim_expires_when": "Released after exact-head validation and merge of Site PR #1165; subsequent same-context continuation work uses its own bounded claim.",
       "expected_evidence": [
         "historical G25 activation result without canonical_checkout_receipt_sha256 remains admissible only when the retained portable WorkerCoordinator state supplies an exact valid receipt hash",
         "a supplied checkout hash still fails closed on mismatch",
@@ -44,7 +45,7 @@
         "No conversion of raw execution-entry digest into a different digest",
         "No source/CI/deployment promotion of ESRL runtime observation"
       ],
-      "next_task_after_release": "Retry Open ESRL lease in the same standalone-Safari context and export the exact LEASE_OPEN JSON if successful.",
+      "next_task_after_release": "Automatic same-context ESRL continuation is handled under site-hil-esrl-auto-resume-1156.json.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE",
       "non_tv_tvc_secret_or_token_used": false,

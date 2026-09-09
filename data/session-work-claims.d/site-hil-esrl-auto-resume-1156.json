@@ -1,0 +1,57 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-ESRL-AUTO-RESUME-1156-20260909",
+      "session_worker_id": "chatgpt:hil-esrl-auto-resume-1156-20260909",
+      "task_id": "SITE-HIL-ESRL-AUTO-RESUME-1156",
+      "originating_goal": "Reduce current-iPhone manual work by automatically resuming the repaired ESRL lease attempt from the exact retained G25 standalone-Safari state and persisting only an exact same-context LEASE_OPEN result.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/hil-esrl-auto-resume-1156",
+      "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
+      "handoff_revision": "PENDING_BRANCH_HEAD",
+      "role": "IMPLEMENTATION_CONTINUATION",
+      "state": "CLAIMED",
+      "normalized_work_key": "site-hil-esrl-auto-resume-1156",
+      "dependency_surface_keys": ["site:hil-browser-esrl-lease-open"],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-esrl-checkout-hash-repair-1156.json",
+        "data/session-work-claims.d/site-hil-esrl-auto-resume-1156.json",
+        "stegos-bootstrap/hil-esrl-activate.html",
+        "tests/test_hil_browser_esrl_lease.py",
+        "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
+        "README.md"
+      ],
+      "claim_created_at": "2026-09-09T08:17:00-05:00",
+      "claim_expires_when": "Release after exact-head validation, merge, and public propagation of automatic same-context ESRL continuation; authentic LEASE_OPEN intake remains a separate physical predicate.",
+      "expected_evidence": [
+        "page automatically attempts ESRL only when exact retained G25 source evidence is present",
+        "single in-flight guard prevents duplicate concurrent attempts",
+        "successful exact LEASE_OPEN result is persisted and restored only for identical context/node/claim/fence",
+        "stale or mismatched retained ESRL evidence is removed rather than reused",
+        "manual retry and exact copy/download remain available",
+        "no second WorkerCoordinator checkout or claim/fence is minted",
+        "focused ESRL tests pass",
+        "Site aggregate validation passes",
+        "README reviewed and remains accurate"
+      ],
+      "collision_boundaries": [
+        "No replacement G25 claim/fence",
+        "No Safari/site-data reset",
+        "No automatic evidence publication to GitHub",
+        "No source/CI/deployment promotion of runtime success",
+        "No change to TV/TVC credential boundary"
+      ],
+      "next_task_after_release": "Open or reload the public ESRL page in the exact retained standalone-Safari context; the page self-runs the repaired lease attempt and retains exact LEASE_OPEN evidence if produced.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

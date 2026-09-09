@@ -58,6 +58,7 @@ def test_hil_activation_result_now_carries_checkout_hash_for_future_continuation
 def test_esrl_page_reuses_same_browser_context_and_exports_exact_json():
     page = (BOOT / "hil-esrl-activate.html").read_text(encoding="utf-8")
     assert 'var SOURCE_KEY="stegos-hil-last-success-v1"' in page
+    assert 'var RESULT_KEY="stegos-hil-esrl-last-success-v1"' in page
     assert 'var PROTOCOL="HIL_BROWSER_ESRL_V1"' in page
     assert 'var ROUTE="/stegos-bootstrap/portable-workercoordinator/hil-esrl-v1"' in page
     assert 'same-context HIL local-ready evidence is not present' in page
@@ -65,6 +66,16 @@ def test_esrl_page_reuses_same_browser_context_and_exports_exact_json():
     assert 'Copy evidence JSON' in page
     assert 'Download evidence JSON' in page
     assert 'link.download="hil-esrl-lease-open-"+evidence.browser_context_id+".json"' in page
+
+
+def test_esrl_page_auto_resumes_once_and_persists_exact_lease_result():
+    page = (BOOT / "hil-esrl-activate.html").read_text(encoding="utf-8")
+    assert 'var inFlight=false' in page
+    assert 'localStorage.setItem(RESULT_KEY,JSON.stringify(value))' in page
+    assert 'if(!restoreLease()){setTimeout(openLease,0);}' in page
+    assert 'if(inFlight){return;}' in page
+    assert 'Retry ESRL lease' in page
+    assert 'localStorage.removeItem(RESULT_KEY)' in page
 
 
 def test_exact_v16_service_worker_loads_esrl_through_existing_hil_state_bridge():

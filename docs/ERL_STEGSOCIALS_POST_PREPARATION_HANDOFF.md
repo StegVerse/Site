@@ -1,6 +1,6 @@
 # ERL / StegSocials Post Preparation Site Handoff
 
-Status: `SITE_PROJECTION_IMPLEMENTED / FOCUSED_VALIDATION_PENDING / PREMIUM_AUTOMATION_SEPARATE`
+Status: `SITE_PROJECTION_IMPLEMENTED / README_MAINTAINED / VALIDATION_IN_PROGRESS / PREMIUM_AUTOMATION_SEPARATE`
 Canonical task: `SS-EVIDENCE-COMPARISON-001`
 COSV ID: `40000100100000`
 Canonical handoff: `StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md`
@@ -60,6 +60,8 @@ data/session-work-claims.d/site-erl-stegsocials-post-prep-20260908.json
 README.md
 ```
 
+`README.md` now contains the ERL-backed standard preparation path, standard/premium split, projection boundary, and relevant source surfaces. Temporary README marker files were removed.
+
 ## Validation predicates
 
 - `ERL` domain resolves to `02_Research/ERL`.
@@ -70,15 +72,19 @@ README.md
 - standard tier cannot request automated/scheduled publication.
 - premium preparation eligibility still performs no provider call.
 - the preparation page states that no social provider is contacted.
-- README accurately documents standard post preparation versus premium automated posting before merge.
+- README accurately documents standard post preparation versus premium automated posting.
+- Site session-work claim validates as a canonical registry fragment.
+
+## Validation state
+
+Focused `StegSocials Post Preparation` validation passed on the earlier PR head. The first repository-wide validation attempt exposed an invalid session-work-claim fragment shape, not a preparation defect. That claim was repaired into the canonical registry-fragment schema and current repository-wide revalidation is required on the repaired head.
 
 ## Remaining work
 
-1. Pass focused Site validation and normal repository orchestration for PR #1136.
-2. Update actual `README.md` and remove the temporary README maintenance marker.
-3. Merge PR #1136 only after required checks pass.
-4. Add authenticated KV draft write/readback integration in a successor step; do not infer persistence from target-path display.
-5. Prove ERL/Drafts readback on authentically materialized KV instances/providers before claiming arbitrary-KV runtime support.
-6. Keep authentic provider publication and publication receipts in the separate premium release workstream.
+1. Pass focused Site validation and normal repository orchestration for PR #1136 on the repaired current head.
+2. Merge PR #1136 only after required checks pass.
+3. Add authenticated KV draft write/readback integration in a successor step; do not infer persistence from target-path display.
+4. Prove ERL/Drafts readback on authentically materialized KV instances/providers before claiming arbitrary-KV runtime support.
+5. Keep authentic provider publication and publication receipts in the separate premium release workstream.
 
 No external social provider call, automatic publication, credential resolution, or live publication proof is claimed by this Site handoff.

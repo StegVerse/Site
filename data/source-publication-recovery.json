@@ -62,18 +62,19 @@
     "recovery_bundle_hash_manifest_observed": true,
     "materialization_evidence_run_id": 34326685598,
     "materialization_evidence_head": "bccbe2971f024c277ada01067b8a4c770bcd7abd",
-    "off_github_source_restore_observed": false,
-    "off_github_validation_observed": false,
+    "off_github_source_restore_observed": true,
+    "off_github_validation_observed": true,
     "off_github_publication_observed": false,
-    "public_content_equivalence_observed": false
+    "public_content_equivalence_observed": false,
+    "external_retention_observed": true,
+    "external_recovery_archive_sha256": "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f",
+    "external_recovery_source_commit": "00fcf4149d4deb81066e2829618885cafadc2325",
+    "external_recovery_manifest_entries": 3400
   },
   "remaining_proof": [
-    "retain a generated recovery bundle and verified SHA-256 manifest outside GitHub",
-    "restore and validate the bundle without GitHub API or GitHub Actions",
     "publish the verified static artifact through a non-GitHub origin",
     "bind stegverse.org through the DNS/edge portability procedure",
-    "verify TLS and exact public content equivalence",
-    "retain recovery evidence outside GitHub"
+    "verify TLS and exact public content equivalence"
   ],
   "authority_effect": "NONE",
   "activation_effect": "NONE"

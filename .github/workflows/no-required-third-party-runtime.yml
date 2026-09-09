@@ -10,6 +10,7 @@ on:
       - 'data/dns-edge-portability.json'
       - 'data/source-publication-recovery.json'
       - 'data/site-recovery-bundle-materialization.json'
+      - 'data/off-github-recovery-evidence-2026-09-09.json'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
       - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
       - 'assets/ecosystem-chat-node-discovery.js'
@@ -43,6 +44,7 @@ on:
       - 'data/dns-edge-portability.json'
       - 'data/source-publication-recovery.json'
       - 'data/site-recovery-bundle-materialization.json'
+      - 'data/off-github-recovery-evidence-2026-09-09.json'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
       - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
       - 'assets/ecosystem-chat-node-discovery.js'
@@ -96,5 +98,50 @@ jobs:
         run: python3 scripts/check_source_publication_recovery.py
       - name: Materialize and verify deterministic recovery bundle
         run: python3 scripts/check_site_recovery_bundle_manifest.py
+      - name: Materialize exportable recovery bundle
+        shell: bash
+        env:
+          STEGVERSE_SITE_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          python3 scripts/materialize_site_recovery_bundle.py --output build/site-recovery-bundle
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, os, zipfile
+          root = Path('build/site-recovery-bundle')
+          source_commit = os.environ['STEGVERSE_SITE_SOURCE_COMMIT']
+          out = Path('build') / f'StegVerse-Site-recovery-{source_commit}.zip'
+          with zipfile.ZipFile(out, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for path in sorted(root.rglob('*')):
+                  if path.is_file():
+                      archive.write(path, path.relative_to(root).as_posix())
+          digest = hashlib.sha256(out.read_bytes()).hexdigest()
+          manifest_digest = hashlib.sha256((root / 'manifest.json').read_bytes()).hexdigest()
+          metadata = {
+              'schema': 'stegverse.site.recovery_bundle_export.v1',
+              'source_commit': source_commit,
+              'archive': out.name,
+              'archive_sha256': digest,
+              'archive_bytes': out.stat().st_size,
+              'manifest_sha256': manifest_digest,
+              'transport_role': 'SHORT_LIVED_VALIDATION_EXPORT_ONLY',
+              'external_retention_proven': False,
+              'off_github_restore_proven': False,
+          }
+          Path('build/site-recovery-bundle-export.json').write_text(json.dumps(metadata, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print('SITE_RECOVERY_EXPORT=' + str(out))
+          print('SITE_RECOVERY_EXPORT_SHA256=' + digest)
+          print('SITE_RECOVERY_MANIFEST_SHA256=' + manifest_digest)
+          PY
+      - name: Publish short-lived recovery bundle transport artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-497-recovery-bundle
+          path: |
+            build/StegVerse-Site-recovery-*.zip
+            build/site-recovery-bundle-export.json
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
       - name: Verify Ecosystem Chat gateway cutover contract
         run: python3 scripts/check_ecosystem_chat_gateway_activation.py

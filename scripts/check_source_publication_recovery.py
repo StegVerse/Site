@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "data" / "source-publication-recovery.json"
 DNS = ROOT / "data" / "dns-edge-portability.json"
 MATERIALIZATION = ROOT / "data" / "site-recovery-bundle-materialization.json"
+OFF_GITHUB = ROOT / "data" / "off-github-recovery-evidence-2026-09-09.json"
 
 
 def die(message: str) -> None:
@@ -18,6 +19,7 @@ def main() -> None:
     body = json.loads(MANIFEST.read_text(encoding="utf-8"))
     dns = json.loads(DNS.read_text(encoding="utf-8"))
     materialization = json.loads(MATERIALIZATION.read_text(encoding="utf-8"))
+    off_github = json.loads(OFF_GITHUB.read_text(encoding="utf-8"))
 
     if body.get("schema") != "stegverse.site.source_publication_recovery.v1":
         die("unexpected schema")
@@ -105,26 +107,43 @@ def main() -> None:
     if evidence.get("observed_head") != observation.get("materialization_evidence_head"):
         die("materialization head binding mismatch")
 
-    # Source/CI materialization is allowed to be observed. Everything that would
-    # establish provider-independent recovery/publication still requires separate
-    # authentic off-GitHub/public evidence and must remain false here.
-    for key in (
-        "off_github_source_restore_observed",
-        "off_github_validation_observed",
-        "off_github_publication_observed",
-        "public_content_equivalence_observed",
-    ):
+    # External retention and restore/validation are now independently observed
+    # from a Drive-retained archive round trip. Publication and public equivalence
+    # remain separate and must stay false until separately observed.
+    for key in ("off_github_source_restore_observed", "off_github_validation_observed", "external_retention_observed"):
+        if observation.get(key) is not True:
+            die(f"observed off-GitHub recovery evidence missing: {key}")
+    for key in ("off_github_publication_observed", "public_content_equivalence_observed"):
         if observation.get(key) is not False:
-            die(f"premature off-GitHub recovery/publication observation: {key}")
-    for key in (
-        "off_github_materialization_observed",
-        "off_github_restore_observed",
-        "off_github_validation_observed",
-        "off_github_publication_observed",
-        "external_retention_observed",
-    ):
-        if materialization.get(key) is not False:
-            die(f"materialization record overclaims external proof: {key}")
+            die(f"premature publication/equivalence observation: {key}")
+
+    for key in ("off_github_materialization_observed", "off_github_restore_observed", "off_github_validation_observed", "external_retention_observed"):
+        if materialization.get(key) is not True:
+            die(f"materialization record missing observed external proof: {key}")
+    if materialization.get("off_github_publication_observed") is not False:
+        die("materialization record prematurely claims off-GitHub publication")
+
+    if off_github.get("schema") != "stegverse.site.off_github_recovery_evidence.v1":
+        die("unexpected off-GitHub recovery evidence schema")
+    if off_github.get("goal_id") != body.get("goal_id") or off_github.get("cosv_id") != body.get("cosv_id"):
+        die("off-GitHub recovery evidence binding mismatch")
+    if off_github.get("source_commit") != "00fcf4149d4deb81066e2829618885cafadc2325":
+        die("off-GitHub recovery source commit mismatch")
+    if off_github.get("archive_sha256") != "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f":
+        die("off-GitHub recovery archive digest mismatch")
+    if off_github.get("archive_size_bytes") != 6957389 or off_github.get("manifest_entry_count") != 3400:
+        die("off-GitHub recovery archive shape mismatch")
+    observed = off_github.get("observations", {})
+    for key in ("external_retention_observed", "round_trip_download_observed", "round_trip_byte_identity_verified", "all_sha256sum_entries_verified", "off_github_restore_observed", "off_github_validation_observed"):
+        if observed.get(key) is not True:
+            die(f"off-GitHub recovery evidence missing: {key}")
+    for key in ("off_github_publication_observed", "public_content_equivalence_observed"):
+        if observed.get(key) is not False:
+            die(f"off-GitHub evidence overclaims publication: {key}")
+    env = off_github.get("validation_environment", {})
+    for key in ("github_api_used_for_restore_or_validation", "github_actions_used_for_restore_or_validation", "network_required_for_validation", "provider_credentials_required_for_validation"):
+        if env.get(key) is not False:
+            die(f"off-GitHub validation environment violates independence: {key}")
 
     remaining = body.get("remaining_proof", [])
     for completed in (
@@ -134,8 +153,6 @@ def main() -> None:
         if completed in remaining:
             die(f"completed proof item remains pending: {completed}")
     for pending_fragment in (
-        "outside GitHub",
-        "without GitHub API or GitHub Actions",
         "non-GitHub origin",
         "TLS and exact public content equivalence",
     ):
@@ -152,7 +169,10 @@ def main() -> None:
     print("GITHUB_API_REQUIRED_FOR_RECONSTRUCTION=false")
     print("GITHUB_ACTIONS_REQUIRED_FOR_VALIDATION=false")
     print("PUBLICATION_PROVIDER_REQUIRED=false")
-    print("OFF_GITHUB_RECOVERY_PROVEN=false")
+    print("EXTERNAL_RETENTION_OBSERVED=true")
+    print("OFF_GITHUB_RESTORE_OBSERVED=true")
+    print("OFF_GITHUB_VALIDATION_OBSERVED=true")
+    print("OFF_GITHUB_RECOVERY_PROVEN=true")
     print("OFF_GITHUB_PUBLICATION_PROVEN=false")
 
 

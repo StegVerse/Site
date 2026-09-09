@@ -19,9 +19,9 @@
   <h1>StegOS HIL</h1>
   <p>This same-device action establishes or reuses the StegOS node, obtains the HIL claim/fence from the canonical portable WorkerCoordinator, and executes the bounded HIL receiver directly on this iPhone's existing StegOS service-worker surface.</p>
   <p>No signed app, TestFlight install, second machine, claim ID, or fencing token is required.</p>
-  <p>Authority: <span class="value">WorkerCoordinator → claim/fence; InTr → transition; TV/TVC → credentials</span></p>
   <p>Browser context: <span id="browser-context" class="value"></span></p>
   <p>Resident request: <span class="value">RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002</span></p>
+  <p>Receiver protocol: <span class="value">HIL_BROWSER_EVIDENCE_V16</span></p>
   <button id="activate-hil" type="button">Activate HIL on this iPhone</button>
   <button id="copy-evidence" type="button" disabled>Copy evidence JSON</button>
   <button id="download-evidence" type="button" disabled>Download evidence JSON</button>
@@ -31,10 +31,12 @@
   <script>
     (function () {
       "use strict";
+      var PROTOCOL_VERSION = "HIL_BROWSER_EVIDENCE_V16";
       var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
       var REQUEST_ID = "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002";
       var REQUEST_SHA256 = "6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038";
-      var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil-browser";
+      var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil-browser-v16";
+      var WORKER_SCRIPT = "./service-worker.js?hil_receiver_protocol=v16";
       var CONTEXT_KEY = "stegos-hil-browser-context-v1";
       var RESULT_KEY = "stegos-hil-last-success-v1";
       var button = document.getElementById("activate-hil");
@@ -69,7 +71,7 @@
       function restoreResult() {
         try {
           var value = JSON.parse(localStorage.getItem(RESULT_KEY) || "null");
-          if (value && value.state === "BROWSER_HIL_LOCAL_READY_OBSERVED" && value.browser_context_id === contextId) { setResult(value); }
+          if (value && value.state === "BROWSER_HIL_LOCAL_READY_OBSERVED" && value.browser_context_id === contextId && value.hil_browser_protocol === PROTOCOL_VERSION) { setResult(value); }
         } catch (_) {}
       }
 
@@ -99,7 +101,7 @@
             if (navigator.serviceWorker.controller && navigator.serviceWorker.controller !== originalController) { finish(); return; }
             if (settled) { return; }
             settled = true; cleanup(); reject(new Error("updated HIL service worker did not take control"));
-          }, 5000);
+          }, 7000);
         });
       }
 
@@ -107,7 +109,7 @@
         var originalController = navigator.serviceWorker ? navigator.serviceWorker.controller : null;
         return window.StegOSWebBootstrap.registerOfflineShell().then(function () {
           if (!(navigator.serviceWorker && navigator.serviceWorker.ready && navigator.serviceWorker.register)) { throw new Error("Service worker is unavailable on this iPhone browser surface."); }
-          return navigator.serviceWorker.register("./service-worker.js", { scope: "./", updateViaCache: "none" });
+          return navigator.serviceWorker.register(WORKER_SCRIPT, { scope: "./", updateViaCache: "none" });
         }).then(function (registration) {
           return registration.update().then(function () { return waitForControllerReplacement(originalController, registration); }).then(function () { return navigator.serviceWorker.ready; });
         }).then(function () {
@@ -117,6 +119,15 @@
             throw new Error("StegOS service worker activated; reloading this same-device surface.");
           }
         });
+      }
+
+      function bindingMismatch(result) {
+        var mismatches = [];
+        if (result.hil_browser_protocol !== PROTOCOL_VERSION) { mismatches.push("protocol=" + String(result.hil_browser_protocol || "missing")); }
+        if (result.resident_request_id !== REQUEST_ID) { mismatches.push("request_id=" + String(result.resident_request_id || "missing")); }
+        if (result.resident_request_sha256 !== REQUEST_SHA256) { mismatches.push("request_sha256=" + String(result.resident_request_sha256 || "missing")); }
+        if (result.browser_context_id !== contextId) { mismatches.push("browser_context_id=" + String(result.browser_context_id || "missing")); }
+        return mismatches;
       }
 
       if (sessionStorage.getItem("stegos-hil-reload-once") === "1") {
@@ -150,9 +161,10 @@
           show("EXECUTING_CANONICAL_HIL_ON_THIS_IPHONE");
           return fetch(ROUTE, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
             cache: "no-store",
             body: JSON.stringify({
+              hil_browser_protocol: PROTOCOL_VERSION,
               task_id: TASK_ID,
               resident_request_id: REQUEST_ID,
               resident_request_sha256: REQUEST_SHA256,
@@ -165,13 +177,18 @@
             })
           });
         }).then(function (response) {
+          var contentType = response.headers.get("content-type") || "";
+          if (contentType.indexOf("application/json") === -1) {
+            throw new Error("STALE_HIL_RECEIVER_PROTOCOL: v16 service-worker route was not handled by the controlling worker");
+          }
           return response.json().then(function (payload) {
             if (!response.ok) { throw new Error(payload.reason || "HIL same-device execution failed"); }
             return payload;
           });
         }).then(function (result) {
           if (result.state !== "BROWSER_HIL_LOCAL_READY_OBSERVED" || result.browser_receiver_execution_observed !== true) { throw new Error("HIL receiver did not produce local-ready execution evidence"); }
-          if (result.resident_request_id !== REQUEST_ID || result.resident_request_sha256 !== REQUEST_SHA256 || result.browser_context_id !== contextId) { throw new Error("HIL execution result binding mismatch"); }
+          var mismatches = bindingMismatch(result);
+          if (mismatches.length) { throw new Error("HIL execution result binding mismatch: " + mismatches.join(", ")); }
           setResult(result);
         }).catch(function (error) {
           if (String(error && error.message ? error.message : error).indexOf("reloading") !== -1) { return; }

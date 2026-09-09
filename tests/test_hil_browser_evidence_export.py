@@ -5,14 +5,18 @@ BOOT = ROOT / "stegos-bootstrap"
 
 REQUEST_ID = "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002"
 REQUEST_SHA256 = "6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038"
+PROTOCOL_VERSION = "HIL_BROWSER_EVIDENCE_V16"
 
 
 def test_receiver_binds_exact_resident_request_without_promoting_consumption():
     src = (BOOT / "hil-browser-receiver.js").read_text(encoding="utf-8")
     assert REQUEST_ID in src
     assert REQUEST_SHA256 in src
+    assert PROTOCOL_VERSION in src
+    assert 'var ROUTE_PATH = "/stegos-bootstrap/portable-workercoordinator/hil-browser-v16"' in src
     assert "resident_request_id: REQUEST_ID" in src
     assert "resident_request_sha256: REQUEST_SHA256" in src
+    assert "hil_browser_protocol: PROTOCOL_VERSION" in src
     assert "browser_context_id" in src
     assert 'request_consumption_claimed: false' in src
     assert 'authority_effect: "NONE_COMPONENT_EVIDENCE_ONLY"' in src
@@ -22,6 +26,7 @@ def test_activation_page_exposes_context_and_exact_json_export():
     page = (BOOT / "hil-activate.html").read_text(encoding="utf-8")
     assert REQUEST_ID in page
     assert REQUEST_SHA256 in page
+    assert PROTOCOL_VERSION in page
     assert "stegos-hil-browser-context-v1" in page
     assert "stegos-hil-last-success-v1" in page
     assert "Copy evidence JSON" in page
@@ -37,27 +42,41 @@ def test_page_does_not_accept_caller_claim_or_fence():
     body = page.split("body: JSON.stringify({", 1)[1].split("})", 1)[0]
     assert "claim_id" not in body
     assert "fencing_token" not in body
+    assert "hil_browser_protocol: PROTOCOL_VERSION" in body
     assert "resident_request_id: REQUEST_ID" in body
     assert "resident_request_sha256: REQUEST_SHA256" in body
 
 
-def test_service_worker_rolls_forward_to_request_bound_receiver_without_state_reset():
+def test_service_worker_rolls_forward_to_v16_without_state_reset():
     worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
-    assert REQUEST_ID in worker
     assert 'importScripts("./hil-portable-state-bridge.js")' in worker
     assert 'importScripts("./hil-portable-native-bridge.js")' in worker
     assert "self.skipWaiting()" in worker
     assert "self.clients.claim()" in worker
-    assert 'CACHE_NAME = "stegos-web-bootstrap-v15"' in worker
+    assert 'CACHE_NAME = "stegos-web-bootstrap-v16"' in worker
     assert "indexedDB.deleteDatabase" not in worker
     assert "caches.delete" not in worker
 
 
-def test_activation_forces_fresh_service_worker_import_resolution_before_hil_fetch():
+def test_activation_pins_service_worker_and_receiver_protocol_before_hil_fetch():
     page = (BOOT / "hil-activate.html").read_text(encoding="utf-8")
-    assert 'navigator.serviceWorker.register("./service-worker.js", { scope: "./", updateViaCache: "none" })' in page
+    assert 'var WORKER_SCRIPT = "./service-worker.js?hil_receiver_protocol=v16"' in page
+    assert 'navigator.serviceWorker.register(WORKER_SCRIPT, { scope: "./", updateViaCache: "none" })' in page
+    assert 'var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil-browser-v16"' in page
     assert "registration.update()" in page
     assert "waitForControllerReplacement" in page
     assert 'navigator.serviceWorker.addEventListener("controllerchange"' in page
     assert 'cache: "no-store"' in page
+    assert '"Cache-Control": "no-store"' in page
+    assert "STALE_HIL_RECEIVER_PROTOCOL" in page
     assert "updated HIL service worker did not take control" in page
+
+
+def test_binding_mismatch_reports_exact_fields():
+    page = (BOOT / "hil-activate.html").read_text(encoding="utf-8")
+    assert "function bindingMismatch(result)" in page
+    assert 'mismatches.push("protocol="' in page
+    assert 'mismatches.push("request_id="' in page
+    assert 'mismatches.push("request_sha256="' in page
+    assert 'mismatches.push("browser_context_id="' in page
+    assert 'throw new Error("HIL execution result binding mismatch: " + mismatches.join(", "))' in page

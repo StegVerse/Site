@@ -65,8 +65,10 @@ checks = {
     "authority effect none": 'authority_effect: "NONE"' in helper,
     "handoff present": "SITE-STEGOS-PERSISTENT-CARD-UX-1000" in handoff,
     "help pages complete": required_help.issubset({p.name for p in HELP.glob("*.html")}),
-    "offline shell wrapper generation v15": 'CACHE_NAME = "stegos-web-bootstrap-v15";' in service_worker,
-    "v15 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js")' in service_worker,
+    "offline shell wrapper generation v16": 'CACHE_NAME = "stegos-web-bootstrap-v16";' in service_worker,
+    "v16 wrapper imports exact v13 predecessor": 'importScripts("./service-worker-v13-runtime.js")' in service_worker,
+    "v16 wrapper preserves HIL portable bridges": 'importScripts("./hil-portable-state-bridge.js")' in service_worker and 'importScripts("./hil-portable-native-bridge.js")' in service_worker,
+    "v16 wrapper converges installed clients": "self.skipWaiting()" in service_worker and "self.clients.claim()" in service_worker,
     "v13 predecessor retained": 'var CACHE_NAME = "stegos-web-bootstrap-v13";' in predecessor,
     "persistent helper explicitly cached": '"./persistent-card-ux.js"' in predecessor,
     "canonical recovery explicitly cached": '"./master-records-sv001-recovery.js"' in predecessor,
@@ -86,7 +88,8 @@ checks = {
     "root InTr custody gate preserved": "contemporaneous InTr admission required before Master Records custody" in predecessor,
     "historical retroactive authorization prohibited": "retroactive authorization forbidden" in predecessor,
     "v15 configured rendezvous propagation documented": "stegos-web-bootstrap-v15" in propagation and "configured" in propagation.lower() and "resident-rendezvous" in propagation,
-    "v15 propagation remains non-authorizing": "fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
+    "v15 configured-rendezvous evidence remains non-authorizing": "fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
+    "README documents current v16 wrapper": "stegos-web-bootstrap-v16" in readme and "HIL_BROWSER_EVIDENCE_V16" in readme,
     "README preserves non-authority boundary": "recovery does not grant custody authority" in readme_normalized and "source/ci/merge" in readme_normalized,
 }
 
@@ -101,4 +104,4 @@ for asset in sorted(required_shell_assets):
 if failed:
     raise SystemExit("FAIL: " + ", ".join(sorted(set(failed))))
 
-print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, automatic current-governance continuation, and v15 configured-rendezvous propagation contract")
+print("PASS - StegOS persistent same-device card UX, canonical G23 recovery, automatic current-governance continuation, current v16 wrapper, and retained v15 configured-rendezvous propagation evidence")

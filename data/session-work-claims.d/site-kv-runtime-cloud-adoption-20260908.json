@@ -42,6 +42,17 @@
         "Ecosystem Heartbeat Orchestration PASS",
         "Site Bootstrap Validate PASS"
       ],
+      "collision_boundaries": [
+        "Do not reinstall or overwrite the already-observed resident KV while reconciling evidence",
+        "Do not silently rewrite the existing Google Drive cloud identity or private content",
+        "Do not materialize Google Drive as KV #2 from repository/CI evidence alone",
+        "Do not claim browser durability beyond the observed persistence grant",
+        "Do not expose or move provider credential material outside SKAP Vault",
+        "Do not claim provider CONNECT, data movement, replication, AI corpus exposure, execution, or activation without authentic runtime receipts",
+        "No NON-TV/TVC secret/token",
+        "No GitHub-token runtime authority"
+      ],
+      "next_task_after_release": "Emit the prepared existing-Google-Drive adoption request from the current resident iPhone KV, bind it through authentic Interlock/InTr admission, and materialize KV #2 only after provider-result evidence exists; then add a new iCloud/cloud KV peer and durability/recovery replication.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_EVIDENCE_PREPARATION",
       "non_tv_tvc_secret_or_token_used": false,

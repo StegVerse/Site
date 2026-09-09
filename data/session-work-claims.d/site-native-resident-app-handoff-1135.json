@@ -12,7 +12,7 @@
       "handoff": "stegos-bootstrap/native-resident-activate.html",
       "handoff_revision": "APP_HANDOFF_OBSERVATION_20260908",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-native-resident-app-handoff-1135",
       "dependency_surface_keys": [
         "site:sv001-native-resident-activation",
@@ -48,7 +48,11 @@
       "github_token_runtime_authority": "NONE",
       "render_required": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1135,
+      "release_commit": "48006a08c877a3f18ab36e00e934350ec07a1f55",
+      "claim_released_at": "2026-09-09T05:23:00Z",
+      "archive_eligible": true
     }
   ]
 }

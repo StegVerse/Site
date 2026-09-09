@@ -1,0 +1,32 @@
+name: App Store Connect SKAP Phone Ingress Validation
+
+on:
+  pull_request:
+    paths:
+      - 'assets/stegos-apple/**'
+      - 'stegos-apple-credential.html'
+      - 'scripts/check_app_store_connect_skap_phone_ingress.py'
+      - 'docs/APP_STORE_CONNECT_SKAP_IPHONE_INGRESS_MIRROR_HANDOFF.md'
+      - 'data/session-work-claims.d/SITE-APP-STORE-CONNECT-SKAP-INGRESS-20260909.json'
+      - '.github/workflows/app-store-connect-skap-phone-ingress-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate current-iPhone App Store Connect SKAP ingress source
+        run: python scripts/check_app_store_connect_skap_phone_ingress.py
+      - name: Reject Apple credential material and hosted secret interpolation
+        run: |
+          if grep -R -n -E 'secrets\.ASC_|-----BEGIN PRIVATE KEY-----[^"'"']*[A-Za-z0-9+/=]{16,}' \
+            assets/stegos-apple stegos-apple-credential.html scripts/check_app_store_connect_skap_phone_ingress.py; then
+            echo '::error::Credential material or hosted App Store Connect secret interpolation detected'
+            exit 1
+          fi

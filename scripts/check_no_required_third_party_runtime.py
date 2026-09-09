@@ -120,12 +120,39 @@ def main() -> None:
         if required not in task_runner:
             die(f"GitHub-hosted Site task runner missing fallback-only marker: {required}")
 
+    current = json.loads((ROOT / "data/third-party-runtime-cutover-current.json").read_text(encoding="utf-8"))
+    if current.get("canonical_runtime") != "RESIDENT_STEGVERSE":
+        die("current cutover record does not declare resident canonical runtime")
+    if current.get("production_continuity_third_party_dependency") is not False:
+        die("current cutover record still claims a third-party production continuity dependency")
+    if current.get("activation_third_party_dependency") is not False:
+        die("current cutover record still claims a third-party activation dependency")
+    if current.get("automatic_third_party_runtime_selection") is not False:
+        die("current cutover record permits automatic third-party runtime selection")
+
+    states = current.get("provider_states", {})
+    quick = states.get("cloudflare_quick_tunnel", {})
+    if quick.get("required") is not False or quick.get("canonical_runtime_carrier") is not False:
+        die("Cloudflare quick tunnel is still marked required/canonical")
+    if quick.get("stegcore_primary_hosted_carrier_retirement_merge") != "084477a684193ad1b45d4403aa57844c5135638e":
+        die("primary hosted carrier retirement merge not bound")
+    if quick.get("stegcore_fallback_hosted_carrier_retirement_merge") != "07632a7dcbd12d16440322f33269a51413fa3049":
+        die("fallback hosted carrier retirement merge not bound")
+
+    gh = states.get("github_actions_runtime", {})
+    if gh.get("required") is not False or gh.get("runtime_authority") != "NONE":
+        die("GitHub Actions still marked as required runtime or runtime authority")
+    if gh.get("role") != "READ_ONLY_VALIDATION_FALLBACK_ONLY":
+        die("GitHub Actions role is not read-only validation fallback only")
+
     print("NO_REQUIRED_THIRD_PARTY_RUNTIME_PASS")
     print("THIRD_PARTY_ROLE=OPTIONAL_EXPLICIT_FALLBACK_OR_INTEROP_ONLY")
     print("PRODUCTION_CONTINUITY_THIRD_PARTY_DEPENDENCY=false")
     print("ACTIVATION_THIRD_PARTY_DEPENDENCY=false")
     print("SITE_BOOTSTRAP_PUBLIC_PYPI_REQUIRED=false")
     print("SITE_GITHUB_ACTIONS_ORCHESTRATION_ROLE=RETIRED")
+    print("STEGGATE_CLOUDFLARE_QUICK_TUNNEL_REQUIRED=false")
+    print("STEGGATE_CANONICAL_RUNTIME=RESIDENT_STEGVERSE")
 
 
 if __name__ == "__main__":

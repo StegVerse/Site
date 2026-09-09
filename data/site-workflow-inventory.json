@@ -1,18 +1,18 @@
 {
   "schema_version": "1.1.0",
   "inventory_type": "site_workflow_consolidation_inventory",
-  "generated_at": "2026-09-03T13:57:27.490776+00:00",
+  "generated_at": "2026-09-09T04:22:50.032628+00:00",
   "repository": "StegVerse-Labs/Site",
   "canonical_workflows": [
     "ecosystem-chat-activation-retention.yml",
     "site-task-runner.yml",
     "validate.yml"
   ],
-  "workflow_file_count": 121,
-  "operational_workflow_count": 121,
+  "workflow_file_count": 133,
+  "operational_workflow_count": 133,
   "canonical_count": 3,
-  "migration_required_file_count": 118,
-  "migration_required_operational_count": 118,
+  "migration_required_file_count": 130,
+  "migration_required_operational_count": 130,
   "placeholder_count": 0,
   "consolidation_complete": false,
   "authority_boundary": {
@@ -107,6 +107,30 @@
       "operational": true,
       "capabilities": {
         "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "cfp_ingest.yml",
+      "name": "CFP Current-Season Ingestion",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "workflow_dispatch",
+        "schedule",
+        "pull_request",
+        "paths"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": true,
         "pages_write": false,
         "id_token_write": false,
         "uses_secrets": false,
@@ -356,6 +380,30 @@
       "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
     },
     {
+      "file": "check-steglearn-landing.yml",
+      "name": "Check StegLearn Landing",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "push",
+        "paths",
+        "pull_request",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
       "file": "check-stegverse-endpoint-activation-readiness.yml",
       "name": "Check StegVerse Endpoint Activation Readiness",
       "classification": "MIGRATION_REQUIRED",
@@ -459,6 +507,30 @@
         "paths",
         "push",
         "branches"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "cloud-kv-peer-manager.yml",
+      "name": "Cloud KV Peer Manager",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "workflow_dispatch"
       ],
       "has_jobs": true,
       "operational": true,
@@ -599,6 +671,30 @@
       "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
     },
     {
+      "file": "device-local-kv-install.yml",
+      "name": "Device Local KV Install",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
       "file": "ecosystem-chat-activation-retention.yml",
       "name": "Ecosystem Chat Activation Retention",
       "classification": "CANONICAL",
@@ -636,6 +732,79 @@
         "pull_request",
         "schedule",
         "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": true,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "ecosystem-visual-projection-validate.yml",
+      "name": "Ecosystem Visual Projection Validate - No Credential Authority",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "ecosystem-visual-render-transport-validate.yml",
+      "name": "Ecosystem Visual Render Transport Validate - No Credential Authority",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "branches",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "entity-economy-volume-ii-public-observation.yml",
+      "name": "Entity Economy Volume II Public Browser Observation",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "workflow_dispatch",
+        "push",
+        "branches",
+        "paths"
       ],
       "has_jobs": true,
       "operational": true,
@@ -1538,6 +1707,30 @@
       "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
     },
     {
+      "file": "my-kv-instance-manager.yml",
+      "name": "My KV Multi-Instance Provider Manager",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
       "file": "my-kv-personal-info.yml",
       "name": "My KV Personal Information",
       "classification": "MIGRATION_REQUIRED",
@@ -1546,6 +1739,31 @@
         "paths",
         "push",
         "branches"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "no-required-third-party-runtime.yml",
+      "name": "No Required Third-Party Runtime",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "branches",
+        "workflow_dispatch"
       ],
       "has_jobs": true,
       "operational": true,
@@ -2904,6 +3122,31 @@
       "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
     },
     {
+      "file": "validate-stegos-persistent-card-ux.yml",
+      "name": "Validate StegOS Persistent Card UX",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "workflow_dispatch",
+        "push",
+        "branches",
+        "paths",
+        "pull_request"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
       "file": "validate.yml",
       "name": "Site Bootstrap Validate - No Non-TV/TVC Credential Authority",
       "classification": "CANONICAL",
@@ -2925,6 +3168,56 @@
         "creates_release_or_tag": false
       },
       "migration_status": "RETAIN"
+    },
+    {
+      "file": "verify-nvidia-hf-publication.yml",
+      "name": "Verify NVIDIA Hugging Face publication",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "branches",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "verify-tga-site-projection.yml",
+      "name": "Verify TGA Site Projection",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "branches",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
     },
     {
       "file": "verify-thought-experiments-publication.yml",

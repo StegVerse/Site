@@ -540,7 +540,8 @@
     },
     {
       "missing_exit_gates": [
-        "non_authorizing_projection"
+        "freshness_evidence",
+        "publication_accuracy_evidence"
       ],
       "reason": "repository name matched term: site",
       "repository": "StegVerse-Labs/Site",
@@ -980,7 +981,7 @@
     "role_assignment_is_completion": false,
     "role_exit_gate_completion_is_release_authority": false
   },
-  "inventory_generated_at": "2026-09-09T05:16:53Z",
+  "inventory_generated_at": "2026-09-09T10:10:43Z",
   "repository_count": 68,
   "role_complete_counts": {},
   "role_counts": {

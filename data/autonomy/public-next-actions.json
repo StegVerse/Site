@@ -107,12 +107,13 @@
       "status": "READY"
     },
     {
-      "action": "satisfy role-specific exit gates: non_authorizing_projection",
+      "action": "satisfy role-specific exit gates: freshness_evidence, publication_accuracy_evidence",
       "action_id": "role-remediate:StegVerse-Labs:Site",
       "machine_owned": true,
       "manual_user_action_required": false,
       "missing_gates": [
-        "non_authorizing_projection"
+        "freshness_evidence",
+        "publication_accuracy_evidence"
       ],
       "priority": 2,
       "repository": "StegVerse-Labs/Site",
@@ -951,6 +952,6 @@
   ],
   "completion_model": "ROLE_SPECIFIC_EXIT_GATES",
   "coverage": "PUBLIC_REPOSITORIES_ONLY",
-  "generated_at": "2026-09-09T05:16:53Z",
+  "generated_at": "2026-09-09T10:10:43Z",
   "schema_version": "1.1"
 }

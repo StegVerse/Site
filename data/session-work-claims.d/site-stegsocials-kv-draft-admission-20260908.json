@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "stegsocials-kv-draft-admission-20260908",
       "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "MERGED_INTO_CANONICAL_WORKSTREAM",
       "normalized_work_key": "site-stegsocials-kv-draft-admission",
       "dependency_surface_keys": [
         "stegsocials:post-preparation-v1",
@@ -28,7 +28,7 @@
         "data/session-work-claims.d/site-stegsocials-kv-draft-admission-20260908.json"
       ],
       "handoff": "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
-      "handoff_revision": "DEVICE_LOCAL_KV_DRAFT_ADMISSION_SOURCE_IMPLEMENTED_20260908",
+      "handoff_revision": "DEVICE_LOCAL_KV_DRAFT_ADMISSION_MERGED_20260909",
       "claim_created_at": "2026-09-08T23:35:00-05:00",
       "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
       "expected_evidence": [
@@ -62,7 +62,11 @@
       "credential_requirement": "NONE_FOR_DEVICE_LOCAL_KV_DRAFT_ADMISSION",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1140,
+      "release_commit": "130754f767ae7e8760b2f4fc7a6721591b731c0a",
+      "claim_released_at": "2026-09-09T00:27:00-05:00",
+      "archive_eligible": true
     }
   ]
 }

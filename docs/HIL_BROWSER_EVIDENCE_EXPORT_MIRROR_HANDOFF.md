@@ -10,6 +10,10 @@ COSV: `50000000105000`
 
 A standalone iPhone browser context produced authentic component state `BROWSER_HIL_LOCAL_READY_OBSERVED` at fence G25. ChatGPT's in-app browser simultaneously retained a distinct WebKit storage/service-worker context and continued to fail closed on its own previously checked-out package state. These contexts must not be conflated.
 
+A later standalone-Safari observation on the same public activation page showed `FAIL_CLOSED: HIL execution result binding mismatch`. Repository inspection established that the HTML had already advanced to exact request `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`, while the controlling service worker could still execute an older imported HIL receiver. The failure therefore remained fail-closed and did not invalidate the earlier G25 component observation.
+
+Site PR `#1132` rolled the existing service-worker wrapper forward with `skipWaiting()` and `clients.claim()` while preserving IndexedDB, cache identity, and portable WorkerCoordinator state. The subsequent continuation additionally forces the HIL activation page to register/update the same worker with `updateViaCache: "none"`, waits for a replacement controller when an updated worker is materialized, and sends the HIL POST with `cache: "no-store"`. This closes the imported-script/browser-controller skew that can survive a wrapper deployment.
+
 ## Exact resident request binding
 
 The browser receiver now requires and returns:
@@ -49,7 +53,7 @@ request_consumption_claimed = false
 source/CI/deployment/export authority effect = NONE
 ```
 
-No second WorkerCoordinator, service worker, claim/fence, user-operated machine, or credential path is introduced.
+No second WorkerCoordinator, service worker, claim/fence, user-operated machine, or credential path is introduced. Controller refresh is code-version convergence only; it does not clear portable state or authorize a replacement checkout.
 
 ## Next continuation
 

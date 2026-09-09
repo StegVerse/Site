@@ -54,7 +54,8 @@ Observed archive facts:
 - `SHA256SUMS` entries verified = `3400`;
 - round-trip external download = observed;
 - restored source validation without GitHub API/Actions = PASS;
-- repository-local provider cutover, DNS portability, source recovery, recovery-bundle, Ecosystem Chat, Master Records, and exact StegOS projection validators = PASS from the restored external copy.
+- repository-local provider cutover, DNS portability, source recovery, recovery-bundle, Ecosystem Chat, Master Records, and exact StegOS projection validators = PASS from the restored external copy;
+- root `README.md` now documents the observed external round trip while preserving publication/DNS/TLS/resident-rendezvous proof as pending.
 
 These observations prove external retention, off-GitHub restore, and off-GitHub validation/rematerialization. They do not prove off-GitHub publication, DNS/TLS migration/recovery, public-content equivalence, or a resident/provider-neutral public rendezvous.
 

@@ -21,6 +21,7 @@
         "stegos-bootstrap/hil-browser-receiver.js",
         "stegos-bootstrap/hil-activate.html",
         "tests/test_hil_browser_evidence_export.py",
+        "scripts/check_stegos_ipod_bootstrap_projection.py",
         "docs/HIL_BROWSER_EVIDENCE_EXPORT_MIRROR_HANDOFF.md",
         "README.md"
       ],
@@ -32,6 +33,7 @@
         "receiver returns protocol version in success and failure payloads",
         "page reports exact mismatched binding fields instead of generic mismatch",
         "retained portable WorkerCoordinator G25 checkout state is preserved",
+        "projection validator recognizes the exact v16 successor without weakening the v13 predecessor checks",
         "no second claim/fence is minted",
         "Site validation PASS",
         "README accurately describes v16 convergence behavior"

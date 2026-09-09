@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.site.cloud-kv-existing-peer-prepared-profile/v1",
+  "profile_id": "existing-google-drive-kv-to-kv2-20260908",
+  "storage_medium": "google-drive",
+  "current_instance_number": 1,
+  "requested_instance_number": 2,
+  "existing_instance_id": "kvi_a31335d2cc3745fa987b635432cfed2c",
+  "existing_receipt_sha256": "sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552",
+  "existing_projection_sha256": "sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4",
+  "storage_locator_hint": null,
+  "provenance_preservation_required": true,
+  "private_content_rewrite_authorized": false,
+  "existing_identity_rewrite_authorized": false,
+  "provider_operation_authorized": false,
+  "relationship_mutation_authorized": false,
+  "credential_material_present": false,
+  "authority_effect": "NONE_PREPARED_INPUT_ONLY",
+  "activation_effect": false
+}

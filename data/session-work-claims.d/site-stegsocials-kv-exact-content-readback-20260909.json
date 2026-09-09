@@ -23,7 +23,7 @@
         ".github/workflows/stegsocials-kv-exact-content-readback.yml",
         "docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md",
         "data/session-work-claims.d/site-stegsocials-kv-exact-content-readback-20260909.json",
-        "data/session-work-claims.d/site-stegsocials-kv-draft-admission-terminal-20260909.json"
+        "data/session-work-claims.d/site-stegsocials-kv-draft-admission-20260908.json"
       ],
       "handoff": "docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md",
       "handoff_revision": "DEVICE_LOCAL_EXACT_CONTENT_READBACK_SOURCE_IMPLEMENTED_20260909",

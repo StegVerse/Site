@@ -8,7 +8,7 @@
       "task_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
       "originating_goal": "Eliminate required third-party dependencies from canonical Site build, runtime, publication, package, recovery, continuity, and governance paths while preserving third-party services only as optional fallback/interoperability surfaces.",
       "repository": "StegVerse-Labs/Site",
-      "branch": "task/site-497-steggate-inventory-reconcile-20260909",
+      "branch": "task/site-497-post-merge-cleanup-20260909",
       "role": "ACTIVE_IMPLEMENTATION",
       "state": "CLAIMED",
       "normalized_work_key": "site-497-third-party-dependency-eradication",

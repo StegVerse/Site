@@ -1,9 +1,11 @@
 "use strict";
 
-// v15 is a propagation successor only. Runtime/governance behavior remains the
-// exact released v13 implementation below; this cache generation exists solely
-// to force installed current-device clients to refresh the corrected configured
-// resident-rendezvous route in master-records-auto-recovery.js.
+// Preserve the established v15 cache contract while loading the released v13
+// runtime plus the HIL same-device portable WorkerCoordinator projection.
+// The changed service-worker source bytes trigger browser update/install; the
+// HIL bridge install listener adds its exact package to the existing cache.
 importScripts("./service-worker-v13-runtime.js");
+importScripts("./hil-portable-state-bridge.js");
+importScripts("./hil-portable-native-bridge.js");
 
 CACHE_NAME = "stegos-web-bootstrap-v15";

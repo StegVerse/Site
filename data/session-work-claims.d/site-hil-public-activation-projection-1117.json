@@ -1,0 +1,62 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-HIL-PUBLIC-ACTIVATION-PROJECTION-1117-20260908",
+      "session_worker_id": "chatgpt:hil-public-activation-projection-site-1117-20260908",
+      "task_id": "SITE-HIL-PUBLIC-ACTIVATION-PROJECTION-1117",
+      "originating_goal": "Repair the observed stegverse.org HIL activation 404 by projecting the merged same-device HIL activation surface into Site and validating the public HTTPS path without asserting resident execution.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/hil-public-activation-projection-1117",
+      "handoff": "docs/HIL_PUBLIC_ACTIVATION_PROJECTION_MIRROR_HANDOFF.md",
+      "handoff_revision": "da1a64f258b7846be6cccf2725946d01455ac6ba",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-hil-public-activation-projection-1117",
+      "dependency_surface_keys": [
+        "site:stegos-hil-public-activation-projection"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-hil-public-activation-projection-1117.json",
+        "docs/HIL_PUBLIC_ACTIVATION_PROJECTION_MIRROR_HANDOFF.md",
+        "stegos-bootstrap/hil-activate.html",
+        "stegos-bootstrap/workercoordinator-portable-hil.json",
+        "stegos-bootstrap/hil-portable-state-bridge.js",
+        "stegos-bootstrap/hil-portable-native-bridge.js",
+        "stegos-bootstrap/service-worker.js",
+        "scripts/check_stegos_ipod_bootstrap_projection.py",
+        "tests/test_hil_public_activation_projection.py"
+      ],
+      "claim_created_at": "2026-09-08T19:59:00-05:00",
+      "claim_expires_when": "Release after the exact PR head passes Site validation, merges, and the public HTTPS HIL activation path is directly observed serving the projected page instead of 404; physical iPhone execution remains a separate parent runtime predicate.",
+      "expected_evidence": [
+        "exact HIL activation page projected under stegos-bootstrap",
+        "exact canonical HIL portable WorkerCoordinator package projected",
+        "HIL bridge loaded by the existing Site service worker with no second service worker",
+        "HIL-aware v15 service-worker successor blob admitted by the current-iPhone projection validator",
+        "Site Bootstrap validation PASS",
+        "StegOS persistent-card/current-iPhone projection validation PASS",
+        "Site Handoff Orchestrator PASS",
+        "Ecosystem Heartbeat Orchestration PASS",
+        "https://stegverse.org/stegos-bootstrap/hil-activate.html observed non-404 after merge/deployment"
+      ],
+      "collision_boundaries": [
+        "No second service worker or second WorkerCoordinator",
+        "No caller-supplied HIL claim_id or fencing_token",
+        "No NON-TV/TVC secret or token",
+        "No GitHub-token runtime authority",
+        "No resident request consumption inferred from source, CI, merge, public deployment, page load, or portable checkout",
+        "Do not modify unrelated HIL participant submission lifecycle authority owned by canonical Site HIL lanes"
+      ],
+      "next_task_after_release": "Return to SHWP-HIL-SOVEREIGN-RECEIVER-001 physical current-iPhone execution and canonical .github resident-consumption evidence binding.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

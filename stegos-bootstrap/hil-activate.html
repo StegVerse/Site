@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#111111">
+  <title>Activate StegOS HIL</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; color-scheme: light dark; }
+    body { margin: 0; padding: 20px; max-width: 640px; margin-left: auto; margin-right: auto; }
+    button { font: inherit; padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); }
+    button:disabled { opacity: .45; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    .value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>StegOS HIL</h1>
+  <p>This same-device action establishes or reuses the StegOS node, obtains the HIL claim/fence from the canonical portable WorkerCoordinator, then opens the installed StegOS app with the complete receipt-bound activation envelope.</p>
+  <p>No claim or fencing token is entered on this page.</p>
+  <p>Authority: <span class="value">WorkerCoordinator → claim/fence; InTr → transition; TV/TVC → credentials</span></p>
+  <button id="activate-hil" type="button">Activate HIL on this iPhone</button>
+  <pre id="hil-state">READY_FOR_USER_ACTION</pre>
+
+  <script src="./stegos-bootstrap.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
+      var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil";
+      var button = document.getElementById("activate-hil");
+      var state = document.getElementById("hil-state");
+
+      function show(value) {
+        state.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+      }
+
+      function base64url(text) {
+        var bytes = new TextEncoder().encode(text);
+        var binary = "";
+        for (var i = 0; i < bytes.length; i += 1) { binary += String.fromCharCode(bytes[i]); }
+        return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+      }
+
+      function ensureControllingWorker() {
+        return window.StegOSWebBootstrap.registerOfflineShell().then(function () {
+          if (!(navigator.serviceWorker && navigator.serviceWorker.ready)) {
+            throw new Error("Service worker is unavailable on this iPhone browser surface.");
+          }
+          return navigator.serviceWorker.ready;
+        }).then(function () {
+          if (!navigator.serviceWorker.controller) {
+            sessionStorage.setItem("stegos-hil-reload-once", "1");
+            window.location.reload();
+            throw new Error("StegOS service worker activated; reloading this same-device surface.");
+          }
+        });
+      }
+
+      if (sessionStorage.getItem("stegos-hil-reload-once") === "1") {
+        sessionStorage.removeItem("stegos-hil-reload-once");
+        show("SERVICE_WORKER_READY_FOR_HIL_CHECKOUT");
+      }
+
+      button.addEventListener("click", function () {
+        button.disabled = true;
+        show("ESTABLISHING_STEGOS_NODE");
+        ensureControllingWorker().then(function () {
+          return window.StegOSWebBootstrap.establishNode();
+        }).then(function (nodeState) {
+          show("REQUESTING_CANONICAL_HIL_CHECKOUT");
+          return fetch(ROUTE, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              task_id: TASK_ID,
+              node_id: nodeState.node.node_id,
+              execution_surface: "CURRENT_USER_IPHONE",
+              credential_authority: "TV/TVC",
+              github_token_runtime_authority: "NONE",
+              heartbeat_granted_authority: false
+            })
+          });
+        }).then(function (response) {
+          return response.json().then(function (payload) {
+            if (!response.ok) { throw new Error(payload.reason || "HIL checkout failed"); }
+            return payload;
+          });
+        }).then(function (envelope) {
+          show(envelope);
+          var encoded = base64url(JSON.stringify(envelope));
+          window.location.href = "stegverse://hil/activate?envelope=" + encodeURIComponent(encoded);
+        }).catch(function (error) {
+          if (String(error && error.message ? error.message : error).indexOf("reloading") !== -1) { return; }
+          button.disabled = false;
+          show("FAIL_CLOSED: " + String(error && error.message ? error.message : error));
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

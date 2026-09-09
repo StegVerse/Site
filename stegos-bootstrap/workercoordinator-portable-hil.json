@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.workercoordinator-portable-checkout-package/v1",
+  "portable_authority_epoch": "WC-PORTABLE-IPHONE-20260902",
+  "canonical_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+  "authority_domain": "INDEPENDENT_TASK_CONTROL",
+  "execution_surface": "CURRENT_USER_IPHONE",
+  "predecessor_generation_floor": 24,
+  "predecessor_registry_git_blob_sha": "d860e4c09aaeffaf896a3a95b440334984547dce",
+  "task": {
+    "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "state": "HANDOFF_READY",
+    "claim_id": null,
+    "worker_id": null,
+    "admission": {
+      "authority_domain": "INDEPENDENT_TASK_CONTROL",
+      "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+      "fresh_fence_required": true,
+      "heartbeat_grants_execution_authority": false
+    }
+  },
+  "worker": {
+    "worker_id": "hil-sovereign-receiver-worker",
+    "status": "AVAILABLE",
+    "capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "sovereign_hil_receiver_activation"
+    ]
+  },
+  "required_capabilities": [
+    "runtime_observation",
+    "bounded_process_execution",
+    "sovereign_hil_receiver_activation"
+  ],
+  "handoff_authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false
+  },
+  "source_binding": {
+    "task_fragment_git_blob_sha": "b990a4e68586e4596e9ef2b32437fbb14217989e",
+    "handoff_git_blob_sha": "8762486fdf6cfcd228b22d2f6cdd48a50cac3b58",
+    "state_vector_git_blob_sha": "cd7d0f121a93ad6f73d0fec561a003d22b7d3a04",
+    "portable_checkout_git_blob_sha": "558ca71f6cdaf461deb65ff96f077a7c2df78493"
+  },
+  "dependencies_complete": true,
+  "execution_authorized": true,
+  "semantic_state_current": true,
+  "worker_resolved": true,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "parallel_workercoordinator_claim_issuance_allowed": false,
+  "governed_transfer_required_before_other_surface_claims": true,
+  "external_non_stegverse_machine_required": false,
+  "heartbeat_reference": null,
+  "minimum_fencing_token_exclusive": 24,
+  "authority_effect": "CANONICAL_WORKERCOORDINATOR_PORTABLE_PACKAGE",
+  "single_checkout_per_task_package": true,
+  "terminal_reexecution_allowed": false,
+  "downstream_retry_after_terminal": true,
+  "bootstrap_floor_reason": "G23 canonical SV001 and G24 authentic duplicate portable fences are already observed. HIL portable checkout must advance beyond G24 and must never reuse a historical portable fence.",
+  "native_consumer": {
+    "repository": "StegVerse-Labs/StegOS",
+    "source_merge": "efc9d5e1e8140759a5f971484ae593cf545b9203",
+    "execution_surface": "CURRENT_USER_IPHONE",
+    "claim_fence_minted_by_native_component": false,
+    "expected_transition": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+    "runtime_evidence_required": true,
+    "authority_effect": "NONE_BINDING_ONLY"
+  },
+  "runtime_execution_observed": false,
+  "activation_effect": false
+}

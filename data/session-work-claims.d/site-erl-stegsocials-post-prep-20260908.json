@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "erl-stegsocials-post-prep-20260908",
       "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "RELEASED_COMPLETE",
       "normalized_work_key": "site-erl-stegsocials-post-prep",
       "dependency_surface_keys": [
         "kv:erl-global-availability",
@@ -31,9 +31,13 @@
         "data/session-work-claims.d/site-erl-stegsocials-post-prep-20260908.json"
       ],
       "handoff": "docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md",
-      "handoff_revision": "SITE_PROJECTION_IMPLEMENTED_PENDING_README_AND_MERGE_20260908",
+      "handoff_revision": "SITE_PROJECTION_MERGED_20260908",
       "claim_created_at": "2026-09-08T22:55:00-05:00",
       "claim_expires_when": "PR_1136_MERGED_OR_CLOSED",
+      "pull_request": 1136,
+      "release_commit": "cc5bb28ddb7a74b24c89d75e331e51ea6f4cfab3",
+      "claim_released_at": "2026-09-08T23:29:00-05:00",
+      "archive_eligible": true,
       "expected_evidence": [
         "canonical StegSocials post-preparation/v1 shape projected without competing ownership",
         "ERL directory exposed at 02_Research/ERL",

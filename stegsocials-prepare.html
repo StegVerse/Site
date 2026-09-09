@@ -11,12 +11,12 @@
 </style>
 </head>
 <body>
-<nav class="sv-nav"><a class="sv-nav-brand" href="index.html">StegVerse</a><a class="active" href="my-kv.html">My KV</a><a href="my-kv-directory.html?dir=erl">ERL</a></nav>
+<nav class="sv-nav"><a class="sv-nav-brand" href="index.html">StegVerse</a><a class="active" href="my-kv.html">My KV</a><a href="my-kv-directory.html?dir=erl">ERL</a><a href="my-kv-directory.html?dir=stegsocials-drafts">Drafts</a></nav>
 <main class="sv-wrap wrap">
 <a href="my-kv-directory.html?dir=erl">← Back to ERL</a>
 <section class="panel">
 <h1>Prepare a StegSocials post</h1>
-<p>Use an ERL artifact as research provenance, shape a private draft for a platform, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
+<p>Use an ERL artifact as research provenance, shape a private draft for a platform, save the prepared bundle into the current device-local KnowledgeVault when available, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
 <div class="grid">
 <div class="field"><label for="erl-ref">ERL reference</label><input id="erl-ref" class="mono" autocomplete="off"></div>
 <div class="field"><label for="platform">Platform</label><select id="platform"><option value="LINKEDIN">LinkedIn</option><option value="FACEBOOK">Facebook</option><option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="OTHER">Other</option></select></div>
@@ -29,7 +29,7 @@
 <div class="field"><label for="source-link">Public source link</label><input id="source-link" autocomplete="off" placeholder="Optional"></div>
 </div>
 <p id="shape-guidance" class="note"></p>
-<div class="actions"><button id="prepare" class="sv-btn sv-btn-primary" type="button">Prepare draft</button><button id="copy" class="sv-btn sv-btn-secondary" type="button" disabled>Copy post text</button><button id="copy-bundle" class="sv-btn sv-btn-secondary" type="button" disabled>Copy preparation bundle</button></div>
+<div class="actions"><button id="prepare" class="sv-btn sv-btn-primary" type="button">Prepare draft</button><button id="save-kv" class="sv-btn sv-btn-primary" type="button" disabled>Save draft to My KV</button><button id="copy" class="sv-btn sv-btn-secondary" type="button" disabled>Copy post text</button><button id="copy-bundle" class="sv-btn sv-btn-secondary" type="button" disabled>Copy preparation bundle</button></div>
 <p id="status" class="status" role="status" aria-live="polite"></p>
 </section>
 <section class="panel premium">
@@ -40,15 +40,23 @@
 <h2>Prepared draft</h2>
 <div id="preview" class="preview"></div>
 <p class="mono" id="draft-path"></p>
+<p class="mono" id="kv-evidence"></p>
 </section>
 </main>
+<script src="assets/stegverse-node-continuity.js"></script>
+<script src="assets/generated/site-browser-intr-connectors.js"></script>
+<script src="assets/hb-intr-carrier.js"></script>
+<script src="stegos-node/device-kv-intr-sync.js?v=20260908-stegsocials-draft-r1"></script>
+<script src="assets/my-kv-device-kv-query-bridge.js?v=20260908-stegsocials-draft-r1"></script>
 <script src="assets/stegsocials-post-preparation.js"></script>
+<script src="assets/stegsocials-kv-draft-write-bridge.js"></script>
 <script>
 (function(){
 "use strict";
 var api=window.StegVerseStegSocialsPreparation;
+var writer=window.StegVerseStegSocialsKVDraftWriter;
 var params=new URLSearchParams(location.search);
-var erl=document.getElementById("erl-ref"), platform=document.getElementById("platform"), account=document.getElementById("account-ref"), evidence=document.getElementById("evidence-ref"), body=document.getElementById("body"), hashtags=document.getElementById("hashtags"), source=document.getElementById("source-link"), prepare=document.getElementById("prepare"), copy=document.getElementById("copy"), copyBundle=document.getElementById("copy-bundle"), status=document.getElementById("status"), preview=document.getElementById("preview"), panel=document.getElementById("preview-panel"), draftPath=document.getElementById("draft-path"), guidance=document.getElementById("shape-guidance");
+var erl=document.getElementById("erl-ref"), platform=document.getElementById("platform"), account=document.getElementById("account-ref"), evidence=document.getElementById("evidence-ref"), body=document.getElementById("body"), hashtags=document.getElementById("hashtags"), source=document.getElementById("source-link"), prepare=document.getElementById("prepare"), saveKV=document.getElementById("save-kv"), copy=document.getElementById("copy"), copyBundle=document.getElementById("copy-bundle"), status=document.getElementById("status"), preview=document.getElementById("preview"), panel=document.getElementById("preview-panel"), draftPath=document.getElementById("draft-path"), kvEvidence=document.getElementById("kv-evidence"), guidance=document.getElementById("shape-guidance");
 var current=null;
 var ref=params.get("erl_ref")||"";
 if(ref){erl.value=ref.indexOf("02_Research/ERL/")===0?ref:"02_Research/ERL/"+ref.replace(/^\/+/,"");}
@@ -73,9 +81,21 @@ prepare.addEventListener("click",function(){
     });
     preview.textContent=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");
     draftPath.textContent="Target KV draft path: "+current.kv_context.draft_path;
-    panel.hidden=false;copy.disabled=false;copyBundle.disabled=false;
-    status.textContent="Draft prepared locally. No provider call was performed. Review the text, then copy it for manual publication.";status.className="status";
-  }catch(e){current=null;panel.hidden=true;copy.disabled=true;copyBundle.disabled=true;status.textContent=e.message;status.className="status error";}
+    kvEvidence.textContent="";
+    panel.hidden=false;copy.disabled=false;copyBundle.disabled=false;saveKV.disabled=false;
+    status.textContent="Draft prepared locally. No provider call was performed. Save it to My KV when the registered device-local KV receiver is available, or copy it for manual publication.";status.className="status";
+  }catch(e){current=null;panel.hidden=true;copy.disabled=true;copyBundle.disabled=true;saveKV.disabled=true;status.textContent=e.message;status.className="status error";}
+});
+saveKV.addEventListener("click",function(){
+  if(!current)return;
+  if(!writer||typeof writer.saveDraft!=="function"){status.textContent="The My KV draft writer is unavailable.";status.className="status error";return;}
+  saveKV.disabled=true;status.textContent="Requesting governed device-local KV admission and admitted-hash readback…";status.className="status";
+  writer.saveDraft(current).then(function(result){
+    kvEvidence.textContent="KV admission observed: "+result.sha256+" · "+result.size_bytes+" bytes · exact content-byte readback pending a dedicated content-read primitive.";
+    status.textContent="Draft admitted to the current device-local My KV and its stored hash/size were read back successfully. No social provider call was performed.";status.className="status";saveKV.disabled=false;
+  }).catch(function(error){
+    kvEvidence.textContent="";status.textContent=error&&error.message?error.message:"My KV draft admission failed closed.";status.className="status error";saveKV.disabled=false;
+  });
 });
 copy.addEventListener("click",function(){if(!current)return;var text=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");navigator.clipboard.writeText(text).then(function(){status.textContent="Post text copied. Manual publication remains under your control.";}).catch(function(){status.textContent="Clipboard access was unavailable; select the prepared text manually.";status.className="status error";});});
 copyBundle.addEventListener("click",function(){if(!current)return;navigator.clipboard.writeText(JSON.stringify(current,null,2)).then(function(){status.textContent="Preparation bundle copied. It contains no provider credential material.";}).catch(function(){status.textContent="Clipboard access was unavailable.";status.className="status error";});});

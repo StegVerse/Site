@@ -1,18 +1,18 @@
 {
   "schema_version": "1.1.0",
   "inventory_type": "site_workflow_consolidation_inventory",
-  "generated_at": "2026-09-09T04:22:50.032628+00:00",
+  "generated_at": "2026-09-09T04:31:13.878311+00:00",
   "repository": "StegVerse-Labs/Site",
   "canonical_workflows": [
     "ecosystem-chat-activation-retention.yml",
     "site-task-runner.yml",
     "validate.yml"
   ],
-  "workflow_file_count": 133,
-  "operational_workflow_count": 133,
+  "workflow_file_count": 134,
+  "operational_workflow_count": 134,
   "canonical_count": 3,
-  "migration_required_file_count": 130,
-  "migration_required_operational_count": 130,
+  "migration_required_file_count": 131,
+  "migration_required_operational_count": 131,
   "placeholder_count": 0,
   "consolidation_complete": false,
   "authority_boundary": {
@@ -2298,6 +2298,31 @@
         "id_token_write": false,
         "uses_secrets": false,
         "uploads_artifact": true,
+        "deploys_pages": false,
+        "pushes_git": false,
+        "creates_release_or_tag": false
+      },
+      "migration_status": "INVENTORY_ONLY_NOT_AUTHORIZED_TO_RETIRE"
+    },
+    {
+      "file": "stegsocials-post-preparation.yml",
+      "name": "StegSocials Post Preparation",
+      "classification": "MIGRATION_REQUIRED",
+      "triggers": [
+        "pull_request",
+        "paths",
+        "push",
+        "branches",
+        "workflow_dispatch"
+      ],
+      "has_jobs": true,
+      "operational": true,
+      "capabilities": {
+        "contents_write": false,
+        "pages_write": false,
+        "id_token_write": false,
+        "uses_secrets": false,
+        "uploads_artifact": false,
         "deploys_pages": false,
         "pushes_git": false,
         "creates_release_or_tag": false

@@ -10,6 +10,8 @@ on:
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'data/render-gateway-replacement-plan.json'
+      - '.github/workflows/validate.yml'
+      - '.github/workflows/site-task-runner.yml'
       - '.github/workflows/no-required-third-party-runtime.yml'
   push:
     branches: [main]
@@ -21,6 +23,8 @@ on:
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'data/render-gateway-replacement-plan.json'
+      - '.github/workflows/validate.yml'
+      - '.github/workflows/site-task-runner.yml'
       - '.github/workflows/no-required-third-party-runtime.yml'
   workflow_dispatch:
 

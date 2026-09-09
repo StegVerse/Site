@@ -24,6 +24,8 @@ The existing Site service worker remains the only service worker. `stegos-bootst
 
 The HIL package remains bound to the canonical `.github` WorkerCoordinator package and StegOS native receiver source. The browser does not accept caller-supplied HIL claim/fence values and does not create a second WorkerCoordinator.
 
+The current-iPhone projection validator admits the exact HIL-aware v15 service-worker successor blob `34900418f5b8c7225936a89ef541b82bc496a969` while retaining all prior exact successor blobs. The branch is bounded by the active pre-work claim `SITE-HIL-PUBLIC-ACTIVATION-PROJECTION-1117-20260908` in `data/session-work-claims.d/site-hil-public-activation-projection-1117.json`.
+
 ## Runtime boundary
 
 Publication of this Site path, Site CI, GitHub Pages deployment, browser page load, or a portable checkout does not satisfy `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.

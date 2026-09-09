@@ -9,7 +9,7 @@
   <style>
     :root { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; color-scheme: light dark; }
     body { margin: 0; padding: 20px; max-width: 640px; margin-left: auto; margin-right: auto; }
-    button { font: inherit; padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); }
+    button { font: inherit; padding: 14px 16px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); margin: 4px 4px 4px 0; }
     button:disabled { opacity: .45; }
     pre { white-space: pre-wrap; word-break: break-word; }
     .value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
@@ -20,7 +20,11 @@
   <p>This same-device action establishes or reuses the StegOS node, obtains the HIL claim/fence from the canonical portable WorkerCoordinator, and executes the bounded HIL receiver directly on this iPhone's existing StegOS service-worker surface.</p>
   <p>No signed app, TestFlight install, second machine, claim ID, or fencing token is required.</p>
   <p>Authority: <span class="value">WorkerCoordinator → claim/fence; InTr → transition; TV/TVC → credentials</span></p>
+  <p>Browser context: <span id="browser-context" class="value"></span></p>
+  <p>Resident request: <span class="value">RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002</span></p>
   <button id="activate-hil" type="button">Activate HIL on this iPhone</button>
+  <button id="copy-evidence" type="button" disabled>Copy evidence JSON</button>
+  <button id="download-evidence" type="button" disabled>Download evidence JSON</button>
   <pre id="hil-state">READY_FOR_USER_ACTION</pre>
 
   <script src="./stegos-bootstrap.js"></script>
@@ -28,11 +32,46 @@
     (function () {
       "use strict";
       var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
+      var REQUEST_ID = "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002";
+      var REQUEST_SHA256 = "6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038";
       var ROUTE = "/stegos-bootstrap/portable-workercoordinator/hil-browser";
+      var CONTEXT_KEY = "stegos-hil-browser-context-v1";
+      var RESULT_KEY = "stegos-hil-last-success-v1";
       var button = document.getElementById("activate-hil");
+      var copyButton = document.getElementById("copy-evidence");
+      var downloadButton = document.getElementById("download-evidence");
       var state = document.getElementById("hil-state");
+      var contextView = document.getElementById("browser-context");
+      var lastResult = null;
+
+      function randomHex(bytes) {
+        var values = new Uint8Array(bytes); crypto.getRandomValues(values);
+        return Array.prototype.map.call(values, function (v) { return v.toString(16).padStart(2, "0"); }).join("");
+      }
+      function browserContextId() {
+        var value = localStorage.getItem(CONTEXT_KEY);
+        if (!/^ctx_[a-f0-9]{32}$/.test(String(value || ""))) {
+          value = "ctx_" + randomHex(16); localStorage.setItem(CONTEXT_KEY, value);
+        }
+        return value;
+      }
+      var contextId = browserContextId();
+      contextView.textContent = contextId + " (storage/service-worker state is isolated from other browser contexts)";
 
       function show(value) { state.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2); }
+      function setResult(value) {
+        lastResult = value;
+        localStorage.setItem(RESULT_KEY, JSON.stringify(value));
+        copyButton.disabled = false;
+        downloadButton.disabled = false;
+        show(value);
+      }
+      function restoreResult() {
+        try {
+          var value = JSON.parse(localStorage.getItem(RESULT_KEY) || "null");
+          if (value && value.state === "BROWSER_HIL_LOCAL_READY_OBSERVED" && value.browser_context_id === contextId) { setResult(value); }
+        } catch (_) {}
+      }
 
       function ensureControllingWorker() {
         return window.StegOSWebBootstrap.registerOfflineShell().then(function () {
@@ -51,6 +90,23 @@
         sessionStorage.removeItem("stegos-hil-reload-once");
         show("SERVICE_WORKER_READY_FOR_HIL_EXECUTION");
       }
+      restoreResult();
+
+      copyButton.addEventListener("click", function () {
+        if (!lastResult) { return; }
+        var text = JSON.stringify(lastResult, null, 2);
+        navigator.clipboard.writeText(text).then(function () { show(lastResult); }).catch(function () { show("FAIL_CLOSED: clipboard write unavailable; use Download evidence JSON instead."); });
+      });
+      downloadButton.addEventListener("click", function () {
+        if (!lastResult) { return; }
+        var blob = new Blob([JSON.stringify(lastResult, null, 2) + "\n"], {type: "application/json"});
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "hil-browser-evidence-" + contextId + ".json";
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
 
       button.addEventListener("click", function () {
         button.disabled = true;
@@ -64,7 +120,10 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               task_id: TASK_ID,
+              resident_request_id: REQUEST_ID,
+              resident_request_sha256: REQUEST_SHA256,
               node_id: nodeState.node.node_id,
+              browser_context_id: contextId,
               execution_surface: "CURRENT_USER_IPHONE",
               credential_authority: "TV/TVC",
               github_token_runtime_authority: "NONE",
@@ -77,10 +136,9 @@
             return payload;
           });
         }).then(function (result) {
-          if (result.state !== "BROWSER_HIL_LOCAL_READY_OBSERVED" || result.browser_receiver_execution_observed !== true) {
-            throw new Error("HIL receiver did not produce local-ready execution evidence");
-          }
-          show(result);
+          if (result.state !== "BROWSER_HIL_LOCAL_READY_OBSERVED" || result.browser_receiver_execution_observed !== true) { throw new Error("HIL receiver did not produce local-ready execution evidence"); }
+          if (result.resident_request_id !== REQUEST_ID || result.resident_request_sha256 !== REQUEST_SHA256 || result.browser_context_id !== contextId) { throw new Error("HIL execution result binding mismatch"); }
+          setResult(result);
         }).catch(function (error) {
           if (String(error && error.message ? error.message : error).indexOf("reloading") !== -1) { return; }
           button.disabled = false;

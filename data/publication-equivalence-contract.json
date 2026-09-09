@@ -13,43 +13,37 @@
   },
   "materialization": {
     "include_top_level_public_files": true,
-    "include_directories": [
-      "assets",
-      "cfp",
-      "data",
-      "math-solver",
-      "papers",
-      "sports",
-      "stegos-bootstrap"
-    ],
-    "exclude_directory_prefixes": [
-      ".git",
-      ".github",
-      "api",
-      "build",
-      "docs",
-      "node_modules",
-      "scripts",
-      "tests"
-    ],
-    "exclude_file_names": [
-      ".DS_Store"
-    ],
+    "include_directories": ["assets", "cfp", "data", "math-solver", "papers", "sports", "stegos-bootstrap"],
+    "exclude_directory_prefixes": [".git", ".github", "api", "build", "docs", "node_modules", "scripts", "tests"],
+    "exclude_file_names": [".DS_Store"],
     "dynamic_api_is_separate_from_static_publication_artifact": true
   },
   "equivalence": {
     "digest": "SHA-256",
+    "comparison_method": "EXACT_PATH_AND_SHA256",
     "every_artifact_file_must_match": true,
     "missing_remote_file_fails": true,
     "extra_remote_file_is_not_implicitly_equivalent": true,
     "redirect_body_is_not_equivalent": true,
     "http_error_is_not_equivalent": true,
     "tls_must_be_verified_separately": true,
-    "canonical_domain_binding_must_be_verified_separately": true
+    "canonical_domain_binding_must_be_verified_separately": true,
+    "source_or_ci_validation_alone_cannot_prove_equivalence": true
+  },
+  "observation_evidence": {
+    "template": "data/off-github-publication-evidence-template.json",
+    "validator": "scripts/check_off_github_publication_evidence.py",
+    "must_bind_exact_external_recovery_archive": true,
+    "must_bind_exact_materialized_publication_artifact": true,
+    "must_identify_non_github_origin": true,
+    "must_record_tls_observation": true,
+    "must_record_provenance": true,
+    "template_must_remain_unobserved_until_authentic_publication": true
   },
   "current_observation": {
     "static_publication_artifact_materialized": false,
     "artifact_manifest_verified": false,
+    "publication_observation_evidence_contract_installed": true,
     "non_github_origin_selected": false,
     "non_github_publication_observed": false,
     "exact_public_content_equivalence_observed": false,

@@ -427,3 +427,41 @@ persistence, provider-usage reconstruction PASS, transition reconstruction PASS,
 an immutable zero-blocker verified receipt, Site activation completion, and verified
 downstream propagation. Source, CI, local-model implementation, route-admission
 source, or a readiness-record update does not satisfy those predicates.
+
+---
+
+## Provider-independent runtime and recovery boundary
+
+The public Site surface is `https://stegverse.org/`. Site #497 / COSV `50000000102000` records the current runtime and recovery posture in machine-readable source rather than inferring it from a historical provider receipt.
+
+```text
+canonical runtime = RESIDENT_STEGVERSE
+production continuity third-party dependency = false
+activation third-party dependency = false
+automatic third-party runtime selection = false
+Cloudflare quick tunnel required = false
+Cloudflare quick tunnel canonical runtime carrier = false
+GitHub Actions runtime required = false
+GitHub Actions runtime authority = NONE
+```
+
+Older Render and `trycloudflare.com` observations remain provenance. `data/third-party-dependency-inventory-supersession.json` marks the retired requirement observations `HISTORICAL_SUPERSEDED`; they are not current dependency, endpoint, liveness, or runtime evidence.
+
+Provider-neutral recovery source is defined by `data/dns-edge-portability.json` and `data/source-publication-recovery.json`. `scripts/materialize_site_recovery_bundle.py` materializes `STEGVERSE_SITE_RECOVERY_BUNDLE_V1` from a local checkout into `build/site-recovery-bundle/source`, emits SHA-256 path hashes in `build/site-recovery-bundle/manifest.json` and `build/site-recovery-bundle/SHA256SUMS`, and requires no GitHub API, GitHub Actions, network access, or provider credentials. `scripts/check_site_recovery_bundle_manifest.py` rematerializes and verifies the bundle deterministically.
+
+Repository or CI materialization proves only that the recovery bundle can be constructed from the exact checkout. It does **not** prove that the bundle has been retained outside GitHub, restored without GitHub, published through a non-GitHub origin, rebound through DNS/TLS, or observed as a resident/provider-neutral public rendezvous. Those remain separate authentic evidence requirements.
+
+Relevant surfaces:
+
+- `data/third-party-runtime-cutover-current.json`
+- `data/third-party-dependency-inventory-supersession.json`
+- `data/dns-edge-portability.json`
+- `data/source-publication-recovery.json`
+- `data/site-recovery-bundle-materialization.json`
+- `scripts/check_no_required_third_party_runtime.py`
+- `scripts/check_third_party_dependency_reconciliation.py`
+- `scripts/check_dns_edge_portability.py`
+- `scripts/check_source_publication_recovery.py`
+- `scripts/materialize_site_recovery_bundle.py`
+- `scripts/check_site_recovery_bundle_manifest.py`
+- `docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md`

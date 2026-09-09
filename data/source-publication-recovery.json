@@ -36,18 +36,25 @@
     "required_provider": null,
     "required_platform": null,
     "publication_origin_selection": "EXPLICIT_ADMISSIBLE_ORIGIN_SELECTION",
+    "evidence_contract": "data/off-github-publication-evidence-template.json",
+    "evidence_validator": "scripts/check_off_github_publication_evidence.py",
+    "equivalence_method": "EXACT_PATH_AND_SHA256",
     "steps": [
       "verify recovery bundle cryptographic manifest",
       "run repository-local deterministic validators",
       "materialize static Site publication artifact from the verified bundle",
       "select an admissible publication origin without changing canonical Site state",
+      "publish through a non-GitHub origin",
+      "capture exact path and SHA-256 equivalence against the verified static artifact",
       "bind stegverse.org using the provider-neutral DNS/edge portability contract",
       "verify TLS and exact public content equivalence",
       "record publication and DNS/TLS observations",
       "retire the prior publication origin only after equivalence is verified"
     ],
     "automatic_provider_selection": false,
-    "automatic_external_mutation": false
+    "automatic_external_mutation": false,
+    "publication_observation_may_be_inferred_from_source_or_ci": false,
+    "equivalence_observation_may_be_inferred_from_zero_mismatches_without_manifest_binding": false
   },
   "failure_semantics": {
     "github_outage_must_not_destroy_reconstructable_source": true,
@@ -55,7 +62,8 @@
     "github_pages_outage_must_not_destroy_publication_artifact": true,
     "replacement_provider_outage_must_not_destroy_canonical_state": true,
     "recovery_independence_is_proven_by_manifest_alone": false,
-    "off_github_publication_is_proven_by_manifest_alone": false
+    "off_github_publication_is_proven_by_manifest_alone": false,
+    "public_content_equivalence_is_proven_by_source_validation_alone": false
   },
   "current_observation": {
     "complete_recovery_bundle_materialized": true,
@@ -69,10 +77,12 @@
     "external_retention_observed": true,
     "external_recovery_archive_sha256": "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f",
     "external_recovery_source_commit": "00fcf4149d4deb81066e2829618885cafadc2325",
-    "external_recovery_manifest_entries": 3400
+    "external_recovery_manifest_entries": 3400,
+    "publication_evidence_contract_installed": true
   },
   "remaining_proof": [
     "publish the verified static artifact through a non-GitHub origin",
+    "capture exact path and SHA-256 public-content equivalence evidence",
     "bind stegverse.org through the DNS/edge portability procedure",
     "verify TLS and exact public content equivalence"
   ],

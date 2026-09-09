@@ -94,16 +94,20 @@
   function validateRendezvousConfig(config) {
     var boundary = config && config.authority_boundary;
     var discovery = config && config.discovery;
-    var hosted = config && config.hosted_fallback;
-    if (!config || config.schema_version !== "1.2.0" || config.mode !== "SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK" ||
-        config.primary_transport !== "SOVEREIGN_LOCAL_RESIDENT" || config.enabled !== true || typeof config.endpoint !== "string" ||
-        !hosted || hosted.role !== "HOSTED_FALLBACK_ONLY" ||
-        !discovery || discovery.enabled !== true || discovery.selection !== "FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK" ||
+    var optional = config && config.optional_third_party_fallbacks;
+    if (!config || config.schema_version !== "1.3.0" || config.mode !== "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS" ||
+        config.enabled !== false || config.endpoint !== null || config.health_endpoint !== null || config.endpoint_role !== "SOVEREIGN_DISCOVERY_ONLY" ||
+        !discovery || discovery.enabled !== true || discovery.selection_policy !== "FIRST_VALID_SOVEREIGN_LOCAL_ONLY" ||
         !Array.isArray(discovery.advertisement_endpoints) || discovery.advertisement_endpoints.length < 2 ||
         !isLoopbackAdvertisement(discovery.advertisement_endpoints[0]) || !isLoopbackAdvertisement(discovery.advertisement_endpoints[1]) ||
+        !Array.isArray(optional) || optional.some(function (fallback) {
+          return !fallback || fallback.enabled_by_default !== false || fallback.selection_requires_explicit_runtime_opt_in !== true ||
+            fallback.production_continuity_dependency !== false || fallback.activation_dependency !== false || fallback.authority_effect !== "NONE";
+        }) ||
         !boundary || boundary.site_execution_authority !== false || boundary.gateway_execution_authority !== false ||
-        boundary.master_records_authority !== false || boundary.node_discovery_grants_authority !== false) {
-      throw new Error("canonical sovereign-first rendezvous configuration mismatch");
+        boundary.master_records_authority !== false || boundary.node_discovery_grants_authority !== false ||
+        boundary.third_party_fallback_grants_authority !== false) {
+      throw new Error("canonical sovereign-local-only rendezvous configuration mismatch");
     }
     return config;
   }
@@ -142,15 +146,6 @@
     }).finally(function () { root.clearTimeout(timer); });
   }
 
-  function hostedFallbackOrigin(config) {
-    var endpoint = new URL(config.endpoint, root.location.href);
-    if (endpoint.protocol !== "https:") { throw new Error("hosted rendezvous fallback must use HTTPS"); }
-    if (!config.hosted_fallback || config.hosted_fallback.role !== "HOSTED_FALLBACK_ONLY") {
-      throw new Error("hosted rendezvous endpoint is not explicitly fallback-only");
-    }
-    return endpoint.origin;
-  }
-
   function residentRendezvousBaseUrl() {
     if (gatewayBasePromise) { return gatewayBasePromise; }
     gatewayBasePromise = fetch(GATEWAY_CONFIG_URL, {
@@ -161,7 +156,8 @@
       return response.json();
     }).then(validateRendezvousConfig).then(function (config) {
       return probeSovereignResident(config, 0).then(function (localOrigin) {
-        return localOrigin || hostedFallbackOrigin(config);
+        if (!localOrigin) { throw new Error("sovereign resident rendezvous unavailable; hosted fallback not automatically selected"); }
+        return localOrigin;
       });
     }).catch(function (error) {
       gatewayBasePromise = null;

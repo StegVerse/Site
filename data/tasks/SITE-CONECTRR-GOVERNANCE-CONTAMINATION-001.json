@@ -4,7 +4,7 @@
   "repository": "StegVerse-Labs/Site",
   "goal": "Remove Conectrr fixture records from ordinary Ecosystem Chat governed sessions while preserving explicit interoperability testing.",
   "originating_session_goal": "Repair the deployed Conectrr fixture contamination observed on stegverse.org without bypassing Site repository orchestration.",
-  "state": "READY_FOR_MACHINE_COMPLETION_CHECK",
+  "state": "COMPLETE",
   "auto_admit": true,
   "external_dependencies": [],
   "execution_class": "PARALLEL_SAFE_VALIDATION_REPAIR",
@@ -58,5 +58,12 @@
   "external_session_ownership_required": false,
   "manual_user_action_required": false,
   "authority_effect": false,
-  "activation_effect": false
+  "activation_effect": false,
+  "completion_observation": {
+    "controller": "scripts/observe_and_complete_repository_tasks.py",
+    "validator_command": "python scripts/check_conectrr_browser_projection.py",
+    "success_marker": "CONECTRR_BROWSER_PROJECTION_CHECK=PASS",
+    "success_marker_seen": true,
+    "external_dependencies": []
+  }
 }

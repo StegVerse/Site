@@ -84,7 +84,8 @@
       "SITE-1005-GAUI-COMPARATIVE-ANALYSIS",
       "SITE-1005-GAUI-SOURCE-CLAIM-MATRIX",
       "SITE-1005-GAUI-FORMAL-SOURCE-READINESS",
-      "SITE-1028-TGA-PROJECTION"
+      "SITE-1028-TGA-PROJECTION",
+      "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001"
     ],
     "idle_terminal_statement": "end of current work task sequence 0001, no tasks running",
     "machine_observation": {
@@ -103,7 +104,9 @@
     "machine_admission": {
       "controller": "scripts/admit_repository_tasks.py",
       "task_directory": "data/tasks",
-      "admitted_tasks": [],
+      "admitted_tasks": [
+        "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001"
+      ],
       "external_tasks_allowed": false,
       "external_session_ownership_allowed": false
     },

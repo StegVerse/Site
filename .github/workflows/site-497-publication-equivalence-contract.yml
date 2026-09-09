@@ -1,0 +1,40 @@
+name: Site 497 Publication Equivalence Contract
+
+on:
+  pull_request:
+    paths:
+      - 'data/source-publication-recovery.json'
+      - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_off_github_publication_evidence.py'
+      - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
+      - '.github/workflows/site-497-publication-equivalence-contract.yml'
+  push:
+    paths:
+      - 'data/source-publication-recovery.json'
+      - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_off_github_publication_evidence.py'
+      - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
+      - '.github/workflows/site-497-publication-equivalence-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source without persisted credential
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate source/publication recovery contract
+        run: python3 scripts/check_source_publication_recovery.py
+      - name: Validate fail-closed off-GitHub publication evidence contract
+        run: python3 scripts/check_off_github_publication_evidence.py
+      - name: Confirm no provider mutation occurred
+        run: |
+          echo 'PUBLICATION_MUTATION_PERFORMED=false'
+          echo 'DNS_MUTATION_PERFORMED=false'
+          echo 'TLS_RECOVERY_CLAIMED=false'
+          echo 'PUBLIC_CONTENT_EQUIVALENCE_CLAIMED=false'

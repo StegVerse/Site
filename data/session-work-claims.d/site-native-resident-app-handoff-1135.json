@@ -24,7 +24,7 @@
         "tests/test_sv001_native_resident_activation_projection.py"
       ],
       "claim_created_at": "2026-09-08T23:03:00-05:00",
-      "claim_expires_when": "Released after exact-head Site validation, PR #1135 merge, and production deployment of the exact repair head; authentic listener/discovery proof remains a separate current-device observation.",
+      "claim_expires_when": "Release after exact-head Site validation, merge, and public propagation of the app-handoff observation repair; authentic listener/discovery proof remains a separate current-device observation.",
       "expected_evidence": [
         "canonical Receipt #1 projection remains unchanged",
         "custom-scheme dispatch remains user-mediated",

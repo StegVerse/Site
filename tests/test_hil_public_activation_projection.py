@@ -28,12 +28,12 @@ def test_hil_portable_package_preserves_canonical_boundaries():
     assert pkg["activation_effect"] is False
 
 
-def test_service_worker_loads_hil_on_existing_runtime_and_refreshes_cache():
+def test_service_worker_loads_hil_on_existing_v15_contract():
     worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
     assert 'importScripts("./service-worker-v13-runtime.js")' in worker
     assert 'importScripts("./hil-portable-state-bridge.js")' in worker
     assert 'importScripts("./hil-portable-native-bridge.js")' in worker
-    assert 'CACHE_NAME = "stegos-web-bootstrap-v16"' in worker
+    assert 'CACHE_NAME = "stegos-web-bootstrap-v15"' in worker
 
 
 def test_hil_bridge_reuses_existing_portable_state_key_without_second_worker():

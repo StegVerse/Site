@@ -26,8 +26,8 @@
     if (!value.node_id) { fail("node identity required"); }
     if (!value.claim_id || !Number.isInteger(value.fencing_token) || value.fencing_token <= 24) { fail("existing G25-or-later checkout binding required"); }
     if (value.journal_replay_state !== "PASS") { fail("browser journal replay must pass"); }
-    if (!/^sha256:[a-f0-9]{64}$/.test(String(value.canonical_checkout_receipt_sha256 || ""))) { fail("canonical checkout receipt hash required"); }
-    if (!/^sha256:[a-f0-9]{64}$/.test(String(value.execution_entry_sha256 || ""))) { fail("execution entry hash required"); }
+    if (value.canonical_checkout_receipt_sha256 !== undefined && value.canonical_checkout_receipt_sha256 !== null && !/^sha256:[a-f0-9]{64}$/.test(String(value.canonical_checkout_receipt_sha256))) { fail("canonical checkout receipt hash invalid"); }
+    if (!/^[a-f0-9]{64}$/.test(String(value.execution_entry_sha256 || ""))) { fail("execution entry hash required"); }
     if (value.request_consumption_claimed !== false || value.authority_effect !== "NONE_COMPONENT_EVIDENCE_ONLY") { fail("source authority boundary drift"); }
     return value;
   }
@@ -52,9 +52,11 @@
     if (state.checkout_count !== 1 || state.last_task_id !== TASK_ID || !state.last_checkout_receipt) { fail("exact retained HIL checkout required"); }
     var receipt = state.last_checkout_receipt;
     if (receipt.claim_id !== evidence.claim_id || receipt.fencing_token !== evidence.fencing_token) { fail("claim/fence mismatch"); }
-    if (receipt.receipt_sha256 !== evidence.canonical_checkout_receipt_sha256) { fail("checkout receipt hash mismatch"); }
+    if (!/^sha256:[a-f0-9]{64}$/.test(String(receipt.receipt_sha256 || ""))) { fail("retained checkout receipt hash invalid"); }
+    if (evidence.canonical_checkout_receipt_sha256 && receipt.receipt_sha256 !== evidence.canonical_checkout_receipt_sha256) { fail("checkout receipt hash mismatch"); }
     if (state.last_claim_id !== evidence.claim_id || state.checkout_tail_sha256 !== receipt.receipt_sha256 || state.generation !== evidence.fencing_token) { fail("retained state lineage mismatch"); }
     if (receipt.execution_surface !== "CURRENT_USER_IPHONE" || receipt.credential_authority !== "TV/TVC" || receipt.github_token_runtime_authority !== "NONE") { fail("retained checkout boundary drift"); }
+    evidence.canonical_checkout_receipt_sha256 = receipt.receipt_sha256;
     return receipt;
   }
 

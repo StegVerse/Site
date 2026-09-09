@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Validate the External Chat activation-evidence builder contract."""
+"""Validate the External Chat activation-evidence ownership contract.
+
+The repository-local builder remains available as a deterministic evidence-shaping
+utility, but the GitHub-hosted Site Task Runner must not execute it, upload its output,
+or act as the live/public observation owner. Authentic activation evidence belongs to
+the resident StegVerse execution lane and is reconciled separately.
+"""
 from __future__ import annotations
 
 from pathlib import Path
@@ -43,23 +49,29 @@ def main() -> int:
         if marker not in builder:
             return fail(f"builder missing marker: {marker}")
 
-    required_workflow_markers = (
+    required_fallback_markers = (
+        "OPTIONAL_VALIDATION_FALLBACK_ONLY",
+        "PRODUCTION_CONTINUITY_DEPENDENCY=false",
+        "SITE_TASK_RUNNER_RUNTIME_AUTHORITY=NONE",
+        "SITE_TASK_RUNNER_MUTATION_AUTHORITY=NONE",
+        "permissions: {}",
+    )
+    for marker in required_fallback_markers:
+        if marker not in workflow:
+            return fail(f"validation fallback missing marker: {marker}")
+
+    forbidden_hosted_evidence_markers = (
         "Build External Chat activation evidence",
         "python scripts/build_external_chat_activation_evidence.py",
         "Upload External Chat activation evidence",
         "external-chat-activation-evidence-${{ github.run_id }}-${{ github.run_attempt }}",
         "site/reports/external-chat-activation-evidence.json",
-        "if: always()",
+        "Verify External Chat public surfaces",
+        "actions/" + "upload-artifact@",
     )
-    for marker in required_workflow_markers:
-        if marker not in workflow:
-            return fail(f"workflow missing marker: {marker}")
-
-    verify_index = workflow.index("Verify External Chat public surfaces")
-    build_index = workflow.index("Build External Chat activation evidence")
-    upload_index = workflow.index("Upload External Chat activation evidence")
-    if not verify_index < build_index < upload_index:
-        return fail("activation evidence must be built after live verification and uploaded afterward")
+    for marker in forbidden_hosted_evidence_markers:
+        if marker in workflow:
+            return fail(f"GitHub-hosted validation fallback still owns activation evidence: {marker}")
 
     for marker in (
         "external-chat-activation-evidence.json",
@@ -70,6 +82,8 @@ def main() -> int:
             return fail(f"handoff missing marker: {marker}")
 
     print("EXTERNAL CHAT ACTIVATION EVIDENCE CONTRACT: PASS")
+    print("EXTERNAL_CHAT_ACTIVATION_EVIDENCE_OWNER=RESIDENT_STEGVERSE_EXECUTION")
+    print("GITHUB_HOSTED_ACTIVATION_EVIDENCE_ROLE=NONE")
     return 0
 
 

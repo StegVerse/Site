@@ -26,3 +26,5 @@ Relevant validation surfaces:
 - `scripts/check_third_party_dependency_reconciliation.py`
 - `.github/workflows/no-required-third-party-runtime.yml`
 - `docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md`
+
+Integration target: repository root `README.md`, immediately after the top-level Boundary section and before capability-specific detail. This file is staging text only until that exact README integration is committed; it must not be cited as proof that README maintenance is already complete.

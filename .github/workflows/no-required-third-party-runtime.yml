@@ -7,6 +7,7 @@ on:
       - 'data/ecosystem-chat-gateway.json'
       - 'data/hil-gateway-config.json'
       - 'data/dns-edge-portability.json'
+      - 'data/source-publication-recovery.json'
       - 'assets/ecosystem-chat-node-discovery.js'
       - 'assets/hil-experiment.js'
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
@@ -14,6 +15,7 @@ on:
       - 'scripts/check_third_party_dependency_invariant.py'
       - 'scripts/check_third_party_dependency_reconciliation.py'
       - 'scripts/check_dns_edge_portability.py'
+      - 'scripts/check_source_publication_recovery.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-dependency-inventory-supersession.json'
@@ -29,6 +31,7 @@ on:
       - 'data/ecosystem-chat-gateway.json'
       - 'data/hil-gateway-config.json'
       - 'data/dns-edge-portability.json'
+      - 'data/source-publication-recovery.json'
       - 'assets/ecosystem-chat-node-discovery.js'
       - 'assets/hil-experiment.js'
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
@@ -36,6 +39,7 @@ on:
       - 'scripts/check_third_party_dependency_invariant.py'
       - 'scripts/check_third_party_dependency_reconciliation.py'
       - 'scripts/check_dns_edge_portability.py'
+      - 'scripts/check_source_publication_recovery.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-dependency-inventory-supersession.json'
@@ -70,5 +74,7 @@ jobs:
           python3 scripts/check_third_party_dependency_invariant.py
       - name: Validate deterministic DNS and edge portability contract
         run: python3 scripts/check_dns_edge_portability.py
+      - name: Validate deterministic source and publication recovery contract
+        run: python3 scripts/check_source_publication_recovery.py
       - name: Verify Ecosystem Chat gateway cutover contract
         run: python3 scripts/check_ecosystem_chat_gateway_activation.py

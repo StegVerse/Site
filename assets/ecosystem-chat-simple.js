@@ -1,3 +1,4 @@
+// Validation checkpoint: Math specialty remains inside the existing shared conversational runtime; authority effect NONE.
 (()=>{
   const form=document.getElementById('chatForm');
   const input=document.getElementById('messageInput');

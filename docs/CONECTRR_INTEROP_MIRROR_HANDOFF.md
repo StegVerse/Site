@@ -248,3 +248,24 @@ authority_effect: none
 The static publication checker now verifies the actual HTML loader contract while the deployed Chromium lane proves dynamically rendered Ecosystem Node / Conectrr runtime behavior. No live external Conectrr source output, custody, admissibility, certification, or execution authority is claimed.
 
 The remaining next executable action is externally gated: admit genuine Conectrr source output when Conectrr or an authorized adapter supplies it, then preserve immutable source bytes/digests, run adapter conformance, produce a live reconstruction receipt, and continue master-records/publication gates.
+
+
+## Email-monitor Conectrr live-verification persistence repair — 2026-08-30
+
+GitHub operational email monitoring observed `Conectrr Live Verification` run `33346830230` fail after both substantive live checks had already passed.
+
+```text
+CONECTRR_LIVE_PUBLICATION_CHECK=PASS
+CONECTRR_REMOTE_BROWSER_CHECK=PASS
+CONECTRR_LIVE_STATUS_UPDATE=COMPLETE
+failure boundary: hosted workflow attempted commit + git pull --rebase + git push
+result: merge conflict in data/conectrr-live-status.json and data/conectrr-session-goal-inventory.json
+```
+
+This is classified as hosted persistence/writeback failure, not Conectrr interoperability failure.
+
+Repair branch: `fix/conectrr-live-evidence-nonmutating-20260830`.
+
+The live workflow now remains read-only with non-persistent checkout credentials, generates finite status locally, uploads the status and verification reports as retained evidence, and writes the workflow summary. It no longer commits or pushes generated state to `main` from GitHub Actions.
+
+The repository handoff remains the durable source of truth. Artifact evidence from a hosted validation run does not grant repository mutation, runtime, custody, publication, admissibility, or activation authority.

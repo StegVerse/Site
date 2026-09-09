@@ -11,7 +11,7 @@ on:
       - completed
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: conectrr-live-verification-main
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout Site
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -68,20 +68,6 @@ jobs:
       - name: Persist finite live-verification state
         if: always()
         run: python scripts/update_conectrr_live_status.py || true
-
-      - name: Commit durable live status
-        if: always() && github.ref == 'refs/heads/main'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/conectrr-live-status.json data/conectrr-session-goal-inventory.json || true
-          if git diff --cached --quiet; then
-            echo "Conectrr live status unchanged."
-          else
-            git commit -m "chore(conectrr): persist live verification status [skip ci]"
-            git pull --rebase
-            git push
-          fi
 
       - name: Upload Conectrr live verification evidence
         if: always()

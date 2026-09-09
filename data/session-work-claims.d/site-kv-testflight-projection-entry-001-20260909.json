@@ -11,7 +11,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "feat/kv-testflight-projection-entry-001",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-kv-testflight-projection-entry-001",
       "dependency_surface_keys": [
         "site:kv-testflight-projection-entry"
@@ -66,7 +66,11 @@
       "render_required": false,
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1178,
+      "release_commit": "3da593a61a536a625fcea4a26df8d1f491f00b44",
+      "claim_released_at": "2026-09-09T22:22:37Z",
+      "archive_eligible": true
     }
   ]
 }

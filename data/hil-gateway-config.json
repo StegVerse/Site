@@ -1,29 +1,57 @@
 {
-  "schema_version": "HIL-GATEWAY-CONFIG-v1",
+  "schema_version": "HIL-GATEWAY-CONFIG-v1.1",
   "experiment_id": "HIL-2026",
   "gateway_candidates": [
+    {
+      "id": "resident-loopback-127",
+      "base_url": "http://127.0.0.1:8000",
+      "readiness_path": "/api/hil/readiness",
+      "submission_path": "/api/hil/submissions",
+      "priority": 1,
+      "enabled": true,
+      "class": "SOVEREIGN_RESIDENT"
+    },
+    {
+      "id": "resident-loopback-localhost",
+      "base_url": "http://localhost:8000",
+      "readiness_path": "/api/hil/readiness",
+      "submission_path": "/api/hil/submissions",
+      "priority": 2,
+      "enabled": true,
+      "class": "SOVEREIGN_RESIDENT"
+    },
     {
       "id": "same-origin",
       "base_url": "",
       "readiness_path": "/api/hil/readiness",
       "submission_path": "/api/hil/submissions",
-      "priority": 1
+      "priority": 3,
+      "enabled": true,
+      "class": "STEGVERSE_PUBLIC_SURFACE"
     },
     {
-      "id": "ecosystem-chat-gateway",
+      "id": "render-compatibility-fallback",
       "base_url": "https://stegverse-ecosystem-chat-gateway.onrender.com",
       "readiness_path": "/api/hil/readiness",
       "submission_path": "/api/hil/submissions",
-      "priority": 2,
-      "status": "compatibility_fallback_not_architectural_dependency"
+      "priority": 99,
+      "enabled": false,
+      "selection_requires_explicit_runtime_opt_in": true,
+      "production_continuity_dependency": false,
+      "activation_dependency": false,
+      "authority_effect": "NONE",
+      "status": "OPTIONAL_FALLBACK_ONLY"
     }
   ],
-  "selection_policy": "first_exact_ready_chain",
+  "selection_policy": "first_exact_ready_enabled_sovereign_chain",
+  "automatic_third_party_selection": false,
   "fail_closed": true,
+  "local_artifact_preparation_without_gateway": true,
   "authority": {
     "execution": false,
     "custody": false,
     "publication": false,
-    "master_record_append": false
+    "master_record_append": false,
+    "third_party_fallback": false
   }
 }

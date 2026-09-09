@@ -3,14 +3,16 @@
   "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
   "provider": "Render",
   "dependency_id": "render-ecosystem-chat-gateway",
-  "state": "REPLACEMENT_DESIGNED",
+  "state": "CUTOVER_SOURCE_IMPLEMENTED_VALIDATION_PENDING",
   "current_dependency": {
     "config": "data/ecosystem-chat-gateway.json",
-    "enabled": true,
-    "endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/api/ecosystem-chat",
-    "health_endpoint": "https://stegverse-ecosystem-chat-gateway.onrender.com/health",
-    "availability_effect": "Loss of Render removes the current static governed gateway path, leaving local classification fallback.",
-    "authority_effect": false
+    "enabled": false,
+    "endpoint": null,
+    "health_endpoint": null,
+    "availability_effect": "Render loss does not change the automatic Site path; when no verified sovereign node is available, Site fails closed to LOCAL_CLASSIFICATION.",
+    "authority_effect": false,
+    "production_continuity_dependency": false,
+    "activation_dependency": false
   },
   "existing_sovereign_replacement": {
     "repository": "StegVerse-org/LLM-adapter",
@@ -32,38 +34,48 @@
     "required_node_id": "ecosystem-chat-portable-node",
     "discovery_precedes_transition_client": true,
     "local_fallback": "LOCAL_CLASSIFICATION",
-    "current_limitation": "A verified advertisement replaces endpoint/health values but inherits config.enabled; the static config is therefore still enabled to preserve the Render fallback."
+    "automatic_third_party_selection": false,
+    "static_third_party_endpoint_enabled": false
   },
-  "dual_run_sequence": [
+  "optional_fallback_posture": {
+    "provider": "Render",
+    "retained_as_metadata_only": true,
+    "enabled_by_default": false,
+    "selection_requires_explicit_runtime_opt_in": true,
+    "production_continuity_dependency": false,
+    "activation_dependency": false,
+    "authority_effect": "NONE"
+  },
+  "cutover_sequence": [
     {
       "step": 1,
-      "event": "SOVEREIGN_NODE_OBSERVED",
-      "requirement": "A canonical StegVerse node advertisement passes node_id, capability_id, health-bound, non-authority, origin-binding and advertisement SHA-256 checks."
+      "event": "SOURCE_CUTOVER",
+      "state": "IMPLEMENTED",
+      "requirement": "Static Site gateway config is disabled/null and automatic discovery contains only sovereign loopback candidates."
     },
     {
       "step": 2,
-      "event": "SOVEREIGN_GATEWAY_DUAL_RUN_VERIFIED",
-      "requirement": "With Render still configured, browser discovery selects the verified sovereign node first and a governed request/health check succeeds with exact transition identity and false authority fields."
+      "event": "VALIDATION",
+      "state": "PENDING",
+      "requirement": "Exact-head validators prove third-party automatic selection false and local classification fail-closed behavior retained."
     },
     {
       "step": 3,
-      "event": "RENDER_FAILURE_INJECTION",
-      "requirement": "Block or invalidate the Render endpoint while the sovereign node is available; governed request remains on the sovereign node and canonical state/receipts remain valid."
+      "event": "PUBLICATION",
+      "state": "PENDING",
+      "requirement": "Merge and publish the Site source without treating source/CI as sovereign runtime execution evidence."
     },
     {
       "step": 4,
-      "event": "SITE_CUTOVER",
-      "requirement": "Change discovery success to return enabled=true from verified advertisement; set static config enabled=false with no Render endpoint/health endpoint. Preserve LOCAL_CLASSIFICATION when no verified sovereign node exists."
+      "event": "SOVEREIGN_RUNTIME_OBSERVATION",
+      "state": "PENDING",
+      "requirement": "Separately observe a verified sovereign node advertisement and governed request when the resident runtime is actually available."
     },
     {
       "step": 5,
-      "event": "POST_CUTOVER_FAILURE_PROOF",
-      "requirement": "With Render unavailable/deleted, verified sovereign node path succeeds; with both Render and sovereign node unavailable, Site fails closed to LOCAL_CLASSIFICATION rather than a provider-required blocker."
-    },
-    {
-      "step": 6,
-      "event": "RENDER_RETIREMENT",
-      "requirement": "Only after steps 1-5: remove Render-specific runtime/config references that are not historical provenance, revoke unused Render credentials/resources, and activate anti-regression coverage."
+      "event": "THIRD_PARTY_FAILURE_PROOF",
+      "state": "SOURCE_PROVEN_FAIL_CLOSED_RUNTIME_OBSERVATION_PENDING",
+      "requirement": "Render unavailable must never become a required-path blocker; no sovereign node must result in LOCAL_CLASSIFICATION rather than hosted-provider dependency."
     }
   ],
   "exact_target_contract": {
@@ -73,12 +85,12 @@
       "health_endpoint": null,
       "fallback": "LOCAL_CLASSIFICATION",
       "discovery_enabled": true,
-      "static_provider_fallback_allowed": false
+      "automatic_third_party_selection": false
     },
     "verified_discovery_result": {
       "enabled": true,
-      "endpoint_source": "verified advertisement only",
-      "health_endpoint_source": "verified advertisement only",
+      "endpoint_source": "verified sovereign advertisement only",
+      "health_endpoint_source": "verified sovereign advertisement only",
       "endpoint_resolution": [
         "VERIFIED_LOOPBACK_NODE_ADVERTISEMENT",
         "HEALTH_BOUND_NODE_ADVERTISEMENT"
@@ -89,16 +101,16 @@
     }
   },
   "collision_boundary": {
-    "active_claim": "SITE-TASK-RUNNER-SEMANTIC-LIVE-501-20260826",
-    "claimed_path": "scripts/check_ecosystem_chat_gateway_activation.py",
-    "rule": "Site #497 must not mutate that validator or shared task-runner surfaces while #501 remains active.",
-    "next_machine_action": "After #501 releases or transfers ownership, apply the cutover contract to data/ecosystem-chat-gateway.json and assets/ecosystem-chat-node-discovery.js with corresponding validator updates through the owning lane."
+    "former_claim": "SITE-TASK-RUNNER-SEMANTIC-LIVE-501-20260826",
+    "former_claim_state": "COMPLETE_VALIDATED_DEPLOYED_OBSERVED_ARCHIVE_ELIGIBLE",
+    "collision_resolved": true,
+    "cutover_owner": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION"
   },
   "acceptance": [
-    "Render outage/deletion does not change canonical gateway readiness when a verified sovereign node is healthy.",
+    "Render outage/deletion does not alter automatic Site gateway selection.",
     "No Render endpoint is required in static Site configuration after cutover.",
     "No Render credential or deployment state is an activation/recovery predicate.",
     "Local classification remains available when no governed sovereign node is verified.",
-    "Historical Render evidence may remain but cannot be selected as current fallback."
+    "Historical or explicit-opt-in Render fallback metadata may remain but cannot be selected automatically."
   ]
 }

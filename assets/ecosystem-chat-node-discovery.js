@@ -40,9 +40,21 @@
     }
   }
 
+  function failClosedConfig(config, reason) {
+    return {
+      ...config,
+      enabled: false,
+      endpoint: null,
+      health_endpoint: null,
+      endpoint_resolution: reason || 'LOCAL_CLASSIFICATION_FAIL_CLOSED'
+    };
+  }
+
   async function resolveAdvertisement(config) {
     const discovery = config.discovery || {};
-    if (discovery.enabled !== true || !Array.isArray(discovery.advertisement_endpoints)) return config;
+    if (discovery.enabled !== true || !Array.isArray(discovery.advertisement_endpoints)) {
+      return failClosedConfig(config, 'LOCAL_CLASSIFICATION_FAIL_CLOSED');
+    }
 
     const timeoutMs = Number(discovery.timeout_ms || 1800);
     for (const endpoint of discovery.advertisement_endpoints) {
@@ -72,6 +84,7 @@
 
         return {
           ...config,
+          enabled: true,
           endpoint: advertisement.endpoint,
           health_endpoint: advertisement.health_endpoint,
           resolved_node_id: advertisement.node_id,
@@ -81,12 +94,13 @@
             : 'HEALTH_BOUND_NODE_ADVERTISEMENT'
         };
       } catch (_) {
-        // Discovery is fail-closed. The existing static endpoint and local classifier remain available.
+        // Continue to the next sovereign candidate. Third-party fallback metadata
+        // is intentionally not selected automatically by this discovery client.
       } finally {
         window.clearTimeout(timeout);
       }
     }
-    return { ...config, endpoint_resolution: 'STATIC_CONFIG_FALLBACK' };
+    return failClosedConfig(config, 'LOCAL_CLASSIFICATION_FAIL_CLOSED');
   }
 
   window.fetch = async function governedNodeDiscoveryFetch(input, init) {
@@ -106,9 +120,10 @@
   };
 
   window.StegVerseNodeDiscovery = {
-    contract_version: '1.1.0',
+    contract_version: '1.2.0',
     authority_granted: false,
     publication_authority: false,
+    automatic_third_party_selection: false,
     resolveAdvertisement
   };
 })();

@@ -50,7 +50,10 @@
     if (!response.ok) throw new Error(`gateway config ${response.status}`);
     const config = await response.json();
     const candidates = Array.isArray(config.gateway_candidates) ? config.gateway_candidates : [];
+    const automaticThirdPartySelection = config.automatic_third_party_selection === true;
     for (const candidate of candidates) {
+      if (candidate.enabled === false) continue;
+      if (candidate.selection_requires_explicit_runtime_opt_in === true && !automaticThirdPartySelection) continue;
       const base = String(candidate.base_url || '').replace(/\/$/, '');
       const readinessUrl = `${base}${candidate.readiness_path}`;
       const submissionUrl = `${base}${candidate.submission_path}`;
@@ -65,7 +68,8 @@
         if (!canonicalMatch) continue;
         return { ...candidate, readinessUrl, submissionUrl, payload };
       } catch (_) {
-        // Try the next declared candidate. No candidate grants authority merely by responding.
+        // Try the next enabled sovereign candidate. Disabled third-party fallbacks
+        // are never selected automatically.
       }
     }
     return null;
@@ -74,7 +78,7 @@
   async function checkGatewayReadiness() {
     try {
       activeGateway = await resolveGateway();
-      if (!activeGateway) throw new Error('no declared gateway candidate passed readiness');
+      if (!activeGateway) throw new Error('no enabled sovereign gateway candidate passed readiness');
       const payload = activeGateway.payload;
       gatewayReady = payload.state === 'READY'
         && payload.primary_sha256 === PRIMARY.sha256
@@ -89,7 +93,7 @@
     } catch (error) {
       gatewayReady = false;
       submitButton.textContent = 'Prepare provenance locally';
-      setStatus('warn', `Gateway could not be reached. Local provenance preparation remains available: ${error.message}`);
+      setStatus('warn', `No enabled sovereign gateway is ready. Local provenance preparation remains available: ${error.message}`);
     }
   }
 
@@ -203,7 +207,7 @@
       currentManifest = buildManifest(responseHash);
       provenanceButton.disabled = false;
       if (!gatewayReady) {
-        setStatus('warn', `Canonical v1.0 provenance manifest prepared locally. Response SHA-256: ${responseHash}. Gateway submission remains blocked until the v1.0 Primary and prompt chain is READY.`);
+        setStatus('warn', `Canonical v1.0 provenance manifest prepared locally. Response SHA-256: ${responseHash}. Gateway submission remains blocked until a sovereign v1.0 Primary and prompt chain is READY.`);
         return;
       }
       setStatus('warn', 'Canonical v1.0 chain matches locally. Uploading exact PDF bytes and provenance manifest…');

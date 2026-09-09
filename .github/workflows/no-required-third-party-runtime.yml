@@ -1,0 +1,46 @@
+name: No Required Third-Party Runtime
+
+on:
+  pull_request:
+    paths:
+      - 'data/ecosystem-chat-gateway.json'
+      - 'data/hil-gateway-config.json'
+      - 'assets/ecosystem-chat-node-discovery.js'
+      - 'assets/hil-experiment.js'
+      - 'scripts/check_ecosystem_chat_gateway_activation.py'
+      - 'scripts/check_no_required_third_party_runtime.py'
+      - 'data/render-gateway-replacement-plan.json'
+      - '.github/workflows/no-required-third-party-runtime.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/ecosystem-chat-gateway.json'
+      - 'data/hil-gateway-config.json'
+      - 'assets/ecosystem-chat-node-discovery.js'
+      - 'assets/hil-experiment.js'
+      - 'scripts/check_ecosystem_chat_gateway_activation.py'
+      - 'scripts/check_no_required_third_party_runtime.py'
+      - 'data/render-gateway-replacement-plan.json'
+      - '.github/workflows/no-required-third-party-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact source anonymously
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/Site.git
+          git -c http.extraheader= fetch --depth 1 origin "$SOURCE_SHA"
+          git checkout --detach FETCH_HEAD
+      - name: Verify no required third-party runtime
+        run: python3 scripts/check_no_required_third_party_runtime.py
+      - name: Verify Ecosystem Chat gateway cutover contract
+        run: python3 scripts/check_ecosystem_chat_gateway_activation.py

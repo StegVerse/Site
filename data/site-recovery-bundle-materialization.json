@@ -25,11 +25,11 @@
     "step": "Materialize and verify deterministic recovery bundle",
     "conclusion": "success"
   },
-  "off_github_materialization_observed": false,
-  "off_github_restore_observed": false,
-  "off_github_validation_observed": false,
+  "off_github_materialization_observed": true,
+  "off_github_restore_observed": true,
+  "off_github_validation_observed": true,
   "off_github_publication_observed": false,
-  "external_retention_observed": false,
+  "external_retention_observed": true,
   "proof_semantics": {
     "repository_or_ci_materialization_proves_off_github_independence": false,
     "hash_manifest_proves_publication_recovery": false,
@@ -37,5 +37,26 @@
     "external_retention_requires_separate_observation": true
   },
   "authority_effect": "NONE",
-  "activation_effect": "NONE"
+  "activation_effect": "NONE",
+  "external_recovery_evidence": {
+    "storage_medium": "GOOGLE_DRIVE",
+    "private_locator_published": false,
+    "source_commit": "00fcf4149d4deb81066e2829618885cafadc2325",
+    "archive_sha256": "a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f",
+    "archive_size_bytes": 6957389,
+    "manifest_entry_count": 3400,
+    "round_trip_download_observed": true,
+    "round_trip_byte_identity_verified": true,
+    "all_sha256sum_entries_verified": true,
+    "restored_source_validated_without_github_api_or_actions": true,
+    "validation_set": [
+      "check_no_required_third_party_runtime",
+      "check_dns_edge_portability",
+      "check_source_publication_recovery",
+      "check_site_recovery_bundle_manifest",
+      "check_ecosystem_chat_gateway_activation",
+      "check_mr_sv001_intr_governance",
+      "check_stegos_ipod_bootstrap_projection"
+    ]
+  }
 }

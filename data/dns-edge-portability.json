@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.site.dns_edge_portability.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "updated_at": "2026-09-09",
+  "canonical_public_domain": "stegverse.org",
+  "repository_domain_binding": {
+    "source": "CNAME",
+    "expected_value": "stegverse.org"
+  },
+  "portability_objective": "Preserve deterministic reconstructability of public DNS and edge intent without making one registrar, authoritative-DNS provider, CDN, tunnel vendor, Pages host, or certificate edge the sole continuity prerequisite.",
+  "zone_model": {
+    "format": "PROVIDER_NEUTRAL_RRSET_INTENT_V1",
+    "canonical_state_owner": "STEGVERSE",
+    "external_provider_state_is_canonical": false,
+    "required_records": [
+      {
+        "name": "stegverse.org",
+        "type": "PUBLIC_ORIGIN_BINDING",
+        "intent": "Serve the canonical Site from an admissible publication origin selected independently of DNS provider identity.",
+        "provider_specific_target": null,
+        "required_provider": null
+      }
+    ],
+    "compatibility_aliases": [
+      {
+        "name": "stegverse.ai",
+        "intent": "Compatibility redirect/alias to canonical stegverse.org when retained.",
+        "required_provider": null,
+        "provider_specific_target": null
+      }
+    ]
+  },
+  "recovery_contract": {
+    "inputs": [
+      "this manifest",
+      "canonical Site publication artifact/source",
+      "current registrar access through its normal external interoperability path",
+      "current authoritative-DNS account only when it remains the selected provider"
+    ],
+    "steps": [
+      "verify canonical domain identity and CNAME repository binding",
+      "choose an admissible authoritative-DNS provider without changing canonical Site state",
+      "materialize the provider-neutral RRset intent into provider-specific records",
+      "verify TLS issuance/recovery for stegverse.org",
+      "verify canonical Site content through the new edge/origin",
+      "verify stegverse.ai compatibility redirect only if that alias remains selected",
+      "record provider, nameserver, record, TLS, and public-observation evidence",
+      "only then retire the previous provider path"
+    ],
+    "rollback": "Restore the prior observed DNS/edge configuration from retained evidence if the replacement fails before cutover completion.",
+    "credential_material_in_repository": false,
+    "automatic_provider_mutation": false,
+    "automatic_cutover": false
+  },
+  "failure_semantics": {
+    "dns_provider_outage_must_not_destroy_canonical_state": true,
+    "edge_provider_outage_must_not_destroy_canonical_state": true,
+    "provider_credentials_must_not_be_required_for_source_reconstruction": true,
+    "migration_is_proven_by_manifest_alone": false,
+    "tls_recovery_is_proven_by_manifest_alone": false,
+    "public_outage_equivalence_is_proven_by_manifest_alone": false
+  },
+  "current_observation": {
+    "exact_registrar_inventory": "PENDING_AUTHENTIC_OBSERVATION",
+    "exact_authoritative_nameserver_inventory": "PENDING_AUTHENTIC_OBSERVATION",
+    "provider_neutral_cutover_observed": false,
+    "tls_recovery_observed": false,
+    "single_vendor_outage_equivalence_observed": false
+  },
+  "remaining_proof": [
+    "capture exact current registrar and authoritative nameserver observations",
+    "materialize a provider-specific export from this provider-neutral intent",
+    "perform and record a controlled DNS/edge migration or equivalent recovery drill",
+    "record TLS recovery evidence",
+    "record public content equivalence after cutover"
+  ],
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

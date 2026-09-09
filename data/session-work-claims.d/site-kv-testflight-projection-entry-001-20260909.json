@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-KV-TESTFLIGHT-PROJECTION-ENTRY-001-20260909",
+      "session_worker_id": "chatgpt:kv-bound-ephemeral-browser-projection-001:site-20260909",
+      "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+      "originating_goal": "Materialize the current-iPhone purpose-bound KV TestFlight projection through the existing Device-to-KV Universal InTr admission path without creating a second runtime, continuity root, credential path, or browser identity authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "feat/kv-testflight-projection-entry-001",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-kv-testflight-projection-entry-001",
+      "dependency_surface_keys": [
+        "site:kv-testflight-projection-entry"
+      ],
+      "governing_dependency_keys": [
+        "site:kv-testflight-projection-entry"
+      ],
+      "incidental_dependency_keys": [
+        "site:device-kv-intr-runtime",
+        "cvk:kv-ephemeral-browser-projection",
+        "stegos:current-iphone-testflight-bootstrap"
+      ],
+      "claimed_paths": [
+        "assets/kv-testflight-projection-entry.js",
+        "assets/kv-testflight-projection-export.js",
+        "kv-testflight-projection.html",
+        "tests/kv-testflight-projection-entry.test.cjs",
+        "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-kv-testflight-projection-entry-001-20260909.json"
+      ],
+      "handoff": "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
+      "handoff_revision": "PURPOSE_BOUND_DEVICE_KV_INTR_PROJECTION_ENTRY_SOURCE_IMPLEMENTED",
+      "claim_created_at": "2026-09-09T22:18:00Z",
+      "claim_expires_when": "Release only after exact-head Site validation passes, the implementation is merged, and claim terminalization records the merge evidence.",
+      "expected_evidence": [
+        "existing current-device Device-KV Universal InTr path reused",
+        "purpose CURRENT_IPHONE_TESTFLIGHT_SIGNING bound inside exact admitted request",
+        "authentic Device-KV INGRESS_ADMITTED receipt required",
+        "verified resident KV installation required",
+        "browser capabilities observed from APIs without browser identity or fingerprinting",
+        "exact nine-field KV projection context exported without KV lineage leakage",
+        "Site validation succeeds"
+      ],
+      "collision_boundaries": [
+        "Do not modify the root InTr service worker or create a second InTr runtime",
+        "Do not make Site the KV continuity authority",
+        "Do not collect or authorize browser identity, user-agent, or device fingerprint",
+        "Do not introduce browser-local durable projection state",
+        "TV/TVC remains credential authority",
+        "No GitHub-token runtime authority",
+        "No TestFlight/runtime completion claim from source or CI"
+      ],
+      "next_task_after_release": "Invoke the merged purpose-bound projection materializer on the current iPhone, retain its authentic admission/capability evidence, and feed the exact saved projection JSON to the merged StegOS TestFlight bootstrap before TV/TVC signing/upload.",
+      "canonical_task_marks_render_critical": false,
+      "distinct_support_role": false,
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

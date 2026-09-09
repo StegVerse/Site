@@ -4,10 +4,13 @@ on:
   pull_request:
     paths:
       - 'assets/my-kv-directory.js'
+      - 'assets/my-kv-device-kv-query-bridge.js'
       - 'assets/stegsocials-post-preparation.js'
+      - 'assets/stegsocials-kv-draft-write-bridge.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
+      - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
       - 'README.md'
@@ -16,10 +19,13 @@ on:
     branches: [main]
     paths:
       - 'assets/my-kv-directory.js'
+      - 'assets/my-kv-device-kv-query-bridge.js'
       - 'assets/stegsocials-post-preparation.js'
+      - 'assets/stegsocials-kv-draft-write-bridge.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
+      - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
       - 'README.md'
@@ -36,9 +42,14 @@ jobs:
           node-version: '20'
       - name: Test ERL-backed standard preparation and premium boundary
         run: node tests/stegsocials-post-preparation.test.cjs
+      - name: Test governed MyKV draft admission and hash readback boundary
+        run: node tests/stegsocials-kv-draft-write-bridge.test.cjs
       - name: Verify preparation page is non-publishing
         run: |
           grep -q 'Prepare a StegSocials post' stegsocials-prepare.html
           grep -q 'does not contact a social provider' stegsocials-prepare.html
+          grep -q 'Save draft to My KV' stegsocials-prepare.html
           grep -q 'provider_call_performed:false' assets/stegsocials-post-preparation.js
+          grep -q 'provider_call_performed:false' assets/stegsocials-kv-draft-write-bridge.js
+          grep -q 'exact_content_bytes_readback_verified:false' assets/stegsocials-kv-draft-write-bridge.js
           grep -q '02_Research/StegSocials/Drafts' assets/stegsocials-post-preparation.js

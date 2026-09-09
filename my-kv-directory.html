@@ -137,6 +137,17 @@ function renderEntry(domain,entry){
   }
   card.appendChild(actions); list.appendChild(card);
 }
+function renderEmpty(domain,result){
+  var empty=el("section","empty-card");
+  empty.appendChild(el("h2","",domain.id==="erl"?"No ERL files in the current resident KV":"No files available to display"));
+  if(domain.id==="erl"){
+    empty.appendChild(el("p","","This read checked the current resident DEVICE_KV projection only. A separate Google Drive, iCloud, or other cloud KV is not included unless that KV has been connected/materialized into the active set."));
+    empty.appendChild(el("p","","To continue without changing cloud-KV state, use “Import owner-controlled files” and select the ERL artifact from iPhone Files. The selected bytes are staged locally and will appear here only after canonical KV admission and readback."));
+  }else{
+    empty.appendChild(el("p","","This directory is currently empty in the current resident DEVICE_KV projection."));
+  }
+  list.appendChild(empty);
+}
 try{
   var domain=api.getDomain(id);
   title.textContent=domain.label;label.textContent=domain.label;desc.textContent=domain.description;path.textContent="/KnowledgeVault/"+domain.path;
@@ -171,13 +182,7 @@ try{
     return api.loadDirectory(domain.id,activeBridge);
   }).then(function(result){
     status.textContent=result.message;status.className="status";
-    if(!result.entries.length){
-      var empty=el("section","empty-card");
-      empty.appendChild(el("h2","","No files available to display"));
-      empty.appendChild(el("p","","This directory is currently empty."));
-      list.appendChild(empty);
-      return;
-    }
+    if(!result.entries.length){renderEmpty(domain,result);return;}
     result.entries.forEach(function(entry){renderEntry(domain,entry);});
   }).catch(function(e){
     status.textContent=e.message;status.className="status error";

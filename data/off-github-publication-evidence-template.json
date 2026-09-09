@@ -13,7 +13,7 @@
     "path_count": null
   },
   "publication_origin": {
-    "provider_identity": null,
+    "provider_identity": "RENDER",
     "origin_url": null,
     "github_hosted": false,
     "provider_is_canonical_state_owner": false,

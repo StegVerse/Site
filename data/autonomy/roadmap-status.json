@@ -4,7 +4,7 @@
   "runtime_evidence_source": "data/autonomy/runtime-verification-evidence.json",
   "repository_role_taxonomy_source": "data/autonomy/repository-role-taxonomy.json",
   "repository_role_report_source": "data/autonomy/repository-role-classification.json",
-  "source_generated_at": "2026-09-09T18:55:18.972018Z",
+  "source_generated_at": "2026-09-09T21:59:14.154528Z",
   "overall_state": "IN_PROGRESS",
   "governing_task": "StegVerse-Labs/StegOps-Orchestrator/issues/7",
   "manual_user_action_required": false,

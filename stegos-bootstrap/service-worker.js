@@ -8,6 +8,5 @@
 importScripts("./service-worker-v13-runtime.js");
 importScripts("./hil-portable-state-bridge.js");
 importScripts("./hil-portable-native-bridge.js");
-importScripts("./hil-browser-receiver.js");
 
 CACHE_NAME = "stegos-web-bootstrap-v15";

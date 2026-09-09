@@ -11,9 +11,12 @@ importScripts("./hil-portable-native-bridge.js");
 CACHE_NAME = "stegos-web-bootstrap-v15";
 
 // Extend only the wrapper-time shell projection. The canonical v13 runtime
-// file remains exact/unchanged. This activation helper projects an already-
+// file remains exact/unchanged. These activation assets project an already-
 // registered canonical Node Receipt #1 into the StegOS Mobile custom scheme;
-// it grants no execution, admission, custody, credential, or routing authority.
-if (Array.isArray(SHELL) && SHELL.indexOf("./sv001-native-resident-activation.js") < 0) {
-  SHELL.push("./sv001-native-resident-activation.js");
-}
+// they grant no execution, admission, custody, credential, or routing authority.
+[
+  "./sv001-native-resident-activation.js",
+  "./native-resident-activate.html"
+].forEach(function (asset) {
+  if (Array.isArray(SHELL) && SHELL.indexOf(asset) < 0) { SHELL.push(asset); }
+});

@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/publication-equivalence-contract.json'
       - 'data/publication-origin-discovery-2026-09-09.json'
+      - 'data/publication-origin-selection-2026-09-09.json'
       - 'data/off-github-publication-evidence-template.json'
       - 'scripts/check_off_github_publication_evidence.py'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'data/publication-equivalence-contract.json'
       - 'data/publication-origin-discovery-2026-09-09.json'
+      - 'data/publication-origin-selection-2026-09-09.json'
       - 'data/off-github-publication-evidence-template.json'
       - 'scripts/check_off_github_publication_evidence.py'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
@@ -34,11 +36,13 @@ jobs:
           persist-credentials: false
       - name: Validate provider-neutral publication artifact
         run: python3 scripts/check_site_publication_artifact.py
-      - name: Validate fail-closed publication observation evidence
+      - name: Validate explicit origin selection and fail-closed observation evidence
         run: python3 scripts/check_off_github_publication_evidence.py
-      - name: Confirm no external mutation is claimed
+      - name: Confirm selection has no external mutation effect
         run: |
-          echo 'PUBLICATION_ORIGIN_SELECTED=false'
+          echo 'PUBLICATION_ORIGIN_SELECTED=true'
+          echo 'PUBLICATION_ORIGIN_PROVIDER=RENDER'
+          echo 'PUBLICATION_ORIGIN_MATERIALIZED=false'
           echo 'PUBLICATION_MUTATION_PERFORMED=false'
           echo 'DNS_MUTATION_PERFORMED=false'
           echo 'TLS_RECOVERY_CLAIMED=false'

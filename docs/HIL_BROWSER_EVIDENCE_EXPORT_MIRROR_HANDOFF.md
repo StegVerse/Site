@@ -1,10 +1,24 @@
 # HIL Browser Evidence Export Mirror Handoff
 
-Updated: 2026-09-08
+Updated: 2026-09-09
 Repository: `StegVerse-Labs/Site`
 Issue: `#1128`
 Parent goal: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
 COSV: `50000000105000`
+
+## Release state
+
+Site PR `#1138` is merged at `737a2cd4cd458067d75fd4a396f190a922d7e228`.
+
+Cloudflare Workers production propagation completed successfully:
+
+```text
+build_id = 8e1591d5-a412-4e44-a62a-a831226396aa
+version_id = a06b3925-cd56-49cc-8d8c-05d83e62fb69
+status = SUCCESS
+```
+
+The Site implementation claim `SITE-HIL-V16-PROTOCOL-PIN-1135-20260908` is therefore released after merge and production propagation. Source/CI/deployment still do not constitute the authentic same-device physical HIL evidence required by the parent goal.
 
 ## Physical observation that triggered this continuation
 
@@ -14,7 +28,7 @@ A later standalone-Safari observation on the same public activation page showed 
 
 Site PR `#1132` rolled the existing service-worker wrapper forward with `skipWaiting()` and `clients.claim()` while preserving IndexedDB, cache identity, and portable WorkerCoordinator state. Site PR `#1133` additionally forced the HIL activation page to register/update the same worker with `updateViaCache: "none"`, wait for a replacement controller when updated worker bytes were materialized, and send the HIL POST with `cache: "no-store"`.
 
-A subsequent physical standalone-Safari run after that deployment still returned the generic binding mismatch. The screenshot proved that page code was current enough to use request `...-002`, but did not expose which returned binding field differed. The remaining repair therefore pins the page and receiver to explicit protocol `HIL_BROWSER_EVIDENCE_V16`, moves the service-worker-local execution route to `/stegos-bootstrap/portable-workercoordinator/hil-browser-v16`, registers `service-worker.js?hil_receiver_protocol=v16`, and requires the receiver to echo the protocol in all successful and fail-closed JSON responses. A stale pre-v16 controller cannot satisfy the new route or protocol contract. The page now reports the exact mismatched field if any binding disagreement remains.
+A subsequent physical standalone-Safari run after that deployment still returned the generic binding mismatch. The screenshot proved that page code was current enough to use request `...-002`, but did not expose which returned binding field differed. PR `#1138` therefore pins the page and receiver to explicit protocol `HIL_BROWSER_EVIDENCE_V16`, moves the service-worker-local execution route to `/stegos-bootstrap/portable-workercoordinator/hil-browser-v16`, registers `service-worker.js?hil_receiver_protocol=v16`, and requires the receiver to echo the protocol in all successful and fail-closed JSON responses. A stale pre-v16 controller cannot satisfy the new route or protocol contract. The page reports the exact mismatched field if any binding disagreement remains.
 
 ## Exact resident request binding
 
@@ -64,4 +78,6 @@ No second WorkerCoordinator, service-worker scope, claim/fence, user-operated ma
 
 ## Next continuation
 
-After merge and public propagation, re-run the same standalone-Safari HIL context. A successful result must show `BROWSER_HIL_LOCAL_READY_OBSERVED`, `HIL_BROWSER_EVIDENCE_V16`, the exact request ID/SHA, and the same browser-context ID before the evidence buttons become enabled. Export the exact JSON and feed that exact component-produced artifact into the canonical `.github` HIL browser-evidence intake validator. Only a validated canonical consumption receipt may satisfy `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.
+The v16 production surface is now propagated. Re-run the same standalone-Safari HIL context at `https://stegverse.org/stegos-bootstrap/hil-activate.html`.
+
+A successful result must show `BROWSER_HIL_LOCAL_READY_OBSERVED`, `HIL_BROWSER_EVIDENCE_V16`, the exact request ID/SHA, and the same browser-context ID before the evidence buttons become enabled. Export the exact JSON and feed that exact component-produced artifact into the canonical `.github` HIL browser-evidence intake validator. Only a validated canonical consumption receipt may satisfy `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.

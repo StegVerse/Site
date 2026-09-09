@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.site.cloud-kv-existing-peer-evidence/v1",
+  "goal_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "cosv_id": "50000000102000",
+  "storage_medium": "google-drive",
+  "existing_cloud_instance": {
+    "instance_id": "kvi_a31335d2cc3745fa987b635432cfed2c",
+    "current_instance_number": 1,
+    "requested_instance_number": 2,
+    "kv_set_id": "personal",
+    "relationship_tier": "NOT_CONNECTED"
+  },
+  "exact_evidence": {
+    "installation_receipt_sha256": "sha256:f00378cd1f68e08a39c837f2a80e7e105e822a321c0eea17a91318b4b6e5ea19",
+    "instance_record_sha256": "sha256:8bf5ba7d911a52506a582f064315c9831a84c0c5fbb6ec7a031c325a79af090a",
+    "adoption_receipt_sha256": "sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552",
+    "set_projection_sha256": "sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4",
+    "adoption_receipt_size_bytes": 1023,
+    "instance_record_size_bytes": 1106,
+    "set_projection_size_bytes": 1631
+  },
+  "prepared_adoption_input": {
+    "storage_medium": "google-drive",
+    "current_instance_number": 1,
+    "requested_instance_number": 2,
+    "existing_instance_id": "kvi_a31335d2cc3745fa987b635432cfed2c",
+    "existing_receipt_sha256": "sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d370d0ec6248b552",
+    "existing_projection_sha256": "sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4",
+    "storage_locator_hint": null
+  },
+  "provenance_preservation_required": true,
+  "private_content_rewrite_authorized": false,
+  "existing_identity_rewrite_authorized": false,
+  "provider_operation_authorized": false,
+  "relationship_mutation_authorized": false,
+  "instance_materialized_as_requested_ordinal": false,
+  "governance_state": "READY_FOR_RUNTIME_ADOPTION_REQUEST",
+  "authority_effect": "NONE_EVIDENCE_ONLY",
+  "activation_effect": false
+}

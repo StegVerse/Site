@@ -3,6 +3,15 @@
 
   const FIXTURE_URL = 'data/conectrr-independent-evaluation.fixture.json';
   const GATEWAY_BINDING_URL = 'assets/ecosystem-node-gateway-binding.js';
+  const FIXTURE_OPT_IN = new URLSearchParams(window.location.search).get('conectrr-fixture') === '1';
+
+  document.documentElement.dataset.conectrrFixtureOptIn = FIXTURE_OPT_IN ? 'true' : 'false';
+  if (!FIXTURE_OPT_IN) {
+    document.documentElement.dataset.conectrrInterop = 'disabled';
+    document.documentElement.dataset.conectrrBrowserTest = 'not-run';
+    document.documentElement.dataset.conectrrExportReplay = 'not-run';
+    return;
+  }
 
   function loadGatewayBinding() {
     if (globalThis.StegVerseCanonicalGatewayBinding) return Promise.resolve();

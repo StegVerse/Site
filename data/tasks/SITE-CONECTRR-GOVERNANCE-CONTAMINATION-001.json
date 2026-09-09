@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.1.0",
+  "task_id": "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001",
+  "repository": "StegVerse-Labs/Site",
+  "goal": "Remove Conectrr fixture records from ordinary Ecosystem Chat governed sessions while preserving explicit interoperability testing.",
+  "originating_session_goal": "Repair the deployed Conectrr fixture contamination observed on stegverse.org without bypassing Site repository orchestration.",
+  "state": "READY_FOR_MACHINE_COMPLETION_CHECK",
+  "auto_admit": true,
+  "external_dependencies": [],
+  "execution_class": "PARALLEL_SAFE_VALIDATION_REPAIR",
+  "owner": {
+    "type": "repository_native_orchestrator",
+    "location": "scripts/admit_repository_tasks.py"
+  },
+  "issue": 1143,
+  "branch": "fix/site-1143-conectrr-default-fixture",
+  "implementation_locations": [
+    "assets/ecosystem-node-views.js",
+    "assets/conectrr-interop.js",
+    "scripts/check_conectrr_browser_projection.py",
+    "scripts/check_conectrr_runtime_projection.py",
+    "scripts/check_conectrr_live_routes.py",
+    "scripts/check_conectrr_remote_browser.py"
+  ],
+  "verification_locations": [
+    "scripts/check_conectrr_browser_projection.py",
+    "scripts/check_conectrr_runtime_projection.py",
+    "scripts/check_conectrr_remote_browser.py",
+    "scripts/check_conectrr_live_routes.py",
+    "docs/CONECTRR_INTEROP_MIRROR_HANDOFF.md"
+  ],
+  "validator_command": "python scripts/check_conectrr_browser_projection.py",
+  "success_marker": "CONECTRR_BROWSER_PROJECTION_CHECK=PASS",
+  "acceptance": {
+    "validator_command": "python scripts/check_conectrr_browser_projection.py",
+    "success_marker": "CONECTRR_BROWSER_PROJECTION_CHECK=PASS"
+  },
+  "required_semantics": [
+    "default production path does not append assets/conectrr-interop.js",
+    "default production path does not fetch data/conectrr-independent-evaluation.fixture.json",
+    "default production path contains zero event:conectrr:handoff:001 records",
+    "default production path contains zero event:stegverse:evaluation:001 fixture records",
+    "explicit query opt-in conectrr-fixture=1 retains Conectrr fixture browser validation",
+    "Conectrr fixture import remains clone-then-freeze and stable-event correlated",
+    "deployed clean-path observation required after merge"
+  ],
+  "live_defect_evidence": {
+    "classification": "DEPLOYED_CONTAMINATION_OBSERVED",
+    "site_issue_comment": "StegVerse-Labs/Site#1143#issuecomment-5596432980",
+    "public_surface": "https://stegverse.org/ecosystem-chat.html",
+    "observed_fixture_event_ids": [
+      "event:conectrr:handoff:001",
+      "event:stegverse:evaluation:001"
+    ]
+  },
+  "blocked_by": null,
+  "next_executable_action": "Repository-native validation, merge, deployment observation, then controller completion and parent SDK/COSV reconciliation.",
+  "external_session_ownership_required": false,
+  "manual_user_action_required": false,
+  "authority_effect": false,
+  "activation_effect": false
+}

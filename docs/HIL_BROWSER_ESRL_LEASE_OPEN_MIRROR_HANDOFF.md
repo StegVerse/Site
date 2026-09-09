@@ -72,6 +72,8 @@ No second checkout, second claim/fence, browser-state reset, synthetic receipt h
 - `tests/test_hil_browser_esrl_lease.py`
 - `data/session-work-claims.d/site-hil-browser-esrl-lease-1156.json`
 - `data/session-work-claims.d/site-hil-esrl-checkout-hash-repair-1156.json`
+- `data/session-work-claims.d/site-hil-esrl-auto-resume-1156.json`
+- `data/session-work-claims.d/site-hil-esrl-stale-navigation-1156.json`
 
 The existing `HIL_BROWSER_EVIDENCE_V16` receiver is not repurposed. The ESRL route remains:
 
@@ -109,6 +111,23 @@ A successful exact `LEASE_OPEN` result is persisted under `stegos-hil-esrl-last-
 
 Automatic continuation does not auto-download evidence because iOS Safari may block unsolicited downloads. Exact JSON copy/download remains available after successful lease observation.
 
+## Stale standalone-Safari page convergence repair
+
+A later physical observation on the same retained G25 context showed a distinct propagation/convergence defect: the page still rendered the older **Open ESRL lease** control and `No ESRL evidence yet.` state, while current repository source already contained the automatic-resume page. On that stale page, the current service worker and evidence did not appear until the button was tapped.
+
+The source-level cause is the generic cache-first navigation behavior inherited from `service-worker-v13-runtime.js`: an already-controlled Safari client may continue receiving the previously cached ESRL HTML even after the repository page advances. Because the older ESRL page is itself the code that registers/updates the current worker only when its button path executes, this can make the manual click act as an accidental code-convergence trigger.
+
+The repair stays inside the existing v16 wrapper rather than advancing the HIL protocol or creating a replacement runtime:
+
+- `CACHE_NAME` remains `stegos-web-bootstrap-v16`, preserving all existing validators and the admitted `HIL_BROWSER_EVIDENCE_V16` protocol contract;
+- `./hil-esrl-activate.html` is now explicitly added to the wrapper shell so the predecessor install handler refreshes the exact current ESRL bytes when the wrapper updates;
+- the wrapper continues `skipWaiting()` and `clients.claim()`;
+- after activation, it enumerates same-origin window clients and re-navigates only an already-open `/stegos-bootstrap/hil-esrl-activate.html` client;
+- that one-time activation re-navigation causes the refreshed cached page to load, where the already-merged auto-resume logic runs immediately;
+- IndexedDB, localStorage, portable WorkerCoordinator state, G25 claim/fence lineage, and retained evidence are not reset or deleted.
+
+This repair removes the lease button as the mechanism required to obtain current page/worker code. The button remains a retry fallback after convergence.
+
 ## Explicit non-claims
 
 The source output keeps these independent states false:
@@ -129,11 +148,11 @@ Public HTTPS observation remains downstream optional for routine local lease ope
 
 `hil-esrl-activate.html` reads only the existing same-context `stegos-hil-last-success-v1` result and refuses to continue without it. It exposes copy/download of the exact returned `stegverse.hil-browser-esrl-lease-open/v1` JSON and persistently restores only an exact same-context successful result.
 
-Source, CI, merge, service-worker installation, page load, automatic retry, or deployment do **not** satisfy the parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`.
+Source, CI, merge, service-worker installation, page load, automatic retry, cache convergence, or deployment do **not** satisfy the parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`.
 
 The blocker may be discharged only after:
 
-1. this continuation behavior is merged and publicly propagated;
+1. this continuation and convergence behavior is merged and publicly propagated;
 2. the same standalone-Safari context executes the ESRL route without clearing site data;
 3. the exact component-produced JSON is exported;
 4. the canonical `.github` fail-closed ESRL intake accepts that artifact;
@@ -141,7 +160,7 @@ The blocker may be discharged only after:
 
 ## README maintenance
 
-`README.md` was re-reviewed against this continuation. Its current v16 same-device operational-card description remains accurate: the accepted v16 request-consumption protocol/cache generation is unchanged, retained G25 state is preserved, and this change only automates the post-local-ready ESRL continuation already documented by this handoff. No README prose change is required unless validation identifies an inaccurate statement.
+`README.md` was re-reviewed against the stale-navigation repair. It already states that the current service-worker propagation generation is `stegos-web-bootstrap-v16`, that the v16 wrapper imports the released v13 runtime plus the HIL portable bridges, and that the HIL activation surface uses `HIL_BROWSER_EVIDENCE_V16`. Those statements remain accurate because this repair intentionally keeps v16 and changes only which ESRL page is pre-cached/re-navigated during wrapper convergence. No README prose change is required for accuracy at this stage.
 
 ## Remaining parent blockers
 
@@ -151,4 +170,4 @@ Until authentic ESRL evidence is accepted, the parent remains at exactly three b
 2. `POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED`
 3. `TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN`
 
-No parent COSV change is made by source repair or automatic page continuation alone.
+No parent COSV change is made by source repair, automatic page continuation, or cache convergence alone.

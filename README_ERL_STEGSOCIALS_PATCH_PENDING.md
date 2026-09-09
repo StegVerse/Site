@@ -1,0 +1,1 @@
+README.md maintenance is required before PR #1136 is ready to merge. The README must state that ERL-assisted post preparation is standard StegSocials functionality and automated external social posting is a separately enabled premium capability. This marker is temporary and must be removed when README.md is updated on the branch.

@@ -1,7 +1,8 @@
 "use strict";
 
 (function (root) {
-  var ROUTE_PATH = "/stegos-bootstrap/portable-workercoordinator/hil-browser";
+  var PROTOCOL_VERSION = "HIL_BROWSER_EVIDENCE_V16";
+  var ROUTE_PATH = "/stegos-bootstrap/portable-workercoordinator/hil-browser-v16";
   var PACKAGE_URL = new URL("./workercoordinator-portable-hil.json", root.location.href).toString();
   var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
   var WORKER_ID = "hil-sovereign-receiver-worker";
@@ -12,7 +13,8 @@
   function fail(reason) { throw new Error("FAIL_CLOSED: " + reason); }
 
   function validateInput(body) {
-    if (!body || body.task_id !== TASK_ID) { fail("exact HIL task_id required"); }
+    if (!body || body.hil_browser_protocol !== PROTOCOL_VERSION) { fail("exact HIL browser protocol required"); }
+    if (body.task_id !== TASK_ID) { fail("exact HIL task_id required"); }
     if (body.resident_request_id !== REQUEST_ID || body.resident_request_sha256 !== REQUEST_SHA256) { fail("exact HIL resident request binding required"); }
     if (!body.node_id) { fail("established StegOS node id required"); }
     if (!/^ctx_[a-f0-9]{32}$/.test(String(body.browser_context_id || ""))) { fail("browser context id required"); }
@@ -124,6 +126,7 @@
       return appendReceipt({
         schema: "stegos.hil_browser_receiver_checkout_binding/v1",
         state: continuationReused ? "RETAINED_CHECKOUT_BOUND_BROWSER_RECEIVER" : "CHECKOUT_BOUND_BROWSER_RECEIVER",
+        hil_browser_protocol: PROTOCOL_VERSION,
         resident_request_id: REQUEST_ID,
         resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
@@ -155,6 +158,7 @@
       return appendReceipt({
         schema: "stegos.hil_browser_receiver_execution_receipt/v1",
         state: "BROWSER_HIL_LOCAL_READY_OBSERVED",
+        hil_browser_protocol: PROTOCOL_VERSION,
         resident_request_id: REQUEST_ID,
         resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
@@ -189,6 +193,7 @@
         return {
           schema: "stegos.hil_browser_receiver_activation_result/v1",
           state: "BROWSER_HIL_LOCAL_READY_OBSERVED",
+          hil_browser_protocol: PROTOCOL_VERSION,
           resident_request_id: REQUEST_ID,
           resident_request_sha256: REQUEST_SHA256,
           task_id: TASK_ID,
@@ -218,6 +223,7 @@
       return jsonResponse(400, {
         state: "FAIL_CLOSED",
         reason: String(error && error.message ? error.message : error),
+        hil_browser_protocol: PROTOCOL_VERSION,
         resident_request_id: REQUEST_ID,
         resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
@@ -241,5 +247,5 @@
     }
   });
 
-  root.StegOSHILBrowserReceiver = { routePath: ROUTE_PATH, execute: execute, handle: handle };
+  root.StegOSHILBrowserReceiver = { protocolVersion: PROTOCOL_VERSION, routePath: ROUTE_PATH, execute: execute, handle: handle };
 }(self));

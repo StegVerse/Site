@@ -1,16 +1,16 @@
 "use strict";
 
-// v17 preserves the released v13 runtime, HIL_BROWSER_EVIDENCE_V16 protocol,
-// and the existing portable HIL checkout state while repairing one Safari
-// convergence defect: an already-controlled ESRL navigation could be satisfied by
-// a stale cache entry whose page still required a manual lease-button tap. The
-// cache-generation change does not reset IndexedDB, portable WorkerCoordinator
-// state, claim/fence lineage, or TV/TVC boundaries.
+// v16 preserves the released v13 runtime, HIL_BROWSER_EVIDENCE_V16 protocol,
+// and the existing portable HIL checkout state. The current wrapper also repairs
+// one Safari convergence defect: an already-controlled ESRL navigation can be
+// satisfied by a stale cache entry whose page still requires a manual lease-button
+// tap. This repair does not reset IndexedDB, portable WorkerCoordinator state,
+// claim/fence lineage, or TV/TVC boundaries.
 importScripts("./service-worker-v13-runtime.js");
 importScripts("./hil-portable-state-bridge.js");
 importScripts("./hil-portable-native-bridge.js");
 
-CACHE_NAME = "stegos-web-bootstrap-v17";
+CACHE_NAME = "stegos-web-bootstrap-v16";
 var ESRL_PAGE_PATH = "/stegos-bootstrap/hil-esrl-activate.html";
 
 [
@@ -21,22 +21,18 @@ var ESRL_PAGE_PATH = "/stegos-bootstrap/hil-esrl-activate.html";
   if (Array.isArray(SHELL) && SHELL.indexOf(asset) < 0) { SHELL.push(asset); }
 });
 
-// Installed Safari clients may retain a controller/cache generation whose ESRL
-// HTML predates automatic same-context continuation. Advance the cache generation,
-// claim existing clients, then re-navigate only an already-open ESRL page after the
-// old cache generations have been removed. The new cache already contains the
-// current ESRL page, so the re-navigation reaches auto-resume without requiring the
+// Installed Safari clients may retain ESRL HTML from before automatic same-context
+// continuation even after source has advanced. Re-installing this wrapper refreshes
+// the exact ESRL page inside the existing v16 cache via the predecessor install
+// handler. On activation, claim existing clients and re-navigate only an already-open
+// ESRL page so it receives the refreshed auto-resume source without requiring the
 // stale page's button to be the mechanism that installs the current worker.
 self.addEventListener("install", function (event) {
   event.waitUntil(self.skipWaiting());
 });
 self.addEventListener("activate", function (event) {
   event.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(keys.filter(function (key) { return key !== CACHE_NAME; }).map(function (key) { return caches.delete(key); }));
-    }).then(function () {
-      return self.clients.claim();
-    }).then(function () {
+    self.clients.claim().then(function () {
       return self.clients.matchAll({ type: "window", includeUncontrolled: true });
     }).then(function (clients) {
       return Promise.all(clients.map(function (client) {

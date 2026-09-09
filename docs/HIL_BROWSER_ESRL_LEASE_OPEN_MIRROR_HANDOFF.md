@@ -101,6 +101,14 @@ The ESRL route requires all of the following from the same physical browser cont
 
 The lease ID is deterministically derived from the exact bound inputs. No caller chooses it.
 
+## Automatic same-context continuation
+
+To eliminate avoidable manual interaction, `hil-esrl-activate.html` now automatically attempts the ESRL route on page load whenever the exact retained G25 source result is present and there is not already a valid retained ESRL result for that same context/node/claim/fence. A single in-flight guard prevents duplicate concurrent attempts.
+
+A successful exact `LEASE_OPEN` result is persisted under `stegos-hil-esrl-last-success-v1` and restored on later page loads only after the same source-binding checks pass. A stale or mismatched retained ESRL result is deleted instead of reused. The **Retry ESRL lease** button remains as a manual fallback, but opening/reloading the page is sufficient to initiate the repaired lease attempt.
+
+Automatic continuation does not auto-download evidence because iOS Safari may block unsolicited downloads. Exact JSON copy/download remains available after successful lease observation.
+
 ## Explicit non-claims
 
 The source output keeps these independent states false:
@@ -119,13 +127,13 @@ Public HTTPS observation remains downstream optional for routine local lease ope
 
 ## Evidence/export boundary
 
-`hil-esrl-activate.html` reads only the existing same-context `stegos-hil-last-success-v1` result and refuses to continue without it. It exposes copy/download of the exact returned `stegverse.hil-browser-esrl-lease-open/v1` JSON.
+`hil-esrl-activate.html` reads only the existing same-context `stegos-hil-last-success-v1` result and refuses to continue without it. It exposes copy/download of the exact returned `stegverse.hil-browser-esrl-lease-open/v1` JSON and persistently restores only an exact same-context successful result.
 
-Source, CI, merge, service-worker installation, page load, or deployment do **not** satisfy the parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`.
+Source, CI, merge, service-worker installation, page load, automatic retry, or deployment do **not** satisfy the parent blocker `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`.
 
 The blocker may be discharged only after:
 
-1. this repair is merged and publicly propagated;
+1. this continuation behavior is merged and publicly propagated;
 2. the same standalone-Safari context executes the ESRL route without clearing site data;
 3. the exact component-produced JSON is exported;
 4. the canonical `.github` fail-closed ESRL intake accepts that artifact;
@@ -133,7 +141,7 @@ The blocker may be discharged only after:
 
 ## README maintenance
 
-`README.md` was re-reviewed against this repair. Its current v16 same-device operational-card description remains accurate: the accepted v16 request-consumption protocol/cache generation is unchanged, retained G25 state is preserved, and this change only repairs the post-local-ready ESRL evidence-envelope compatibility path. No README prose change is required unless validation identifies an inaccurate statement.
+`README.md` was re-reviewed against this continuation. Its current v16 same-device operational-card description remains accurate: the accepted v16 request-consumption protocol/cache generation is unchanged, retained G25 state is preserved, and this change only automates the post-local-ready ESRL continuation already documented by this handoff. No README prose change is required unless validation identifies an inaccurate statement.
 
 ## Remaining parent blockers
 
@@ -143,4 +151,4 @@ Until authentic ESRL evidence is accepted, the parent remains at exactly three b
 2. `POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED`
 3. `TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN`
 
-No parent COSV change is made by source repair alone.
+No parent COSV change is made by source repair or automatic page continuation alone.

@@ -66,9 +66,12 @@ def main() -> int:
             "browser must obtain root InTr admission before nested custody POST")
 
     require('importScripts("./service-worker-v13-runtime.js")' in bootstrap_wrapper,
-            "v15 service worker wrapper must import exact v13 runtime predecessor")
-    require('CACHE_NAME = "stegos-web-bootstrap-v15"' in bootstrap_wrapper,
-            "v15 wrapper must advance cache generation so installed clients refresh configured rendezvous source")
+            "current service worker wrapper must import exact v13 runtime predecessor")
+    require('CACHE_NAME = "stegos-web-bootstrap-v16"' in bootstrap_wrapper,
+            "v16 wrapper must advance cache generation so installed clients refresh current browser-evidence and configured-rendezvous source")
+    require('importScripts("./hil-portable-state-bridge.js")' in bootstrap_wrapper and
+            'importScripts("./hil-portable-native-bridge.js")' in bootstrap_wrapper,
+            "v16 wrapper must preserve portable HIL bridge imports while advancing code generation")
 
     for marker in [
         'var CACHE_NAME = "stegos-web-bootstrap-v13"',
@@ -170,9 +173,9 @@ def main() -> int:
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
             "README does not document no-retroactive-authorization and partial-admission failure semantics")
     require("stegos-web-bootstrap-v15" in propagation and "configured" in propagation.lower() and "resident-rendezvous" in propagation,
-            "dedicated propagation contract must describe the v15 configured-rendezvous successor")
+            "dedicated propagation contract must preserve the v15 configured-rendezvous predecessor evidence")
     require("fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
-            "v15 propagation contract must preserve governance and terminal-source boundaries")
+            "retained v15 propagation contract must preserve governance and terminal-source boundaries")
     require("automatic machine-governed continuation" in readme_normalized.lower(),
             "README must describe automatic continuation after exact G23 source availability")
     require("current governance" in handoff.lower() or "contemporaneous" in handoff.lower(), "handoff lacks contemporaneous governance")
@@ -195,7 +198,8 @@ def main() -> int:
     print("MR_SV001_INTR_GOVERNANCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_CONFIGURED_GATEWAY_ROUTE_PASS")
-    print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_PASS")
+    print("MR_SV001_CUSTODY_PROOF_V16_WRAPPER_PASS")
+    print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_EVIDENCE_RETAINED")
     return 0
 
 

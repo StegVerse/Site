@@ -1,0 +1,45 @@
+name: StegSocials KV Exact Content Readback
+
+on:
+  pull_request:
+    paths:
+      - 'assets/stegsocials-kv-exact-content-readback.js'
+      - 'stegsocials-prepare.html'
+      - 'tests/stegsocials-kv-exact-content-readback.test.cjs'
+      - 'docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md'
+      - 'data/session-work-claims.d/site-stegsocials-kv-exact-content-readback-20260909.json'
+      - 'data/session-work-claims.d/site-stegsocials-kv-draft-admission-20260908.json'
+      - '.github/workflows/stegsocials-kv-exact-content-readback.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/stegsocials-kv-exact-content-readback.js'
+      - 'stegsocials-prepare.html'
+      - 'tests/stegsocials-kv-exact-content-readback.test.cjs'
+      - 'docs/STEGSOCIALS_KV_EXACT_CONTENT_READBACK_MIRROR_HANDOFF.md'
+      - '.github/workflows/stegsocials-kv-exact-content-readback.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify bounded exact-content readback semantics
+        run: node tests/stegsocials-kv-exact-content-readback.test.cjs
+      - name: Verify Save draft requires exact stored-content readback
+        run: |
+          grep -q 'assets/stegsocials-kv-exact-content-readback.js' stegsocials-prepare.html
+          grep -q 'StegVerseStegSocialsKVExactReadback' stegsocials-prepare.html
+          grep -q 'exactReadback.readExact' stegsocials-prepare.html
+          grep -q 'exact_content_bytes_readback_verified' stegsocials-prepare.html
+          grep -q 'cloud-provider readback not claimed' stegsocials-prepare.html
+      - name: Verify non-provider device-local boundary
+        run: |
+          grep -q 'EXACT_CONTENT_BYTES_READBACK_VERIFIED' assets/stegsocials-kv-exact-content-readback.js
+          grep -q 'cloud_provider_readback_observed:false' assets/stegsocials-kv-exact-content-readback.js
+          grep -q 'provider_call_performed:false' assets/stegsocials-kv-exact-content-readback.js
+          grep -q 'authority_effect:"NONE_OBSERVATION_ONLY"' assets/stegsocials-kv-exact-content-readback.js

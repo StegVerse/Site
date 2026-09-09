@@ -39,3 +39,15 @@ def test_page_does_not_accept_caller_claim_or_fence():
     assert "fencing_token" not in body
     assert "resident_request_id: REQUEST_ID" in body
     assert "resident_request_sha256: REQUEST_SHA256" in body
+
+
+def test_service_worker_rolls_forward_to_request_bound_receiver_without_state_reset():
+    worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
+    assert REQUEST_ID in worker
+    assert 'importScripts("./hil-portable-state-bridge.js")' in worker
+    assert 'importScripts("./hil-portable-native-bridge.js")' in worker
+    assert "self.skipWaiting()" in worker
+    assert "self.clients.claim()" in worker
+    assert 'CACHE_NAME = "stegos-web-bootstrap-v15"' in worker
+    assert "indexedDB.deleteDatabase" not in worker
+    assert "caches.delete" not in worker

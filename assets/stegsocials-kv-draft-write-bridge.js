@@ -12,6 +12,7 @@
   var DIRECTORY_ID="stegsocials-drafts";
   var MAX_BYTES=1024*1024;
   var SECRET_PARTS=["password","secret","token","private_key","oauth","cookie","api_key","credential","refresh_token","access_token"];
+  var SAFE_ASSERTION_KEYS={credential_material_present:true};
 
   function requireValue(ok,message){if(!ok)throw new Error("FAIL_CLOSED: "+message);}
   function clone(value){return JSON.parse(JSON.stringify(value));}
@@ -32,7 +33,7 @@
     var keys=Object.keys(value);
     for(var j=0;j<keys.length;j++){
       var key=keys[j],lower=String(key).toLowerCase();
-      if(SECRET_PARTS.some(function(part){return lower.indexOf(part)!==-1;}))return path+"."+key;
+      if(!SAFE_ASSERTION_KEYS[lower]&&SECRET_PARTS.some(function(part){return lower.indexOf(part)!==-1;}))return path+"."+key;
       var nested=containsForbiddenKey(value[key],path+"."+key);if(nested)return nested;
     }
     return null;

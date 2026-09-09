@@ -11,6 +11,17 @@ importScripts("./hil-portable-native-bridge.js");
 
 CACHE_NAME = "stegos-web-bootstrap-v15";
 
+// Extend only the wrapper-time shell projection. The canonical v13 runtime
+// file remains exact/unchanged. These activation assets project an already-
+// registered canonical Node Receipt #1 into the StegOS Mobile custom scheme;
+// they grant no execution, admission, custody, credential, or routing authority.
+[
+  "./sv001-native-resident-activation.js",
+  "./native-resident-activate.html"
+].forEach(function (asset) {
+  if (Array.isArray(SHELL) && SHELL.indexOf(asset) < 0) { SHELL.push(asset); }
+});
+
 // A stale controlling worker may otherwise keep serving the pre-request-binding HIL
 // receiver after the page itself has updated. Activate the updated wrapper immediately
 // and claim the same-origin clients; this changes code version only and does not mint

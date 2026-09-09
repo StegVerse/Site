@@ -26,7 +26,7 @@ ALLOWED_SUCCESSORS = {
     "stegos-bootstrap/index.html": {"f2e9aa2a994acb9b259388b7b876be5ec5487c92", "b2c6f72c6947d09be0d7128e4a7df5d237a3b2d5", "926ccfd6c640bcfdb49298b05026b08325db0990", "630d2d826871f5b03b9976677793cf43a7952fa6", "677504a3e035e591f22bd91b35e58b7301d06074", "342fa60fff456d478ba641c9cb1f3ee92272c81c"},
     "stegos-bootstrap/stegos-bootstrap.js": {"15343c398c168f3d5f8fe6933aaf3073e89dd5c0", "d1ae2940d16f757b4bb5964f36dab75fc48bf9c5", "c094719cc4e8708af15bc0d374252a62b064cfc8", "ba3d4a4a0c749e12bea7c3ab305abf366b49698f"},
     "stegos-bootstrap/admitted-inference.js": {"493cf77a64479efe816cb2d89e38e4255bca121b", "5619540b9a953b58f2a859b5776241809aad1932"},
-    "stegos-bootstrap/service-worker.js": {"0bf8c8df1ae678bc73170978f6c6fdae7b9341f1", "7c5d62d5fba1fcde13b3a47c3b9b561d03b77087", "99d652dc961855b0b89d093a3f5ad2e027352849", "048ae96f211e28314fa91c6a34cbc29ec13a2a26", "9fdb5a580002c3a881f1523938ab1c0bcb127546", "28fca6db751b183397247319fa4b5ebef76cebb8", "8b0b8d270de2c0420373994c99a5ef8a49aa4744", "b48c79a6faf6735e262a5f2f791ff576d4379504", "017164f2a71c28300ee59abb8071b0da973d206c", "0e3cc9a63dc833f829f9b3cb2f2ae07d8feb59e1", "34900418f5b8c7225936a89ef541b82bc496a969", "b887fd056e58f05038e16d4663e719b6013d419b"},
+    "stegos-bootstrap/service-worker.js": {"0bf8c8df1ae678bc73170978f6c6fdae7b9341f1", "7c5d62d5fba1fcde13b3a47c3b9b561d03b77087", "99d652dc961855b0b89d093a3f5ad2e027352849", "048ae96f211e28314fa91c6a34cbc29ec13a2a26", "9fdb5a580002c3a881f1523938ab1c0bcb127546", "28fca6db751b183397247319fa4b5ebef76cebb8", "8b0b8d270de2c0420373994c99a5ef8a49aa4744", "b48c79a6faf6735e262a5f2f791ff576d4379504", "017164f2a71c28300ee59abb8071b0da973d206c", "0e3cc9a63dc833f829f9b3cb2f2ae07d8feb59e1", "34900418f5b8c7225936a89ef541b82bc496a969", "b887fd056e58f05038e16d4663e719b6013d419b", "a4150117bd900750eb6f2d6812703b5e7edac859", "ea2a3c212d21f5a014ce7c5a7a2bde362e3b2671"},
 }
 
 CANONICAL_RECOVERY_BLOBS = {
@@ -94,7 +94,9 @@ def main() -> int:
     resident_task = read("stegos-bootstrap/external-resident-task.js")
     recovery = read("stegos-bootstrap/master-records-sv001-recovery.js")
     auto_recovery = read("stegos-bootstrap/master-records-auto-recovery.js")
-    combined = "\n".join((bootstrap, inference, autostart, html, service_worker, service_worker_predecessor, model, route, resident_task, recovery, auto_recovery))
+    native_activation = read("stegos-bootstrap/sv001-native-resident-activation.js")
+    native_activation_page = read("stegos-bootstrap/native-resident-activate.html")
+    combined = "\n".join((bootstrap, inference, autostart, html, service_worker, service_worker_predecessor, model, route, resident_task, recovery, auto_recovery, native_activation, native_activation_page))
 
     required_markers = {
         "activation_authority_plane": 'var AUTHORITY_PLANE = "STEGVERSE"',
@@ -149,6 +151,19 @@ def main() -> int:
         "mr_rendezvous_primary_probe": "probeSovereignResident(config, 0)",
         "mr_v15_shell": 'CACHE_NAME = "stegos-web-bootstrap-v15";',
         "mr_v15_exact_predecessor": 'importScripts("./service-worker-v13-runtime.js")',
+        "native_activation_receipt_one": 'receiptRequest = tx.objectStore(RECEIPTS).get(1)',
+        "native_activation_receipt_one_revalidated": "receipt_1_digest_revalidated: true",
+        "native_activation_canonical_node": 'var NODE_RE = /^SV-NODE-[0-9a-f]{24}$/',
+        "native_activation_scheme": 'var ACTIVATION_BASE = "stegverse://resident-rendezvous/activate"',
+        "native_activation_no_authority": 'projection_grants_authority: false',
+        "native_activation_no_listener_proof": 'app_open_proves_listener_ready: false',
+        "native_activation_hosted_fallback_only": 'hosted_transport_role: "FALLBACK_ONLY"',
+        "native_activation_page_user_gesture": "openStegOSFromUserGesture",
+        "native_activation_cached_js": '"./sv001-native-resident-activation.js"',
+        "native_activation_cached_page": '"./native-resident-activate.html"',
+        "hil_request_bound_receiver_refresh": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+        "hil_stale_worker_skip_waiting": "self.skipWaiting()",
+        "hil_stale_worker_clients_claim": "self.clients.claim()",
     }
     for label, marker in required_markers.items():
         if marker not in combined:
@@ -171,7 +186,7 @@ def main() -> int:
             failures.append(f"prohibited credential/runtime marker projected: {marker}")
 
     report = {
-        "schema_version": "1.13.0",
+        "schema_version": "1.15.0",
         "status": "FAIL" if failures else "PASS",
         "source_repository": UPSTREAM_REPO,
         "source_commit": UPSTREAM_COMMIT,
@@ -193,6 +208,10 @@ def main() -> int:
         "render_production_authority": False,
         "render_transport_role": "HOSTED_FALLBACK_ONLY",
         "resident_rendezvous_primary_transport": "SOVEREIGN_LOCAL_RESIDENT",
+        "native_resident_activation_projection": True,
+        "native_resident_activation_requires_user_mediated_app_open": True,
+        "native_resident_activation_proves_listener_ready": False,
+        "native_resident_activation_proves_custody": False,
         "github_token_runtime_authority": False,
         "hosted_ci_activation_authority": False,
         "site_authority_effect": "TRANSPORT_MATERIALIZATION_ONLY",
@@ -214,7 +233,7 @@ def main() -> int:
         "sv001_auto_continuation_uses_current_governance": True,
         "sv001_auto_continuation_creates_scheduler": False,
         "hb32_grants_execution_authority": False,
-        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V15_SOVEREIGN_PRIMARY_HOSTED_FALLBACK_PROPAGATION_USING_EXISTING_HB32_INTR_RUNTIME",
+        "control_revision": "CURRENT_IPHONE_GOVERNED_MR_CUSTODY_V15_HIL_REFRESH_PLUS_SOVEREIGN_PRIMARY_NATIVE_ACTIVATION_HOSTED_FALLBACK_ONLY_USING_EXISTING_HB32_INTR_RUNTIME",
         "failures": failures,
     }
     REPORT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

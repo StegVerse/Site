@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <title>StegOS Native Resident Activation</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; color-scheme: light dark; }
+    body { margin: 0; padding: 20px; max-width: 640px; margin-left: auto; margin-right: auto; }
+    section { border: 1px solid rgba(127,127,127,.35); border-radius: 12px; padding: 14px; margin: 14px 0; }
+    button { font: inherit; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); -webkit-appearance: none; appearance: none; touch-action: manipulation; cursor: pointer; }
+    button:disabled { opacity: .45; cursor: default; }
+    .value, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; word-break: break-word; white-space: pre-wrap; }
+    .sub { opacity: .75; }
+  </style>
+</head>
+<body>
+  <h1>StegOS Native Resident</h1>
+  <p class="sub">Same-device activation of the sovereign local resident rendezvous.</p>
+
+  <section>
+    <strong>Canonical binding</strong>
+    <p>State: <span id="activation-state" class="value">CHECKING_RECEIPT_1</span></p>
+    <p>Node: <span id="activation-node" class="value">—</span></p>
+    <p>Receipt #1: <span id="activation-receipt" class="value">—</span></p>
+    <button id="open-stegos" type="button" disabled>Open StegOS Local Resident</button>
+    <pre id="activation-output"></pre>
+  </section>
+
+  <section>
+    <strong>Boundary</strong>
+    <p class="sub">This surface only projects the already-registered canonical Node Receipt #1 into the installed StegOS Mobile app. Opening the app does not prove listener readiness, InTr admission, Master Records custody, retained evidence, or SV002 disposition. Hosted transport remains fallback-only.</p>
+  </section>
+
+  <script src="./sv001-native-resident-activation.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var state = document.getElementById("activation-state");
+      var node = document.getElementById("activation-node");
+      var receipt = document.getElementById("activation-receipt");
+      var button = document.getElementById("open-stegos");
+      var output = document.getElementById("activation-output");
+      var api = window.StegOSNativeResidentActivation;
+
+      function fail(error) {
+        state.textContent = "FAIL_CLOSED";
+        button.disabled = true;
+        output.textContent = String(error && error.message ? error.message : error);
+      }
+
+      api.buildActivationProjection().then(function (projection) {
+        state.textContent = projection.state;
+        node.textContent = projection.node_ref;
+        receipt.textContent = projection.node_receipt_1_sha256;
+        button.disabled = false;
+        output.textContent = JSON.stringify({
+          receipt_1_digest_revalidated: projection.receipt_1_digest_revalidated,
+          projection_grants_authority: projection.projection_grants_authority,
+          app_open_proves_listener_ready: projection.app_open_proves_listener_ready,
+          app_open_proves_custody: projection.app_open_proves_custody,
+          hosted_transport_role: projection.hosted_transport_role,
+          authority_effect: projection.authority_effect
+        }, null, 2);
+      }).catch(fail);
+
+      button.addEventListener("click", function () {
+        button.disabled = true;
+        state.textContent = "APP_OPEN_REQUESTED_NOT_PROVEN";
+        api.openStegOSFromUserGesture().then(function () {
+          window.setTimeout(function () { button.disabled = false; }, 1200);
+        }).catch(function (error) {
+          button.disabled = false;
+          fail(error);
+        });
+      }, false);
+    }());
+  </script>
+</body>
+</html>

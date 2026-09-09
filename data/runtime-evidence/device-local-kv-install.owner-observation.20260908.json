@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.site.device-local-kv-owner-observation/v1",
+  "goal_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "cosv_id": "50000000102000",
+  "observed_at_local": "2026-09-08T19:57:00-05:00",
+  "observation_source": "OWNER_SCREENSHOT_OF_DEPLOYED_SITE",
+  "runtime_surface": "https://stegverse.org/device-kv-install.html",
+  "resident_kv": {
+    "state": "INSTALLED",
+    "instance_ordinal": 1,
+    "instance_id": "kvi_0d5d4cfd531db51bbcf7fdfc0311f5dc",
+    "set_id": "personal",
+    "storage_medium": "device-local-browser-indexeddb",
+    "relationship": "NOT_CONNECTED",
+    "persistence_requested": true,
+    "persistence_granted": false,
+    "durability_class": "BEST_EFFORT_BROWSER_ORIGIN",
+    "cloud_recovery_recommended": true,
+    "exact_readback_verified": true
+  },
+  "display_evidence": {
+    "installation_message": "Resident KV installed and exact-readback verified.",
+    "instance_hash_displayed": true,
+    "receipt_hash_displayed": true,
+    "projection_hash_displayed": true,
+    "full_hash_values_transcribed": false
+  },
+  "authority_effect": "NONE",
+  "activation_effect": false,
+  "notes": [
+    "Authentic owner-observed runtime evidence from the deployed Site surface; not independent machine observation.",
+    "Persistent browser storage was requested but not granted, so current exact readback is proven while survival under browser storage eviction is not overclaimed.",
+    "Cloud recovery/replication is the intended durability path once a cloud peer is authentically connected."
+  ]
+}

@@ -1,8 +1,8 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `device-local-kv-cloud-peers`
-State: SOURCE_CONTRACT_MERGED / DEVICE_KV_TRANSPORT_MERGED / PHYSICAL_GOOGLE_DRIVE_KV_VERIFIED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_PENDING / CLOUD_PEER_REQUEST_SOURCE_IMPLEMENTED / CLOUD_PROVIDER_EXECUTION_PENDING / PUBLIC_NAV_README_BINDING_PENDING
+Branch: `reconcile-device-local-kv-runtime`
+State: SOURCE_CONTRACT_MERGED / DEVICE_KV_TRANSPORT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_REQUEST_NOT_GRANTED / PHYSICAL_GOOGLE_DRIVE_KV_RECONFIRMED / CLOUD_PEER_REQUEST_SOURCE_MERGED / CLOUD_PROVIDER_EXECUTION_PENDING / PUBLIC_NAV_README_BINDING_PENDING
 Updated: 2026-09-08
 Authority effect: NONE
 Activation effect: false
@@ -16,26 +16,44 @@ CANONICAL COSV HANDOFF: StegVerse-Labs/.github/KV_CONNECTION_REVALIDATION_COSV_M
 UPSTREAM CAPABILITY HANDOFF: StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md
 ```
 
-## Resident KV architecture — merged and deployed
+## Resident KV architecture — merged, deployed, runtime observed
 
 Site PR #1115 merged at `571821a609a6ec17b1a8b4a307a9de9d84a35028`. Pages deployment run `34294750852` completed successfully.
 
-The resident KnowledgeVault is distinct from DEVICE_KV transport/cache:
+The owner then executed the deployed installer on the current iPhone. The deployed Site reported:
+
+```text
+State: INSTALLED
+Instance: KV #1 · kvi_0d5d4cfd531db51bbcf7fdfc0311f5dc
+Set: personal
+Storage: device-local-browser-indexeddb
+Relationship: NOT_CONNECTED
+Persistence: requested; granted=false
+Exact readback: true
+```
+
+The displayed runtime result also reported `Resident KV installed and exact-readback verified` and displayed instance, receipt, and projection hashes. Full hash strings were not transcribed from the owner screenshot, so this handoff does not invent or reconstruct them.
+
+Durable repository observation record:
+
+```text
+data/runtime-evidence/device-local-kv-install.owner-observation.20260908.json
+```
+
+The resident KnowledgeVault remains distinct from DEVICE_KV transport/cache:
 
 ```text
 canonical resident KV: stegverse-device-local-kv-v1
 DEVICE_KV transport/cache: stegverse-device-local-intr-v1
 ```
 
-`device-kv-install.html` performs one-tap resident installation. `assets/device-local-kv-installer.js` ensures a registered StegVerse Node, requests persistent browser storage when available without overclaiming it, creates a unique first-class `KV #1` identity in set `personal`, defaults relationship state to `NOT_CONNECTED`, writes canonical instance/installation/projection records, and requires exact SHA-256 + byte-length readback before reporting installed.
+The browser persistence request was not granted. Therefore exact resident readback is authentic for the observed installation, but long-term survival under browser storage eviction is not independently guaranteed and must not be overclaimed.
 
-No cloud file selection or cloud credential is part of resident installation.
+## Cloud KV peers — source merged
 
-## Current slice — cloud KV peers
+Site PR #1116 merged at `470642c3b1767f7a857b1e633602c041a7b55cb2` after Cloud KV Peer Manager, Device Local KV Install, My KV Multi-Instance Provider Manager, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, and Site Bootstrap validation passed.
 
-Cloud-hosted KVs are now modeled as peers that require the resident KV to be installed and exact-readback verified first.
-
-`assets/cloud-kv-peer-manager.js` supports two distinct request classes:
+`assets/cloud-kv-peer-manager.js` supports:
 
 ```text
 stegverse.site.cloud-kv-peer-create-request/v1
@@ -45,7 +63,7 @@ stegverse.site.cloud-kv-peer-adoption-request/v1
   operation=ADOPT_EXISTING_CLOUD_KV_PEER
 ```
 
-Supported storage media:
+Supported media:
 
 ```text
 icloud-drive
@@ -54,57 +72,34 @@ onedrive
 dropbox
 ```
 
-Every request:
+Every cloud-peer request requires exact resident KV proof, ordinal >= 2, `NOT_CONNECTED`, `PENDING_INTERLOCK_INTR`, no credential material, no provider or relationship mutation authority, and no claimed materialization, sync, replication, AI corpus exposure, execution, or activation.
 
-- requires resident `KV #1` exact-readback proof;
-- requests an ordinal >= 2;
-- starts at relationship tier `NOT_CONNECTED`;
-- remains `PENDING_INTERLOCK_INTR`;
-- routes credentials only by declared destination `SKAP_VAULT` and carries no credential material;
-- keeps `provider_operation_authorized=false`;
-- keeps `instance_materialized=false`;
-- keeps relationship mutation false;
-- claims no data movement, replication, AI-corpus exposure, execution authority, or activation.
+## Existing Google Drive KV — reconfirmed
 
-`cloud-kv-peers.html` exposes bounded create/adopt request forms only after the local KV status check. It does not authenticate a provider or create cloud storage directly.
-
-Validation:
+The connected Google Drive currently exposes the existing root:
 
 ```text
-tests/cloud-kv-peer-manager.test.cjs
-.github/workflows/cloud-kv-peer-manager.yml
+Title: KnowledgeVault
+Folder ID: 1c8OdhJeLD6E4ALmi-aR7dXvG8PjDLSfi
 ```
 
-## Existing Google Drive KV collision / adoption rule
+Its `_System` folder is present and contains `Instances`, `Connections`, and `installation.receipt.json`, among other system folders/files. This reconfirms the physical Google Drive KV root without changing it.
 
-The previously adopted Google Drive vault remains intact with its authentic existing instance identity and physical evidence. Because it was historically adopted as KV #1 before the device-local-first architecture correction, attaching it to the resident set creates an ordinal collision.
-
-This branch does not silently rewrite it. `ADOPT_EXISTING_CLOUD_KV_PEER` requires:
-
-- existing instance ID;
-- existing/current ordinal;
-- requested new ordinal;
-- installation/adoption receipt SHA-256;
-- current set projection SHA-256;
-- `private_content_rewrite_authorized=false`;
-- `existing_identity_rewrite_authorized=false`;
-- `provenance_preservation_required=true`;
-- explicit `ordinal_reassignment_requested` when the ordinal differs.
-
-Physical reassignment/materialization must occur later through authentic Interlock/InTr admission and provider-result evidence. Until then this remains request state only.
+Because the resident iPhone KV is now authentically `KV #1`, the historical Google Drive KV ordinal collision must still be handled through explicit adoption/reassignment. No silent rewrite has occurred.
 
 ## Remaining sequence
 
-1. validate and merge this cloud-peer request source;
-2. current iPhone: install resident KV from `https://stegverse.org/device-kv-install.html` and require exact readback;
-3. reconcile that authentic runtime installation into COSV;
-4. publish ordinary My KV navigation + README around the device-local-first flow;
-5. submit/authenticate an explicit Google Drive existing-peer adoption into the next free ordinal, preserving provenance;
-6. add a new iCloud or other cloud-hosted KV as another peer;
-7. resolve provider credentials through SKAP only;
-8. prove authentic provider `CONNECT`, `VERIFY`, `READ`, `WRITE`, `SYNC`, and `DISCONNECT` results;
-9. prove relationship `NOT_CONNECTED -> CONNECTED -> SYNCED -> AI_INTERACTION` plus downgrade/reconnect/recovery with authentic receipts.
+1. Merge this runtime reconciliation and record the owner-observed exact-readback installation in Site task state.
+2. Bind the runtime observation into the canonical COSV handoff without treating the screenshot as independent machine proof.
+3. Publish ordinary My KV navigation/README around the device-local-first flow.
+4. Recover the existing Google Drive instance/adoption identity and exact receipt/projection hash material needed by `ADOPT_EXISTING_CLOUD_KV_PEER`.
+5. Submit the existing Google Drive vault as an explicit next-free-ordinal adoption request while preserving private content and provenance.
+6. Add a new iCloud or other cloud-hosted KV as an independently rooted peer.
+7. Resolve cloud provider credentials only through SKAP Vault.
+8. Prove authentic provider `CONNECT`, `VERIFY`, `READ`, `WRITE`, `SYNC`, and `DISCONNECT` outcomes.
+9. Prove `NOT_CONNECTED -> CONNECTED -> SYNCED -> AI_INTERACTION` and downgrade/reconnect/recovery with authentic receipts.
+10. Add a durability/recovery path for cases where browser persistence remains `granted=false`.
 
 ## Manual work
 
-The device-local install route is deployed. Current owner action is limited to one tap on the current iPhone: open `https://stegverse.org/device-kv-install.html` and tap **Install resident KV**. Do not select Google Drive files and do not enter cloud credentials during this step. Cloud provider authorization remains deferred until the resident KV returns exact-readback success.
+None required right now. The resident KV installation step is complete. Do not reinstall, clear Safari website data, remove stegverse.org website data, or attempt cloud-provider authorization yet. Machine work must first reconcile the runtime observation and recover the existing Google Drive adoption evidence needed for the next governed request.

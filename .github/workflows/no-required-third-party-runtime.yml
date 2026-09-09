@@ -3,14 +3,17 @@ name: No Required Third-Party Runtime
 on:
   pull_request:
     paths:
+      - 'CNAME'
       - 'data/ecosystem-chat-gateway.json'
       - 'data/hil-gateway-config.json'
+      - 'data/dns-edge-portability.json'
       - 'assets/ecosystem-chat-node-discovery.js'
       - 'assets/hil-experiment.js'
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'scripts/check_third_party_dependency_invariant.py'
       - 'scripts/check_third_party_dependency_reconciliation.py'
+      - 'scripts/check_dns_edge_portability.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-dependency-inventory-supersession.json'
@@ -22,14 +25,17 @@ on:
   push:
     branches: [main]
     paths:
+      - 'CNAME'
       - 'data/ecosystem-chat-gateway.json'
       - 'data/hil-gateway-config.json'
+      - 'data/dns-edge-portability.json'
       - 'assets/ecosystem-chat-node-discovery.js'
       - 'assets/hil-experiment.js'
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'scripts/check_third_party_dependency_invariant.py'
       - 'scripts/check_third_party_dependency_reconciliation.py'
+      - 'scripts/check_dns_edge_portability.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-dependency-inventory-supersession.json'
@@ -62,5 +68,7 @@ jobs:
         run: |
           python3 scripts/check_third_party_dependency_reconciliation.py
           python3 scripts/check_third_party_dependency_invariant.py
+      - name: Validate deterministic DNS and edge portability contract
+        run: python3 scripts/check_dns_edge_portability.py
       - name: Verify Ecosystem Chat gateway cutover contract
         run: python3 scripts/check_ecosystem_chat_gateway_activation.py

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Fail-closed source validator for same-device SV001 Master Records governance."""
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +18,7 @@ def main() -> int:
     bootstrap_wrapper = (ROOT / "stegos-bootstrap/service-worker.js").read_text(encoding="utf-8")
     bootstrap_sw = (ROOT / "stegos-bootstrap/service-worker-v13-runtime.js").read_text(encoding="utf-8")
     auto_recovery = (ROOT / "stegos-bootstrap/master-records-auto-recovery.js").read_text(encoding="utf-8")
+    gateway_config = json.loads((ROOT / "data/ecosystem-chat-gateway.json").read_text(encoding="utf-8"))
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_normalized = readme.replace("-\n", "-").replace("\n", " ")
     handoff = (ROOT / "docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md").read_text(encoding="utf-8")
@@ -119,9 +121,15 @@ def main() -> int:
     # resulting proof to the already-existing resident rendezvous. This transport is
     # evidence-only and must never become a substitute for the fresh InTr decision.
     for marker in [
+        'GATEWAY_CONFIG_URL = "../data/ecosystem-chat-gateway.json"',
         'SITE_CUSTODY_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"',
         'EVIDENCE_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence/v1"',
         'EVIDENCE_STORE_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence-store/v1"',
+        'boundary.site_execution_authority !== false',
+        'boundary.gateway_execution_authority !== false',
+        'boundary.master_records_authority !== false',
+        'boundary.node_discovery_grants_authority !== false',
+        'endpoint.protocol !== "https:"',
         'proof.intr_governance_admission_observed !== true',
         'proof.reconstruction_state !== "PASS"',
         'proof.site_custody_authority !== false',
@@ -129,8 +137,8 @@ def main() -> int:
         'proof.heartbeat_granted_authority !== false',
         'proof.prior_receipt_authorizes_transition !== false',
         'proof.historical_state_retroactively_authorized !== false',
-        'fetch("/api/resident-rendezvous/v1/discovery"',
-        'fetch("/api/resident-rendezvous/v1/evidence/site-governed-custody"',
+        'gatewayBase + "/api/resident-rendezvous/v1/discovery"',
+        'gatewayBase + "/api/resident-rendezvous/v1/evidence/site-governed-custody"',
         'gateway_execution_authority: "NONE"',
         'evidence_grants_authority: false',
         'authority_effect: "NONE_EVIDENCE_ONLY"',
@@ -139,6 +147,19 @@ def main() -> int:
         '{ state: "PENDING_RETRY" }',
     ]:
         require(marker in auto_recovery, f"custody-proof rendezvous marker missing: {marker}")
+
+    boundary = gateway_config.get("authority_boundary") or {}
+    require(gateway_config.get("enabled") is True, "canonical Site gateway config must be enabled")
+    require(str(gateway_config.get("endpoint", "")).startswith("https://"),
+            "canonical Site gateway endpoint must be HTTPS")
+    require(boundary.get("site_execution_authority") is False and
+            boundary.get("gateway_execution_authority") is False and
+            boundary.get("master_records_authority") is False and
+            boundary.get("node_discovery_grants_authority") is False,
+            "canonical Site gateway config must preserve non-authorizing rendezvous boundary")
+    require('fetch("/api/resident-rendezvous/' not in auto_recovery,
+            "SV001 proof relay must not assume GitHub Pages same-origin API routing")
+
     governance_call = auto_recovery.index("root.StegOSWebBootstrap.executeMasterRecordsSv001Custody(cycleReceipt)")
     proof_submit = auto_recovery.index("submitGovernedCustodyProof(result)", governance_call)
     require(governance_call < proof_submit,
@@ -173,6 +194,7 @@ def main() -> int:
 
     print("MR_SV001_INTR_GOVERNANCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
+    print("MR_SV001_CUSTODY_PROOF_CONFIGURED_GATEWAY_ROUTE_PASS")
     return 0
 
 

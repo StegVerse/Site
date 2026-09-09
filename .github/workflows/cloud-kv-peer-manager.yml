@@ -1,0 +1,73 @@
+name: Cloud KV Peer Manager
+
+on:
+  pull_request:
+    paths:
+      - "assets/cloud-kv-peer-manager.js"
+      - "cloud-kv-peers.html"
+      - "tests/cloud-kv-peer-manager.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-device-local-kv-cloud-peers-20260908.json"
+      - ".github/workflows/cloud-kv-peer-manager.yml"
+  push:
+    paths:
+      - "assets/cloud-kv-peer-manager.js"
+      - "cloud-kv-peers.html"
+      - "tests/cloud-kv-peer-manager.test.cjs"
+      - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
+      - "data/session-work-claims.d/site-device-local-kv-cloud-peers-20260908.json"
+      - ".github/workflows/cloud-kv-peer-manager.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate cloud peer request contract
+        run: node tests/cloud-kv-peer-manager.test.cjs
+      - name: Validate source syntax
+        run: node --check assets/cloud-kv-peer-manager.js
+      - name: Prove resident prerequisite and no cloud authority
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src=Path('assets/cloud-kv-peer-manager.js').read_text(encoding='utf-8')
+          page=Path('cloud-kv-peers.html').read_text(encoding='utf-8')
+          required=[
+            'device-local-browser-indexeddb',
+            'PENDING_INTERLOCK_INTR',
+            'credential_destination:"SKAP_VAULT"',
+            'credential_material_present:false',
+            'provider_operation_authorized:false',
+            'instance_materialized:false',
+            'relationship_mutation_authorized:false',
+            'data_moved:false',
+            'replication_started:false',
+            'ai_corpus_exposed:false',
+            'NONE_REQUEST_ONLY',
+            'ADOPT_EXISTING_CLOUD_KV_PEER',
+            'private_content_rewrite_authorized:false',
+            'existing_identity_rewrite_authorized:false',
+            'provenance_preservation_required:true',
+          ]
+          missing=[x for x in required if x not in src]
+          if missing: raise SystemExit('missing cloud-peer boundary markers: '+', '.join(missing))
+          for provider in ['icloud-drive','google-drive','onedrive','dropbox']:
+            if provider not in src: raise SystemExit('missing provider: '+provider)
+          forbidden=['provider_operation_authorized:true','instance_materialized:true','relationship_mutation_authorized:true','data_moved:true','replication_started:true','ai_corpus_exposed:true']
+          present=[x for x in forbidden if x in src or x in page]
+          if present: raise SystemExit('prohibited runtime effect marker: '+', '.join(present))
+          if 'Cloud-hosted KnowledgeVault peers' not in page:
+            raise SystemExit('cloud peer page missing')
+          print('CLOUD_KV_PEER_MANAGER=PASS')
+          print('RESIDENT_KV_PREREQUISITE=REQUIRED')
+          print('CLOUD_PROVIDER_AUTHORITY=NONE')
+          print('EXISTING_CLOUD_PROVENANCE_REWRITE=PROHIBITED')
+          PY

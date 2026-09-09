@@ -5,6 +5,7 @@
   var DB_VERSION = 1;
   var RECEIPT_STORE = "receipts";
   var PACKAGE_URL = "./master-records-sv001-custody-package.json";
+  var GATEWAY_CONFIG_URL = "../data/ecosystem-chat-gateway.json";
   var CANONICAL_G23_SHA = "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35";
   var CANONICAL_G23_TRANSITION = "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED";
   var SITE_CUSTODY_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1";
@@ -13,6 +14,7 @@
   var MAX_HYDRATION_ATTEMPTS = 80;
   var HYDRATION_RETRY_MS = 100;
   var runPromise = null;
+  var gatewayBasePromise = null;
 
   function fail(message) { throw new Error("FAIL_CLOSED: " + message); }
   function byId(id) { return document.getElementById(id); }
@@ -82,6 +84,31 @@
     });
   }
 
+  function residentRendezvousBaseUrl() {
+    if (gatewayBasePromise) { return gatewayBasePromise; }
+    gatewayBasePromise = fetch(GATEWAY_CONFIG_URL, {
+      method: "GET", credentials: "same-origin", cache: "no-store", redirect: "error",
+      headers: { "Accept": "application/json" }
+    }).then(function (response) {
+      if (!response.ok) { throw new Error("canonical gateway configuration unavailable"); }
+      return response.json();
+    }).then(function (config) {
+      var boundary = config && config.authority_boundary;
+      if (!config || config.enabled !== true || typeof config.endpoint !== "string" ||
+          !boundary || boundary.site_execution_authority !== false || boundary.gateway_execution_authority !== false ||
+          boundary.master_records_authority !== false || boundary.node_discovery_grants_authority !== false) {
+        throw new Error("canonical gateway configuration boundary mismatch");
+      }
+      var endpoint = new URL(config.endpoint, root.location.href);
+      if (endpoint.protocol !== "https:") { throw new Error("resident rendezvous gateway must use HTTPS"); }
+      return endpoint.origin;
+    }).catch(function (error) {
+      gatewayBasePromise = null;
+      throw error;
+    });
+    return gatewayBasePromise;
+  }
+
   function dispatchPersistenceSignals() {
     ["mr-sv001-receipt", "mr-sv001-output"].forEach(function (id) {
       var node = byId(id);
@@ -108,8 +135,8 @@
     return proof;
   }
 
-  function discoverResident() {
-    return fetch("/api/resident-rendezvous/v1/discovery", {
+  function discoverResident(gatewayBase) {
+    return fetch(gatewayBase + "/api/resident-rendezvous/v1/discovery", {
       method: "GET", credentials: "omit", cache: "no-store", redirect: "error",
       headers: { "Accept": "application/json" }
     }).then(function (response) {
@@ -127,21 +154,23 @@
 
   function submitGovernedCustodyProof(proof) {
     validateCustodyProof(proof);
-    return Promise.all([discoverResident(), sha256Uri(proof)]).then(function (parts) {
-      var envelope = {
-        schema: EVIDENCE_SCHEMA,
-        target_node_ref: parts[0],
-        proof: proof,
-        proof_sha256: parts[1],
-        submitted_at: new Date().toISOString(),
-        gateway_execution_authority: "NONE",
-        evidence_grants_authority: false,
-        authority_effect: "NONE_EVIDENCE_ONLY"
-      };
-      return fetch("/api/resident-rendezvous/v1/evidence/site-governed-custody", {
-        method: "POST", credentials: "omit", cache: "no-store", redirect: "error",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(envelope)
+    return residentRendezvousBaseUrl().then(function (gatewayBase) {
+      return Promise.all([discoverResident(gatewayBase), sha256Uri(proof)]).then(function (parts) {
+        var envelope = {
+          schema: EVIDENCE_SCHEMA,
+          target_node_ref: parts[0],
+          proof: proof,
+          proof_sha256: parts[1],
+          submitted_at: new Date().toISOString(),
+          gateway_execution_authority: "NONE",
+          evidence_grants_authority: false,
+          authority_effect: "NONE_EVIDENCE_ONLY"
+        };
+        return fetch(gatewayBase + "/api/resident-rendezvous/v1/evidence/site-governed-custody", {
+          method: "POST", credentials: "omit", cache: "no-store", redirect: "error",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(envelope)
+        });
       });
     }).then(function (response) {
       if (!response.ok) { throw new Error("resident custody evidence rendezvous rejected"); }

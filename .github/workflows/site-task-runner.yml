@@ -1,254 +1,123 @@
 name: Site Task Runner
 
+# GitHub-hosted execution is retained only as an optional validation fallback.
+# Canonical continuation, generated-state mutation, ingestion, live observation,
+# activation, and runtime work belong to StegVerse resident workers.
 on:
   workflow_dispatch:
     inputs:
       task:
-        description: Declared Site validation task
+        description: Optional credential-free Site validation task
         required: true
-        default: all-local
+        default: validate
         type: choice
         options:
-          - all-local
           - validate
           - test-readiness
           - mirror-readiness
           - public-guard
-          - live-url
-          - tt-status
-          - external-evidence
           - task-elimination-guard
-          - local-completion-receipt
-          - autonomous-continuation
-          - universal-ingest
-          - import-governed-transition-index
-  workflow_run:
-    workflows:
-      - Site Bootstrap Validate - No Non-TV/TVC Credential Authority
-    types:
-      - completed
 
-permissions:
-  contents: write
-
-env:
-  STEGVERSE_REPO_SYNC_TOKEN: ${{ secrets.STEGVERSE_REPO_SYNC_TOKEN }}
+permissions: {}
 
 concurrency:
-  # A non-main/cancelled Bootstrap completion must never preempt a valid main
-  # transition for the same SHA before the job-level admission guard evaluates.
-  # Same-SHA transitions with the same conclusion still supersede one another.
-  group: site-orchestrated-transition-${{ github.event.workflow_run.head_sha || github.sha }}-${{ github.event.workflow_run.conclusion || 'manual' }}
+  group: site-validation-fallback-${{ github.ref }}-${{ inputs.task }}
   cancel-in-progress: true
 
 jobs:
-  run-site-task:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' &&
-       github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
+  validate-only:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Resolve authoritative transition
-        id: transition
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_run" ]; then
-            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
-            echo "run_id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
-            echo "source=site-bootstrap-validate" >> "$GITHUB_OUTPUT"
-          else
-            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-            echo "run_id=${{ github.run_id }}" >> "$GITHUB_OUTPUT"
-            echo "source=manual-authorized-dispatch" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Resolve task
-        id: task
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "name=${{ inputs.task }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "name=all-local" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Checkout Site at authoritative commit
-        uses: actions/checkout@v4
-        with:
-          path: site
-          ref: ${{ steps.transition.outputs.sha }}
-          persist-credentials: true
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install optional ingest dependencies
-        if: steps.task.outputs.name == 'all-local' || steps.task.outputs.name == 'universal-ingest'
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install requests beautifulsoup4
-
-      - name: Acquire governed transition and activation evidence
-        if: steps.task.outputs.name == 'all-local'
-        working-directory: site
-        run: |
-          python scripts/acquire_governed_transition_index.py
-          python scripts/acquire_external_framework_catalog.py
-
-      - name: Run declared Site task
-        working-directory: site
-        run: python scripts/run_site_task.py "${{ steps.task.outputs.name }}"
-
-      - name: Persist generated Site state
-        id: mutation
-        if: github.event_name == 'workflow_run'
-        working-directory: site
+      - name: Refuse credential-bearing environment
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          regenerate_on_current_main() {
-            git fetch origin main
-            git reset --hard origin/main
-            python scripts/acquire_governed_transition_index.py
-            python scripts/acquire_external_framework_catalog.py
-            python scripts/run_site_task.py "${{ steps.task.outputs.name }}"
-            git add data/ docs/ || true
-          }
-
-          git add data/ docs/ || true
-          if git diff --cached --quiet; then
-            echo "result=UNCHANGED" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          for attempt in $(seq 1 12); do
-            if [ "$attempt" -gt 1 ]; then
-              echo "Generated-state writeback retry $attempt: regenerate against current origin/main"
-              regenerate_on_current_main
-              if git diff --cached --quiet; then
-                echo "result=REFRESHED_UNCHANGED" >> "$GITHUB_OUTPUT"
-                exit 0
-              fi
+          for name in GITHUB_TOKEN GH_TOKEN GITHUB_PAT TVC_EPHEMERAL_GITHUB_TOKEN STEGVERSE_REPO_SYNC_TOKEN STEGVERSE_PROVIDER_TOKEN STEGVERSE_MASTER_RECORDS_TOKEN STEGVERSE_HIL_REVIEW_TOKEN STEGVERSE_HIL_PUBLICATION_TOKEN CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID ACTIONS_ID_TOKEN_REQUEST_TOKEN; do
+            if [ -n "${!name:-}" ]; then
+              echo "forbidden credential environment variable present: ${name}" >&2
+              exit 1
             fi
-
-            git commit -m "Update Site generated state [skip ci]"
-            if git push origin HEAD:main; then
-              echo "result=COMMITTED" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            echo "Generated-state push raced with main; discard stale generated commit and retry from current main."
-            git reset --hard HEAD^
           done
+          echo 'SITE_TASK_RUNNER_ROLE=OPTIONAL_VALIDATION_FALLBACK_ONLY'
+          echo 'SITE_TASK_RUNNER_PRODUCTION_CONTINUITY_DEPENDENCY=false'
+          echo 'SITE_TASK_RUNNER_RUNTIME_AUTHORITY=NONE'
+          echo 'SITE_TASK_RUNNER_MUTATION_AUTHORITY=NONE'
+          echo 'SITE_TASK_RUNNER_CREDENTIAL_AUTHORITY=NONE'
 
-          echo "Generated-state persistence exhausted 12 bounded retries." >&2
-          exit 1
-
-      # Mutation required disabled for manual validation-only dispatch.
-      - name: Record validation-only mutation boundary
-        id: manual_mutation
-        if: github.event_name != 'workflow_run'
-        run: echo "result=NOT_AUTHORIZED" >> "$GITHUB_OUTPUT"
-
-      - name: Verify External Chat public surfaces
-        id: live_verification
-        if: github.event_name == 'workflow_run'
-        working-directory: site
+      - name: Fetch exact Site source anonymously
+        shell: bash
         run: |
-          for attempt in $(seq 1 12); do
-            if python scripts/check_governed_transition_live_urls.py && python scripts/check_external_chat_live_routes.py && python scripts/check_semantic_shorthand_live_routes.py; then
-              exit 0
-            fi
-            sleep 10
-          done
-          exit 1
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c credential.helper= -c http.extraheader= fetch --no-tags --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test -z "$(git config --local --get-regexp 'extraheader|credential' || true)"
 
-      - name: Build External Chat activation evidence
-        if: always()
-        working-directory: site
-        env:
-          STEGVERSE_PAGES_DEPLOYMENT_URL: https://stegverse.org/
-          STEGVERSE_GATEWAY_BASE_URL: https://stegverse-ecosystem-chat-gateway.onrender.com
-        run: python scripts/build_external_chat_activation_evidence.py
-
-      - name: Write terminal orchestration receipt
-        if: always()
-        working-directory: site
-        env:
-          STEGVERSE_ORCHESTRATION_SOURCE: ${{ steps.transition.outputs.source }}
-          STEGVERSE_ORCHESTRATION_SOURCE_RUN_ID: ${{ steps.transition.outputs.run_id }}
-          STEGVERSE_ORCHESTRATION_SHA: ${{ steps.transition.outputs.sha }}
-          STEGVERSE_GENERATED_STATE_RESULT: ${{ steps.mutation.outputs.result || steps.manual_mutation.outputs.result }}
-          STEGVERSE_PAGES_DEPLOYMENT_RESULT: NOT_OWNED_BY_TASK_RUNNER
-          STEGVERSE_TRANSITION_SUPERSEDED: 'false'
-        run: python scripts/write_site_orchestration_terminal_receipt.py
-
-      - name: Upload External Chat activation evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: external-chat-activation-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          path: site/reports/external-chat-activation-evidence.json
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Upload External Chat live verification receipt
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: external-chat-live-verification-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            site/reports/external-chat-live-verification.json
-            site/reports/semantic-shorthand-live-verification.json
-            site/reports/site-task-diagnostic.json
-            site/reports/site-orchestration-terminal-receipt.json
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Upload Site task diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-task-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
-          path: site/reports/site-task-diagnostic.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Write summary
-        if: always()
-        working-directory: site
+      - name: Verify preinstalled Python and no public package bootstrap
+        shell: bash
         run: |
-          echo "## Site Orchestrated Transition" >> "$GITHUB_STEP_SUMMARY"
-          echo "Task: ${{ steps.task.outputs.name }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Validated SHA: ${{ steps.transition.outputs.sha }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Source run: ${{ steps.transition.outputs.run_id }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Source: ${{ steps.transition.outputs.source }}" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f reports/site-orchestration-terminal-receipt.json ]; then
-            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-          import json
-          from pathlib import Path
-          receipt = json.loads(Path('reports/site-orchestration-terminal-receipt.json').read_text())
-          print(f"Terminal state: {receipt['terminal_state']}")
-          print(f"Receipt SHA-256: {receipt['receipt_sha256']}")
-          print("Authority effect: NONE")
+          python3 --version
+          python3 - <<'PY'
+          import sys
+          assert sys.version_info >= (3, 11), sys.version
+          print('SITE_TASK_RUNNER_PYTHON=PREINSTALLED')
+          print('SITE_TASK_RUNNER_PUBLIC_PACKAGE_INSTALL=false')
           PY
-          fi
-          if [ -f reports/site-task-diagnostic.json ]; then
-            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-          import json
+
+      - name: Enforce validation-only task class
+        shell: bash
+        env:
+          REQUESTED_TASK: ${{ inputs.task }}
+        run: |
+          set -euo pipefail
+          case "$REQUESTED_TASK" in
+            validate|test-readiness|mirror-readiness|public-guard|task-elimination-guard) ;;
+            *)
+              echo "task is not permitted on GitHub-hosted validation fallback: $REQUESTED_TASK" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Run declared validation task
+        shell: bash
+        env:
+          REQUESTED_TASK: ${{ inputs.task }}
+        run: python3 scripts/run_site_task.py "$REQUESTED_TASK"
+
+      - name: Confirm no hosted orchestration or mutation role
+        shell: bash
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
-          diagnostic = json.loads(Path('reports/site-task-diagnostic.json').read_text())
-          print(f"Task diagnostic status: {diagnostic.get('status', 'UNKNOWN')}")
-          print(f"Failed validator: {diagnostic.get('failed_validator') or 'none'}")
-          print(f"Completed validators: {len(diagnostic.get('completed_validators') or [])}")
-          print(f"Authority effect: {diagnostic.get('authority_effect', 'NONE')}")
+          workflow = Path('.github/workflows/site-task-runner.yml').read_text(encoding='utf-8')
+          forbidden = (
+              'workflow_' + 'run:',
+              'permissions:\n  contents: write',
+              'secrets.',
+              'actions/' + 'checkout@',
+              'actions/' + 'setup-python@',
+              'actions/' + 'upload-artifact@',
+              'persist-' + 'credentials: true',
+              'pip ' + 'install',
+              'python -m pip',
+              'git ' + 'push',
+              'STEGVERSE_REPO_SYNC_TOKEN:',
+              'onrender.com',
+              'vercel.app',
+              'netlify.app',
+              'acquire_governed_transition_index.py',
+              'acquire_external_framework_catalog.py',
+              'build_external_chat_activation_evidence.py',
+          )
+          assert 'permissions: {}' in workflow
+          assert 'workflow_dispatch:' in workflow
+          assert 'OPTIONAL_VALIDATION_FALLBACK_ONLY' in workflow
+          assert 'PRODUCTION_CONTINUITY_DEPENDENCY=false' in workflow
+          assert all(marker not in workflow for marker in forbidden), forbidden
+          print('SITE_TASK_RUNNER_HOSTED_ORCHESTRATION=RETIRED')
+          print('SITE_TASK_RUNNER_GITHUB_ACTIONS_ROLE=OPTIONAL_VALIDATION_FALLBACK_ONLY')
+          print('SITE_TASK_RUNNER_PRODUCTION_CONTINUITY_DEPENDENCY=false')
+          print('SITE_TASK_RUNNER_ACTIVATION_EFFECT=NONE')
           PY
-          fi
-          echo "Canonical progression: Site Bootstrap Validate -> exact-SHA Site Task Runner -> terminal receipt." >> "$GITHUB_STEP_SUMMARY"

@@ -20,20 +20,20 @@
     "activation_effect": "NONE"
   },
   "rejected_existing_resources": [
-    {
-      "provider": "VERCEL",
-      "name": "site",
-      "reason": "Existing unlinked project is not the canonical Site publication dependency and is not repurposed."
-    },
-    {
-      "provider": "RENDER",
-      "name": "stegverse-va-claim-guide",
-      "reason": "Existing static site is VA-guide-specific and is not repurposed as the full-Site origin."
-    }
+    {"provider":"VERCEL","name":"site","reason":"Existing unlinked project is not the canonical Site publication dependency and is not repurposed."},
+    {"provider":"RENDER","name":"stegverse-va-claim-guide","reason":"Existing static site is VA-guide-specific and is not repurposed as the full-Site origin."}
   ],
-  "selection_state": "SELECTED_NOT_MATERIALIZED",
-  "service_id": null,
-  "origin_url": null,
+  "selection_state": "MATERIALIZED_LIVE_PROVIDER_OBSERVED",
+  "service_id": "srv-daght9ek1f9s73d1346g",
+  "origin_url": "https://stegverse-site-recovery-origin.onrender.com",
+  "initial_deploy_id": "dep-daght9uk1f9s73d1358g",
+  "initial_deploy_source_commit": "25130aca1fd2393475c615d4c3fc01a29d2724c6",
+  "initial_deploy_status_observed": "live",
+  "provider_build_artifact_entries_observed": 1407,
+  "provider_build_artifact_pass_observed": true,
+  "provider_http_head_root_200_observed": true,
+  "provider_http_get_root_200_observed": true,
+  "provider_primary_url_live_observed": true,
   "publication_observed": false,
   "content_equivalence_observed": false,
   "dns_or_tls_mutation_performed": false,

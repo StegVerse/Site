@@ -25,11 +25,7 @@ def sha256(path: Path) -> str:
 
 
 def main() -> None:
-    subprocess.run(
-        [sys.executable, str(ROOT / "scripts" / "materialize_site_publication_artifact.py"), "--output", "build/site-publication-artifact"],
-        cwd=ROOT,
-        check=True,
-    )
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "materialize_site_publication_artifact.py"), "--output", "build/site-publication-artifact"], cwd=ROOT, check=True)
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     manifest = json.loads((OUT / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("schema") != "stegverse.site.static_publication_artifact.v1":
@@ -59,10 +55,6 @@ def main() -> None:
         expected_lines.append(f"{digest}  public/{rel}\n")
     if (OUT / "SHA256SUMS").read_text(encoding="utf-8") != "".join(expected_lines):
         die("SHA256SUMS differs from manifest")
-
-    # The artifact remains provider-neutral even after an external origin has been
-    # explicitly selected. Provider selection is repository control state, not a
-    # property or authority effect of the materialized artifact itself.
     if manifest.get("provider_selected") is not False:
         die("artifact incorrectly claims provider selection")
     if manifest.get("publication_observed") is not False:
@@ -71,13 +63,15 @@ def main() -> None:
         die("artifact incorrectly claims public equivalence")
 
     obs = contract.get("current_observation", {})
-    if obs.get("non_github_origin_selected") is not True:
-        die("explicit non-GitHub origin selection is not recorded")
-    if obs.get("selected_origin_provider") != "RENDER":
-        die("selected origin provider mismatch")
-    if obs.get("selected_origin_materialized") is not False:
-        die("contract prematurely claims origin materialization")
-    for key in ("non_github_publication_observed", "exact_public_content_equivalence_observed", "tls_equivalence_observed"):
+    if obs.get("non_github_origin_selected") is not True or obs.get("selected_origin_provider") != "RENDER":
+        die("explicit Render origin selection is not recorded")
+    if obs.get("selected_origin_materialized") is not True or obs.get("provider_live_state_observed") is not True:
+        die("materialized/live provider origin evidence missing")
+    if obs.get("static_publication_artifact_materialized") is not True or obs.get("artifact_manifest_verified") is not True:
+        die("publication artifact materialization evidence missing")
+    if obs.get("provider_build_artifact_entries_observed") != 1407:
+        die("provider artifact entry-count observation mismatch")
+    for key in ("independent_publication_observed", "non_github_publication_observed", "exact_public_content_equivalence_observed", "tls_equivalence_observed"):
         if obs.get(key) is not False:
             die(f"contract prematurely claims observation: {key}")
 
@@ -85,8 +79,9 @@ def main() -> None:
     print("ARTIFACT_PROVIDER_SELECTED=false")
     print("NON_GITHUB_ORIGIN_SELECTED=true")
     print("SELECTED_ORIGIN_PROVIDER=RENDER")
-    print("SELECTED_ORIGIN_MATERIALIZED=false")
-    print("NON_GITHUB_PUBLICATION_OBSERVED=false")
+    print("SELECTED_ORIGIN_MATERIALIZED=true")
+    print("PROVIDER_LIVE_STATE_OBSERVED=true")
+    print("INDEPENDENT_PUBLICATION_OBSERVED=false")
     print("EXACT_PUBLIC_CONTENT_EQUIVALENCE_OBSERVED=false")
 
 

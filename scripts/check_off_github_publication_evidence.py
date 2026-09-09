@@ -42,7 +42,7 @@ def main() -> None:
         die("publication artifact format mismatch")
     for key in ("manifest_sha256", "path_count"):
         if artifact.get(key) is not None:
-            die(f"template prematurely records publication artifact observation: {key}")
+            die(f"evidence prematurely claims independently compared artifact value: {key}")
 
     discovery_policy = discovery.get("selection_policy", {})
     if discovery_policy.get("automatic_provider_selection") is not False or discovery_policy.get("explicit_selection_required") is not True:
@@ -55,64 +55,76 @@ def main() -> None:
         die("unexpected origin-selection schema")
     if selection.get("selection_basis") != "EXPLICIT_BOUNDED_RECOVERY_ORIGIN_SELECTION":
         die("origin selection is not explicit bounded recovery selection")
-    if selection.get("selection_state") != "SELECTED_NOT_MATERIALIZED":
-        die("unexpected origin selection state before service materialization")
+    if selection.get("selection_state") != "MATERIALIZED_LIVE_PROVIDER_OBSERVED":
+        die("selected origin is not recorded as live provider-observed")
     if selected.get("provider") != "RENDER" or selected.get("resource_strategy") != "NEW_DEDICATED_SERVICE":
         die("unexpected selected publication origin")
     if selected.get("auto_deploy") is not False:
         die("selected origin enables automatic deployment")
     if selected.get("provider_is_canonical_state_owner") is not False or selected.get("runtime_authority") != "NONE" or selected.get("activation_effect") != "NONE":
         die("selected provider gains canonical state/runtime/activation effect")
-    if selection.get("service_id") is not None or selection.get("origin_url") is not None:
-        die("selection record prematurely claims materialized service")
+    if selection.get("service_id") != "srv-daght9ek1f9s73d1346g":
+        die("materialized Render service id mismatch")
+    if selection.get("origin_url") != "https://stegverse-site-recovery-origin.onrender.com":
+        die("materialized Render origin URL mismatch")
+    if selection.get("initial_deploy_id") != "dep-daght9uk1f9s73d1358g" or selection.get("initial_deploy_status_observed") != "live":
+        die("initial Render deploy evidence mismatch")
+    if selection.get("provider_build_artifact_entries_observed") != 1407 or selection.get("provider_build_artifact_pass_observed") is not True:
+        die("provider artifact-build evidence mismatch")
+    if selection.get("provider_http_head_root_200_observed") is not True or selection.get("provider_http_get_root_200_observed") is not True or selection.get("provider_primary_url_live_observed") is not True:
+        die("provider live-state evidence incomplete")
 
     origin = evidence.get("publication_origin", {})
-    if origin.get("provider_identity") != selected.get("provider"):
-        die("evidence template provider differs from explicit selection")
-    if origin.get("origin_url") is not None:
-        die("template prematurely records materialized origin URL")
+    if origin.get("provider_identity") != selected.get("provider") or origin.get("origin_url") != selection.get("origin_url"):
+        die("evidence origin differs from materialized selection")
     if origin.get("github_hosted") is not False or origin.get("provider_is_canonical_state_owner") is not False:
         die("publication origin violates provider-independence boundary")
     if origin.get("runtime_authority") != "NONE" or origin.get("activation_effect") != "NONE":
         die("publication provider is granted runtime authority or activation effect")
 
     obs = evidence.get("observation", {})
+    if obs.get("provider_live_state_observed") is not True:
+        die("provider live-state observation missing")
     for key in ("publication_observed", "tls_observed", "public_content_equivalence_observed", "canonical_domain_observed"):
         if obs.get(key) is not False:
-            die(f"template prematurely claims observation: {key}")
+            die(f"evidence prematurely claims independent/public observation: {key}")
 
     eq = evidence.get("equivalence", {})
     if eq.get("comparison_method") != "EXACT_PATH_AND_SHA256":
         die("equivalence method is not exact path + SHA-256")
     for key in ("mismatched_paths", "missing_paths", "unexpected_paths"):
         if eq.get(key) != []:
-            die(f"template contains unverified path result: {key}")
+            die(f"evidence contains unverified path result: {key}")
     for key in ("expected_manifest_sha256", "observed_manifest_sha256", "expected_path_count", "observed_path_count"):
         if eq.get(key) is not None:
-            die(f"template contains unobserved equivalence value: {key}")
+            die(f"evidence contains unobserved equivalence value: {key}")
 
     tls = evidence.get("tls", {})
     if tls.get("hostname") != contract.get("canonical_public_domain"):
         die("TLS hostname differs from canonical public domain")
     if tls.get("certificate_observed") is not False:
-        die("template prematurely claims TLS certificate observation")
+        die("evidence prematurely claims canonical-domain TLS observation")
     for key in ("certificate_fingerprint_sha256", "not_before", "not_after"):
         if tls.get(key) is not None:
-            die(f"template contains unobserved TLS value: {key}")
+            die(f"evidence contains unobserved TLS value: {key}")
 
     provenance = evidence.get("provenance", {})
-    for key in ("observed_at", "observation_surface", "receipt_ref"):
-        if provenance.get(key) is not None:
-            die(f"template contains unobserved provenance: {key}")
+    if provenance.get("observation_surface") != "RENDER_PROVIDER_DEPLOY_AND_RUNTIME_LOGS":
+        die("provider observation provenance surface mismatch")
+    if provenance.get("receipt_ref") != "render:service:srv-daght9ek1f9s73d1346g:deploy:dep-daght9uk1f9s73d1358g":
+        die("provider observation receipt ref mismatch")
+    if not provenance.get("observed_at"):
+        die("provider observation timestamp missing")
 
     if evidence.get("authority_effect") != "NONE" or evidence.get("activation_effect") != "NONE":
-        die("publication evidence template asserts authority or activation")
+        die("publication evidence asserts authority or activation")
 
     print("OFF_GITHUB_PUBLICATION_EVIDENCE_CONTRACT=PASS")
     print("PUBLICATION_ORIGIN_SELECTED=true")
     print("PUBLICATION_ORIGIN_PROVIDER=RENDER")
-    print("PUBLICATION_ORIGIN_MATERIALIZED=false")
-    print("PUBLICATION_OBSERVED=false")
+    print("PUBLICATION_ORIGIN_MATERIALIZED=true")
+    print("PROVIDER_LIVE_STATE_OBSERVED=true")
+    print("INDEPENDENT_PUBLICATION_OBSERVED=false")
     print("TLS_OBSERVED=false")
     print("PUBLIC_CONTENT_EQUIVALENCE_OBSERVED=false")
 

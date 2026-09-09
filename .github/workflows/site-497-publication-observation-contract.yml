@@ -7,6 +7,7 @@ on:
       - 'data/publication-origin-discovery-2026-09-09.json'
       - 'data/publication-origin-selection-2026-09-09.json'
       - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_site_publication_artifact.py'
       - 'scripts/check_off_github_publication_evidence.py'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
       - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
@@ -17,6 +18,7 @@ on:
       - 'data/publication-origin-discovery-2026-09-09.json'
       - 'data/publication-origin-selection-2026-09-09.json'
       - 'data/off-github-publication-evidence-template.json'
+      - 'scripts/check_site_publication_artifact.py'
       - 'scripts/check_off_github_publication_evidence.py'
       - 'data/session-work-claims.d/site-third-party-dependency-eradication-497-20260826.json'
       - 'docs/SITE_497_STEGGATE_DEPENDENCY_RECONCILIATION_MIRROR_HANDOFF.md'
@@ -36,14 +38,15 @@ jobs:
           persist-credentials: false
       - name: Validate provider-neutral publication artifact
         run: python3 scripts/check_site_publication_artifact.py
-      - name: Validate explicit origin selection and fail-closed observation evidence
+      - name: Validate live provider origin and fail-closed public observation evidence
         run: python3 scripts/check_off_github_publication_evidence.py
-      - name: Confirm selection has no external mutation effect
+      - name: Confirm provider-live state does not imply public equivalence
         run: |
           echo 'PUBLICATION_ORIGIN_SELECTED=true'
           echo 'PUBLICATION_ORIGIN_PROVIDER=RENDER'
-          echo 'PUBLICATION_ORIGIN_MATERIALIZED=false'
-          echo 'PUBLICATION_MUTATION_PERFORMED=false'
+          echo 'PUBLICATION_ORIGIN_MATERIALIZED=true'
+          echo 'PROVIDER_LIVE_STATE_OBSERVED=true'
+          echo 'INDEPENDENT_PUBLICATION_OBSERVED=false'
           echo 'DNS_MUTATION_PERFORMED=false'
           echo 'TLS_RECOVERY_CLAIMED=false'
           echo 'PUBLIC_CONTENT_EQUIVALENCE_CLAIMED=false'

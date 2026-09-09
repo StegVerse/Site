@@ -42,12 +42,15 @@
     "template_must_remain_unobserved_until_authentic_publication": true
   },
   "current_observation": {
-    "static_publication_artifact_materialized": false,
-    "artifact_manifest_verified": false,
+    "static_publication_artifact_materialized": true,
+    "artifact_manifest_verified": true,
     "publication_observation_evidence_contract_installed": true,
     "non_github_origin_selected": true,
     "selected_origin_provider": "RENDER",
-    "selected_origin_materialized": false,
+    "selected_origin_materialized": true,
+    "provider_live_state_observed": true,
+    "provider_build_artifact_entries_observed": 1407,
+    "independent_publication_observed": false,
     "non_github_publication_observed": false,
     "exact_public_content_equivalence_observed": false,
     "tls_equivalence_observed": false

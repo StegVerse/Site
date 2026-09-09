@@ -1,0 +1,47 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-OPAQUE-RESOLVER-HANDOFF-RELEASE-STATE-20260830",
+      "session_worker_id": "chatgpt:email-action-monitor:opaque-resolver-release-state-20260830",
+      "task_id": "SITE-OPAQUE-RESOLVER-HANDOFF-RELEASE-STATE-20260830",
+      "originating_goal": "Repair the failure-email-identified stale #680 handoff lifecycle state after the canonical claim was released, without altering runtime, origin, DNS/TLS, Interlock, KV, credential, or activation authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/opaque-resolver-handoff-release-state-20260830",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_VALIDATION",
+      "normalized_work_key": "site-opaque-resolver-handoff-release-state-reconciliation-20260830",
+      "dependency_surface_keys": [
+        "site:stegverse-me-opaque-node-resolver",
+        "site:session-work-claim-reconciliation"
+      ],
+      "claimed_paths": [
+        "docs/STEGVERSE_ME_OPAQUE_NODE_RESOLVER_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-opaque-resolver-handoff-release-state-20260830.json"
+      ],
+      "handoff": "docs/STEGVERSE_ME_OPAQUE_NODE_RESOLVER_MIRROR_HANDOFF.md",
+      "claim_created_at": "2026-08-30T15:29:00Z",
+      "claim_expires_when": "Release after exact-head validation and merge of the handoff-only lifecycle reconciliation.",
+      "expected_evidence": [
+        "SESSION_WORK_CLAIMS_PASS",
+        "SITE_HANDOFF_ORCHESTRATION_PASS",
+        "STEGVERSE_ME_OPAQUE_RESOLVER_PASS",
+        "Site Bootstrap PASS"
+      ],
+      "collision_boundaries": [
+        "Own only the #680 handoff lifecycle reconciliation and this claim fragment",
+        "Do not mutate resolver implementation source",
+        "Do not mutate DNS/TLS, provider, credential, Interlock/InTr, private KV, runtime, receipt, recovery, or activation authority",
+        "No NON-TV/TVC secret/token"
+      ],
+      "next_task_after_release": "No further source repair in this lane unless live validation exposes another concrete defect.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_HANDOFF_RECONCILIATION",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "handoff_revision": "6e72aa29cf6715f336da3f65806efe9fb5a8eb86"
+    }
+  ]
+}

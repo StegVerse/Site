@@ -4,7 +4,7 @@ Repository: `StegVerse-Labs/Site`
 Issue: `#680`
 Goal: `SITE-STEGVERSE-ME-OPAQUE-RESOLVER-680`
 Branch: `feature/stegverse-me-opaque-resolver-680-r1`
-State: SOURCE_MERGED_PENDING_CLAIM_RELEASE
+State: RELEASED
 Authority effect: NONE
 Activation effect: false
 
@@ -85,3 +85,13 @@ Container network could not resolve github.com, so repository-wide local sandbox
 - Ecosystem Heartbeat Orchestration: PASS
 - StegOS Node Public Observation: PASS
 - Source merge does not establish production origin, DNS/TLS, authentic Interlock admission, private-KV readback, or activation.
+
+
+## Claim release reconciliation — 2026-08-30
+
+- Claim release PR: #723
+- Claim release merge: `aee413233d7154b8d60c37d6f4acfaa866a33e8d`
+- Claim registry state: `RELEASED`
+- Claim role: `RELEASED_INTEGRATION`
+- Source implementation remains merged at `f8eb999f82d37ee3203968fc02bddba14453bb47`.
+- This handoff transition records claim release only. Production origin, DNS/TLS, authentic Interlock admission, private-KV readback, and runtime activation remain unobserved and are not claimed.

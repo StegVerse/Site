@@ -13,15 +13,15 @@
     "path_count": null
   },
   "publication_origin": {
-    "provider_identity": "RENDER",
-    "origin_url": "https://stegverse-site-recovery-origin.onrender.com",
+    "provider_identity": null,
+    "origin_url": null,
     "github_hosted": false,
     "provider_is_canonical_state_owner": false,
     "runtime_authority": "NONE",
     "activation_effect": "NONE"
   },
   "observation": {
-    "provider_live_state_observed": true,
+    "provider_live_state_observed": false,
     "publication_observed": false,
     "tls_observed": false,
     "public_content_equivalence_observed": false,
@@ -45,10 +45,11 @@
     "not_after": null
   },
   "provenance": {
-    "observed_at": "2026-09-09T08:54:44Z",
-    "observation_surface": "RENDER_PROVIDER_DEPLOY_AND_RUNTIME_LOGS",
-    "receipt_ref": "render:service:srv-daght9ek1f9s73d1346g:deploy:dep-daght9uk1f9s73d1358g"
+    "observed_at": null,
+    "observation_surface": null,
+    "receipt_ref": null
   },
+  "rejected_provider_evidence_ref": "data/publication-origin-selection-2026-09-09.json#historical_rejected_materialization",
   "authority_effect": "NONE",
   "activation_effect": "NONE"
 }

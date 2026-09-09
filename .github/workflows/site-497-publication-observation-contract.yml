@@ -38,14 +38,13 @@ jobs:
           persist-credentials: false
       - name: Validate provider-neutral publication artifact
         run: python3 scripts/check_site_publication_artifact.py
-      - name: Validate live provider origin and fail-closed public observation evidence
+      - name: Validate no-hosted-origin and fail-closed public observation evidence
         run: python3 scripts/check_off_github_publication_evidence.py
-      - name: Confirm provider-live state does not imply public equivalence
+      - name: Confirm Render is rejected and no hosted origin is selected
         run: |
-          echo 'PUBLICATION_ORIGIN_SELECTED=true'
-          echo 'PUBLICATION_ORIGIN_PROVIDER=RENDER'
-          echo 'PUBLICATION_ORIGIN_MATERIALIZED=true'
-          echo 'PROVIDER_LIVE_STATE_OBSERVED=true'
+          echo 'PUBLICATION_ORIGIN_SELECTED=false'
+          echo 'RENDER_ALLOWED=false'
+          echo 'PROVIDER_LIVE_STATE_OBSERVED=false'
           echo 'INDEPENDENT_PUBLICATION_OBSERVED=false'
           echo 'DNS_MUTATION_PERFORMED=false'
           echo 'TLS_RECOVERY_CLAIMED=false'

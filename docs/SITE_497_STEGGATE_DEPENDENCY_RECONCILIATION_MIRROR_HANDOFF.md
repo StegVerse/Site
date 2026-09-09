@@ -6,50 +6,35 @@ Goal: `KV-CONNECTION-REVALIDATION-WORKER-001`
 Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
 COSV: `50000000102000`
 Upstream handoff: `StegVerse-Labs/StegCore/docs/STEGGATE_HOSTED_CARRIER_RETIREMENT_MIRROR_HANDOFF.md`
-Current continuation branch: `task/site-497-publication-origin-selection-20260909`
-Current pull request: `PENDING`
+Current continuation branch: `fix/site-497-remove-render-20260909`
 
-## Merged evidence
+## Merged provider-independent evidence
 
-- PR #1155 merged at `7a32080b6ce6cc072d1d18d041220244aceec948`, authenticating external recovery-bundle retention, off-GitHub restore, and off-GitHub validation for archive SHA-256 `a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f` with 3400 verified entries.
-- PR #1158 merged at `78c2cc8f3a83069939112c1457a4c4b5b1148dff`, adding provider-neutral `STEGVERSE_SITE_STATIC_PUBLICATION_V1` materialization and exact per-file validation.
-- PR #1160 merged at `66ead1a2c0c93cc7fd2fc26331220cf99a59c827`, recording no existing explicitly selected admissible non-GitHub full-Site origin.
-- PR #1162 merged at `25c86a2ea7818841f0ad56b0cbf17c55a7de0c3d`, installing the fail-closed authentic publication-observation evidence seam after all exact-head gates passed.
-- PR #1163 merged at `25130aca1fd2393475c615d4c3fc01a29d2724c6` after Site 497 Publication Observation Contract, No Required Third-Party Runtime, Ecosystem Heartbeat, Site Handoff Orchestrator, and Site Bootstrap all passed on exact head `7171ef62d76c3654797a961376e4192dde731d5c`. It explicitly selected a new dedicated Render recovery origin with auto-deploy disabled and no canonical-state/runtime/activation role.
+- PR #1155 merged external recovery-bundle retention, off-GitHub restore, and off-GitHub validation for archive SHA-256 `a9b81dfb7a34e7b4c627145e6ab817466b92c1ea9176fc41f76e420a2b201b0f` with 3400 verified entries.
+- PR #1158 merged provider-neutral `STEGVERSE_SITE_STATIC_PUBLICATION_V1` materialization and exact per-file validation.
+- PR #1162 merged the fail-closed authentic publication-observation evidence seam.
 
-## Authentic Render origin materialization
+## Render rejection / remediation
 
-The selected origin has now been physically created in the connected Render workspace without DNS mutation:
+PRs #1163 and #1166 selected and materialized a dedicated Render recovery origin. That direction is rejected by explicit user requirement: **NO RENDER**.
+
+Canonical current state therefore treats the previously created Render service only as historical rejected evidence. It is not a dependency, not a selected origin, not eligible for equivalence proof, not eligible for DNS binding, and must not be used by this lane.
+
+`data/publication-origin-selection-2026-09-09.json` now requires:
 
 ```text
-provider = RENDER
-service = stegverse-site-recovery-origin
-service_id = srv-daght9ek1f9s73d1346g
-origin_url = https://stegverse-site-recovery-origin.onrender.com
-auto_deploy = false
-initial_deploy_id = dep-daght9uk1f9s73d1358g
-source_commit = 25130aca1fd2393475c615d4c3fc01a29d2724c6
-provider deploy status = live
+selection_state = NO_HOSTED_ORIGIN_SELECTED
+selected_origin = null
+RENDER_ALLOWED = false
 ```
 
-Provider-backed build/runtime evidence records:
+The historical service/deploy identifiers are retained only inside `historical_rejected_materialization` so the mistake remains auditable without remaining operationally selected.
 
-- exact source commit checkout `25130aca1fd2393475c615d4c3fc01a29d2724c6`;
-- exact recorded build command executed;
-- `SITE_STATIC_PUBLICATION_ARTIFACT=PASS entries=1407`;
-- build completed successfully;
-- exact recorded HTTP server start command executed against `build/site-publication-artifact/public`;
-- provider-side `HEAD /` returned 200;
-- provider-side `GET /` returned 200;
-- Render reported the service live at its primary onrender.com URL.
-
-This proves selected-origin materialization and provider-observed live state. It does not yet prove independent public reachability, full exact-path/SHA-256 equivalence from an independent observer, canonical `stegverse.org` binding, or canonical-domain TLS recovery.
-
-`data/publication-origin-selection-2026-09-09.json`, `data/off-github-publication-evidence-template.json`, `data/publication-equivalence-contract.json`, `scripts/check_site_publication_artifact.py`, and `scripts/check_off_github_publication_evidence.py` now preserve that distinction explicitly.
+`data/off-github-publication-evidence-template.json` is reset to provider-neutral/unobserved state. `scripts/check_off_github_publication_evidence.py` now fails closed if any hosted origin is selected for this lane and specifically requires Render to remain prohibited. The focused workflow also asserts `PUBLICATION_ORIGIN_SELECTED=false` and `RENDER_ALLOWED=false`.
 
 ## README maintenance
 
-Root `README.md` was reviewed after materialization. Its provider-independent recovery boundary remains factually accurate: the dedicated Render origin is a bounded recovery/publication proof carrier and does not become canonical Site state or a required runtime dependency. No existing README statement falsely claims that no recovery origin exists, so no broad README rewrite is required in this increment.
+Root `README.md` was reviewed. Its provider-independent recovery boundary remains the correct target. No README wording is required to make Render part of the architecture; Render is explicitly excluded from this continuation.
 
 ## Current truth
 
@@ -62,11 +47,9 @@ off-GitHub restore = OBSERVED
 off-GitHub validation = OBSERVED
 provider-neutral static publication artifact = MERGED_SOURCE_VALIDATED
 publication observation evidence contract = MERGED_SOURCE_VALIDATED
-non-GitHub publication origin selected = true
-selected provider = RENDER
-selected origin materialized = true
-provider live state = OBSERVED
-provider artifact entries = 1407
+hosted publication origin selected = false
+Render allowed for Site #497 recovery/publication = false
+Render materialization = HISTORICAL_REJECTED_DO_NOT_USE
 independent public reachability = PENDING
 exact public-content equivalence proof = PENDING
 canonical-domain DNS/TLS recovery proof = PENDING
@@ -75,12 +58,13 @@ resident/provider-neutral public rendezvous proof = PENDING
 
 ## Remaining work
 
-1. Validate and merge the Render materialization evidence continuation.
-2. Run an independent remote exact-path/SHA-256 comparison against `https://stegverse-site-recovery-origin.onrender.com` and populate the publication evidence packet only from that authentic observation.
-3. Execute the controlled `stegverse.org` DNS/TLS recovery drill only after origin equivalence is proven.
-4. Materialize and authentically observe a resident/provider-neutral public rendezvous.
-5. At release readiness, tag/release and create a separate downstream propagation-verification task for StegVerse-Labs/Sit, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+1. Validate and merge the no-Render remediation.
+2. Continue toward a genuinely provider-neutral/resident publication path without selecting Render.
+3. Capture independent exact-content equivalence only against the eventual admissible non-Render path.
+4. Execute controlled `stegverse.org` DNS/TLS recovery only after that path is proven.
+5. Materialize and authentically observe the resident/provider-neutral public rendezvous.
+6. At release readiness, tag/release and create the separate downstream propagation-verification task.
 
 ## Manual work
 
-None. No registrar, nameserver, canonical-domain DNS, or TLS mutation has been performed.
+The connected Render tool does not expose service deletion or suspension. The historical service `stegverse-site-recovery-origin` (`srv-daght9ek1f9s73d1346g`) therefore cannot be deleted from this chat. Delete it in the Render dashboard at `https://dashboard.render.com/web/srv-daght9ek1f9s73d1346g`; no DNS changes are required.

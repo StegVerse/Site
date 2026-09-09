@@ -10,11 +10,11 @@ on:
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'scripts/check_third_party_dependency_invariant.py'
-      - 'scripts/check_steggate_carrier_inventory_reconciliation.py'
+      - 'scripts/check_third_party_dependency_reconciliation.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-runtime-cutover-current.json'
-      - 'data/steggate-hosted-carrier-retirement-reconciliation.json'
+      - 'data/third-party-dependency-reconciliation-2026-09-09.json'
       - '.github/workflows/validate.yml'
       - '.github/workflows/site-task-runner.yml'
       - '.github/workflows/no-required-third-party-runtime.yml'
@@ -28,11 +28,11 @@ on:
       - 'scripts/check_ecosystem_chat_gateway_activation.py'
       - 'scripts/check_no_required_third_party_runtime.py'
       - 'scripts/check_third_party_dependency_invariant.py'
-      - 'scripts/check_steggate_carrier_inventory_reconciliation.py'
+      - 'scripts/check_third_party_dependency_reconciliation.py'
       - 'data/render-gateway-replacement-plan.json'
       - 'data/third-party-dependency-inventory.json'
       - 'data/third-party-runtime-cutover-current.json'
-      - 'data/steggate-hosted-carrier-retirement-reconciliation.json'
+      - 'data/third-party-dependency-reconciliation-2026-09-09.json'
       - '.github/workflows/validate.yml'
       - '.github/workflows/site-task-runner.yml'
       - '.github/workflows/no-required-third-party-runtime.yml'
@@ -58,7 +58,7 @@ jobs:
         run: python3 scripts/check_no_required_third_party_runtime.py
       - name: Reconcile historical inventory with current carrier cutover
         run: |
-          python3 scripts/check_steggate_carrier_inventory_reconciliation.py
+          python3 scripts/check_third_party_dependency_reconciliation.py
           python3 scripts/check_third_party_dependency_invariant.py
       - name: Verify Ecosystem Chat gateway cutover contract
         run: python3 scripts/check_ecosystem_chat_gateway_activation.py

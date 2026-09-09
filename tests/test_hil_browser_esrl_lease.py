@@ -78,13 +78,17 @@ def test_esrl_page_auto_resumes_once_and_persists_exact_lease_result():
     assert 'localStorage.removeItem(RESULT_KEY)' in page
 
 
-def test_exact_v16_service_worker_loads_esrl_through_existing_hil_state_bridge():
+def test_exact_v16_service_worker_refreshes_stale_esrl_navigation_without_resetting_state():
     worker = (BOOT / "service-worker.js").read_text(encoding="utf-8")
     bridge = (BOOT / "hil-portable-state-bridge.js").read_text(encoding="utf-8")
     assert 'importScripts("./hil-portable-state-bridge.js")' in worker
     assert 'importScripts("./hil-browser-esrl-lease.js")' not in worker
     assert 'CACHE_NAME = "stegos-web-bootstrap-v16"' in worker
+    assert 'var ESRL_PAGE_PATH = "/stegos-bootstrap/hil-esrl-activate.html"' in worker
+    assert '"./hil-esrl-activate.html"' in worker
+    assert 'self.clients.matchAll({ type: "window", includeUncontrolled: true })' in worker
+    assert 'url.pathname !== ESRL_PAGE_PATH' in worker
+    assert 'return client.navigate(client.url);' in worker
     assert 'importScripts("./hil-browser-receiver.js")' in bridge
     assert 'importScripts("./hil-browser-esrl-lease.js")' in bridge
     assert "indexedDB.deleteDatabase" not in worker
-    assert "caches.delete" not in worker

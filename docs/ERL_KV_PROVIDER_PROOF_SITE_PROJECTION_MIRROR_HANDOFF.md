@@ -26,6 +26,11 @@ Bind Site's existing MyKV ERL and StegSocials preparation projection to the comp
 
 The projection references upstream proof. It does not replay the provider operation, expose credentials, activate a runtime, publish content, or infer downstream propagation from documentation.
 
+## Merge evidence
+
+- Site PR #1174 merged at `ca106480cd78a35fffa107e73a678219ca918bb1`.
+- All ten hosted workflows passed, including focused ERL KV projection validation, Site Bootstrap, Site Handoff Orchestrator, StegSocials preparation, and Ecosystem Heartbeat.
+
 ## Current state
 
-UPDATE_REQUIRED_IMPLEMENTED / VALIDATION_PENDING / MERGE_PENDING
+UPDATE_REQUIRED_IMPLEMENTED / VALIDATED / MERGED

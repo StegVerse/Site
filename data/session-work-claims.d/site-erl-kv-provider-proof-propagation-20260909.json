@@ -8,9 +8,9 @@
       "task_id": "SS-ERL-KV-PROPAGATION-VERIFICATION-001",
       "originating_goal": "Propagate completed ERL MyKV provider-operation and Master Records custody evidence into the existing Site MyKV ERL and StegSocials preparation projection.",
       "repository": "StegVerse-Labs/Site",
-      "branch": "codex/ss-erl-kv-propagation-20260909",
+      "branch": "codex/ss-erl-kv-propagation-terminal-20260909",
       "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "CLAIMED_FOR_VALIDATION",
       "normalized_work_key": "site-erl-kv-provider-proof-propagation",
       "dependency_surface_keys": [
         "erl:provider-operation-proof",
@@ -27,7 +27,7 @@
         "data/session-work-claims.d/site-erl-kv-provider-proof-propagation-20260909.json"
       ],
       "handoff": "docs/ERL_KV_PROVIDER_PROOF_SITE_PROJECTION_MIRROR_HANDOFF.md",
-      "handoff_revision": "UPDATE_REQUIRED_IMPLEMENTED_VALIDATION_PENDING",
+      "handoff_revision": "SITE_PR_1174_MERGED_TERMINAL_HANDOFF_VALIDATION_PENDING",
       "claim_created_at": "2026-09-09T08:25:00-05:00",
       "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
       "expected_evidence": [

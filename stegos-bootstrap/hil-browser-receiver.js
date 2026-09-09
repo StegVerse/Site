@@ -201,6 +201,7 @@
           browser_context_id: body.browser_context_id,
           claim_id: checkoutReceipt.claim_id,
           fencing_token: checkoutReceipt.fencing_token,
+          canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
           continuation_reused_existing_checkout: continuationReused,
           second_claim_minted: false,
           transition: EXPECTED_TRANSITION,

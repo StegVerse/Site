@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Prepare an ERL-backed StegSocials draft from your KnowledgeVault without publishing it.">
+<title>StegVerse — Prepare Social Post</title>
+<link rel="stylesheet" href="sv-shared.css">
+<style>
+.wrap{max-width:900px;margin:0 auto}.panel{background:var(--surface);border:2px solid var(--border);border-radius:18px;padding:16px;margin:0 0 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field label{font-size:.88rem;color:var(--muted)}.field input,.field select,.field textarea{width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text)}.field textarea{min-height:230px;resize:vertical}.mono{font:12px/1.5 var(--mono);word-break:break-word}.actions{display:flex;gap:10px;flex-wrap:wrap}.status{font:12px/1.5 var(--mono);margin-top:10px}.status.error{color:#ffb4ab}.preview{white-space:pre-wrap}.premium{opacity:.75}.note{color:var(--muted);font-size:.9rem}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="sv-nav"><a class="sv-nav-brand" href="index.html">StegVerse</a><a class="active" href="my-kv.html">My KV</a><a href="my-kv-directory.html?dir=erl">ERL</a></nav>
+<main class="sv-wrap wrap">
+<a href="my-kv-directory.html?dir=erl">← Back to ERL</a>
+<section class="panel">
+<h1>Prepare a StegSocials post</h1>
+<p>Use an ERL artifact as research provenance, shape a private draft for a platform, and copy the finished text for manual publication. This page does not contact a social provider or resolve credentials.</p>
+<div class="grid">
+<div class="field"><label for="erl-ref">ERL reference</label><input id="erl-ref" class="mono" autocomplete="off"></div>
+<div class="field"><label for="platform">Platform</label><select id="platform"><option value="LINKEDIN">LinkedIn</option><option value="FACEBOOK">Facebook</option><option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="OTHER">Other</option></select></div>
+<div class="field"><label for="account-ref">Account/page reference</label><input id="account-ref" autocomplete="off" placeholder="Optional"></div>
+<div class="field"><label for="evidence-ref">Post-specific evidence reference</label><input id="evidence-ref" class="mono" autocomplete="off" placeholder="Optional until evidence bundle exists"></div>
+</div>
+<div class="field" style="margin-top:12px"><label for="body">Draft text</label><textarea id="body" placeholder="Write or paste your draft here."></textarea></div>
+<div class="grid" style="margin-top:12px">
+<div class="field"><label for="hashtags">Hashtags, space separated</label><input id="hashtags" placeholder="#StegVerse #AIGovernance"></div>
+<div class="field"><label for="source-link">Public source link</label><input id="source-link" autocomplete="off" placeholder="Optional"></div>
+</div>
+<p id="shape-guidance" class="note"></p>
+<div class="actions"><button id="prepare" class="sv-btn sv-btn-primary" type="button">Prepare draft</button><button id="copy" class="sv-btn sv-btn-secondary" type="button" disabled>Copy post text</button><button id="copy-bundle" class="sv-btn sv-btn-secondary" type="button" disabled>Copy preparation bundle</button></div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</section>
+<section class="panel premium">
+<h2>Premium automated posting</h2>
+<p>Automated and scheduled publication are separate premium capabilities. They are intentionally not executed from this preparation surface. Premium publication enters the separately governed release/provider path after entitlement and credential/runtime checks.</p>
+</section>
+<section id="preview-panel" class="panel" hidden>
+<h2>Prepared draft</h2>
+<div id="preview" class="preview"></div>
+<p class="mono" id="draft-path"></p>
+</section>
+</main>
+<script src="assets/stegsocials-post-preparation.js"></script>
+<script>
+(function(){
+"use strict";
+var api=window.StegVerseStegSocialsPreparation;
+var params=new URLSearchParams(location.search);
+var erl=document.getElementById("erl-ref"), platform=document.getElementById("platform"), account=document.getElementById("account-ref"), evidence=document.getElementById("evidence-ref"), body=document.getElementById("body"), hashtags=document.getElementById("hashtags"), source=document.getElementById("source-link"), prepare=document.getElementById("prepare"), copy=document.getElementById("copy"), copyBundle=document.getElementById("copy-bundle"), status=document.getElementById("status"), preview=document.getElementById("preview"), panel=document.getElementById("preview-panel"), draftPath=document.getElementById("draft-path"), guidance=document.getElementById("shape-guidance");
+var current=null;
+var ref=params.get("erl_ref")||"";
+if(ref){erl.value=ref.indexOf("02_Research/ERL/")===0?ref:"02_Research/ERL/"+ref.replace(/^\/+/,"");}
+if(params.get("platform"))platform.value=String(params.get("platform")).toUpperCase();
+function updateGuidance(){try{var g=api.platformGuidance(platform.value);guidance.textContent=g.soft_limit?g.label+" shaping guide: "+g.soft_limit+" character soft limit for this preparation surface.":g.label+" shaping guide: no local soft character limit is enforced.";}catch(e){guidance.textContent=e.message;}}
+platform.addEventListener("change",updateGuidance);updateGuidance();
+function parseTags(v){return String(v||"").trim().split(/\s+/).filter(Boolean);}
+prepare.addEventListener("click",function(){
+  try{
+    current=api.build({
+      platform:platform.value,
+      erl_ref:erl.value,
+      body:body.value,
+      account_ref:account.value||null,
+      evidence_bundle_ref:evidence.value||"UNRESOLVED_POST_SPECIFIC_EVIDENCE",
+      hashtags:parseTags(hashtags.value),
+      source_links:source.value?[source.value]:[],
+      source_refs:source.value?[source.value,erl.value]:[erl.value],
+      tier:"STANDARD",
+      publication_plan:"MANUAL",
+      automated_posting_entitled:false
+    });
+    preview.textContent=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");
+    draftPath.textContent="Target KV draft path: "+current.kv_context.draft_path;
+    panel.hidden=false;copy.disabled=false;copyBundle.disabled=false;
+    status.textContent="Draft prepared locally. No provider call was performed. Review the text, then copy it for manual publication.";status.className="status";
+  }catch(e){current=null;panel.hidden=true;copy.disabled=true;copyBundle.disabled=true;status.textContent=e.message;status.className="status error";}
+});
+copy.addEventListener("click",function(){if(!current)return;var text=current.content.body+(current.content.hashtags.length?"\n\n"+current.content.hashtags.join(" "):"");navigator.clipboard.writeText(text).then(function(){status.textContent="Post text copied. Manual publication remains under your control.";}).catch(function(){status.textContent="Clipboard access was unavailable; select the prepared text manually.";status.className="status error";});});
+copyBundle.addEventListener("click",function(){if(!current)return;navigator.clipboard.writeText(JSON.stringify(current,null,2)).then(function(){status.textContent="Preparation bundle copied. It contains no provider credential material.";}).catch(function(){status.textContent="Clipboard access was unavailable.";status.className="status error";});});
+}());
+</script>
+</body>
+</html>

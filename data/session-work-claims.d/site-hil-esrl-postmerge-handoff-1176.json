@@ -12,7 +12,7 @@
       "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
       "handoff_revision": "PENDING_BRANCH_HEAD",
       "role": "POST_MERGE_HANDOFF_RECONCILIATION",
-      "state": "CLAIMED",
+      "state": "RELEASED",
       "normalized_work_key": "site-hil-esrl-postmerge-handoff-1176",
       "dependency_surface_keys": ["site:hil-esrl-postmerge-handoff"],
       "claimed_paths": [
@@ -43,7 +43,10 @@
       "render_required": false,
       "authority_effect": false,
       "activation_effect": false,
-      "archive_eligible": false
+      "archive_eligible": false,
+      "pull_request": 1176,
+      "release_commit": "c1b75e1a7ee095918db727a0da87688c544af5e4",
+      "claim_released_at": "2026-09-09T09:40:00-05:00"
     }
   ]
 }

@@ -53,8 +53,8 @@
       "originating_goal": "Finalize the focused Site handoff after merged PRs #1167 and #1170 so no merged work is still described as pending and the next authentic current-iPhone proof step is the only remaining Site action.",
       "repository": "StegVerse-Labs/Site",
       "branch": "ss-erl-current-iphone-handoff-finalize-20260909",
-      "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "role": "RELEASED_INTEGRATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-stegsocials-erl-current-iphone-handoff-finalize",
       "dependency_surface_keys": ["site:my-kv-directory","stegsocials:erl-assisted-drafting"],
       "claimed_paths": ["docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md","data/session-work-claims.d/site-stegsocials-erl-empty-resident-kv-clarity-20260909.json"],
@@ -69,7 +69,11 @@
       "credential_requirement": "NONE_FOR_HANDOFF_FINALIZATION",
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
-      "activation_effect": false
+      "activation_effect": false,
+      "pull_request": 1171,
+      "release_commit": "29eb1889c067950fae1c3485b3500f0e50d0214e",
+      "claim_released_at": "2026-09-09T08:34:00-05:00",
+      "archive_eligible": true
     }
   ]
 }

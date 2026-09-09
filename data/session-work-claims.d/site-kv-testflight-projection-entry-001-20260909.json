@@ -29,13 +29,15 @@
         "assets/kv-testflight-projection-export.js",
         "kv-testflight-projection.html",
         "tests/kv-testflight-projection-entry.test.cjs",
+        ".github/workflows/kv-testflight-projection-entry.yml",
         "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
+        "README.md",
         "data/session-work-claims.d/site-kv-testflight-projection-entry-001-20260909.json"
       ],
       "handoff": "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
       "handoff_revision": "PURPOSE_BOUND_DEVICE_KV_INTR_PROJECTION_ENTRY_SOURCE_IMPLEMENTED",
       "claim_created_at": "2026-09-09T22:18:00Z",
-      "claim_expires_when": "Release only after exact-head Site validation passes, the implementation is merged, and claim terminalization records the merge evidence.",
+      "claim_expires_when": "Release only after focused and repository exact-head Site validation pass, the implementation is merged, README/handoff are current, and claim terminalization records the merge evidence.",
       "expected_evidence": [
         "existing current-device Device-KV Universal InTr path reused",
         "purpose CURRENT_IPHONE_TESTFLIGHT_SIGNING bound inside exact admitted request",
@@ -43,7 +45,8 @@
         "verified resident KV installation required",
         "browser capabilities observed from APIs without browser identity or fingerprinting",
         "exact nine-field KV projection context exported without KV lineage leakage",
-        "Site validation succeeds"
+        "focused KV TestFlight projection regression workflow passes",
+        "Site bootstrap, handoff orchestration, and heartbeat validation succeed"
       ],
       "collision_boundaries": [
         "Do not modify the root InTr service worker or create a second InTr runtime",

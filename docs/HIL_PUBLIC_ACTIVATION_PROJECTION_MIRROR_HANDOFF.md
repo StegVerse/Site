@@ -20,7 +20,7 @@ This lane projects the HIL activation surface into the actual `stegverse.org` Gi
 - `stegos-bootstrap/hil-portable-state-bridge.js`
 - `stegos-bootstrap/hil-portable-native-bridge.js`
 
-The existing Site service worker remains the only service worker. `stegos-bootstrap/service-worker.js` continues to load the released v13 runtime, then loads the package-aware HIL state bridge and HIL activation bridge. Cache generation advances to `stegos-web-bootstrap-v16` so installed current-iPhone clients refresh.
+The existing Site service worker remains the only service worker. `stegos-bootstrap/service-worker.js` continues to load the released v13 runtime, then loads the package-aware HIL state bridge and HIL activation bridge. The established `stegos-web-bootstrap-v15` cache contract is preserved; the changed service-worker source bytes trigger browser update/install, and the HIL bridge install listener adds the exact HIL package to the existing cache.
 
 The HIL package remains bound to the canonical `.github` WorkerCoordinator package and StegOS native receiver source. The browser does not accept caller-supplied HIL claim/fence values and does not create a second WorkerCoordinator.
 

@@ -84,6 +84,35 @@ activation, or a real external render receipt has already been observed.
 | [`support.html`](support.html) | Support StegVerse Research |
 | [`Papers.html`](Papers.html) | Papers and research |
 | [`cfp/cfp.html`](cfp/cfp.html) | CFP/NCAAF current-season projection with explicit season, phase, freshness, and degraded-state semantics |
+| [`stegsocials-prepare.html`](stegsocials-prepare.html) | ERL-backed StegSocials preparation surface — standard/manual draft preparation only; no social-provider call or credential resolution |
+
+### ERL-backed StegSocials post preparation
+
+Site projects the canonical StegSocials `stegverse.stegsocials.post-preparation/v1` capability into MyKV. The canonical owner is `StegVerse-Labs/StegSocials`; Site does not create a competing preparation or evidence authority.
+
+MyKV exposes `02_Research/ERL` and `02_Research/StegSocials/Drafts`. Eligible ERL file entries can open `stegsocials-prepare.html`, which builds a private platform-shaped preparation bundle, preserves the ERL reference, shows the intended KV draft path, and supports copy/manual-publication completion.
+
+```text
+STANDARD
+KV -> ERL -> StegSocials preparation -> private draft -> review/edit -> manual publication
+
+PREMIUM
+STANDARD + explicit entitlement -> separate governed provider release path -> automated/scheduled publication -> result/receipt
+```
+
+Automated or scheduled publication is premium and remains outside the Site preparation surface. Preparation performs no provider call, accepts no provider credential material, and does not claim that a displayed target KV path has been durably written without authentic KV write/readback evidence.
+
+Relevant surfaces:
+
+| File | Purpose |
+|------|---------|
+| [`assets/my-kv-directory.js`](assets/my-kv-directory.js) | MyKV ERL and StegSocials Drafts directory registration plus read-only directory semantics |
+| [`my-kv-directory.html`](my-kv-directory.html) | ERL entry browser with Prepare post action |
+| [`assets/stegsocials-post-preparation.js`](assets/stegsocials-post-preparation.js) | Local canonical-shape preparation builder, entitlement boundary, and credential-like input refusal |
+| [`stegsocials-prepare.html`](stegsocials-prepare.html) | Standard preparation/manual completion UI |
+| [`tests/stegsocials-post-preparation.test.cjs`](tests/stegsocials-post-preparation.test.cjs) | Deterministic ERL, tier, provider-call, and credential refusal tests |
+| [`docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md`](docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md) | Site projection contract referencing canonical StegSocials ownership |
+| [`docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md`](docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md) | Site integration handoff and remaining runtime predicates |
 
 ### CFP/NCAAF current-season projection
 

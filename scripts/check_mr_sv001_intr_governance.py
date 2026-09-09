@@ -66,9 +66,12 @@ def main() -> int:
             "browser must obtain root InTr admission before nested custody POST")
 
     require('importScripts("./service-worker-v13-runtime.js")' in bootstrap_wrapper,
-            "v15 service worker wrapper must import exact v13 runtime predecessor")
-    require('CACHE_NAME = "stegos-web-bootstrap-v15"' in bootstrap_wrapper,
-            "v15 wrapper must advance cache generation so installed clients refresh configured rendezvous source")
+            "current service worker wrapper must import exact v13 runtime predecessor")
+    require('CACHE_NAME = "stegos-web-bootstrap-v16"' in bootstrap_wrapper,
+            "v16 wrapper must advance cache generation so installed clients refresh current browser-evidence and configured-rendezvous source")
+    require('importScripts("./hil-portable-state-bridge.js")' in bootstrap_wrapper and
+            'importScripts("./hil-portable-native-bridge.js")' in bootstrap_wrapper,
+            "v16 wrapper must preserve portable HIL bridge imports while advancing code generation")
 
     for marker in [
         'var CACHE_NAME = "stegos-web-bootstrap-v13"',
@@ -112,11 +115,18 @@ def main() -> int:
         'retry_surface: "EXISTING_PAGE_RESUME_LIFECYCLE_ONLY"',
         "newSchedulerCreated: false",
         "heartbeatGrantsExecutionAuthority: false",
+        'config.schema_version !== "1.3.0"',
+        'config.mode !== "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS"',
+        'discovery.selection_policy !== "FIRST_VALID_SOVEREIGN_LOCAL_ONLY"',
+        'fallback.selection_requires_explicit_runtime_opt_in !== true',
+        'hosted fallback not automatically selected',
     ]:
         require(marker in auto_recovery, f"automatic governed continuation marker missing: {marker}")
     require(CANONICAL_G23 in auto_recovery, "automatic continuation not bound to canonical G23")
     require("USER_ONLY" not in auto_recovery and "HUMAN_ONLY" not in auto_recovery,
             "automatic machine-owned continuation reintroduced a human authority gate")
+    require("hostedFallbackOrigin" not in auto_recovery,
+            "Master Records proof relay must not retain automatic hosted fallback selection")
 
     for marker in [
         'GATEWAY_CONFIG_URL = "../data/ecosystem-chat-gateway.json"',
@@ -127,7 +137,7 @@ def main() -> int:
         'boundary.gateway_execution_authority !== false',
         'boundary.master_records_authority !== false',
         'boundary.node_discovery_grants_authority !== false',
-        'endpoint.protocol !== "https:"',
+        'boundary.third_party_fallback_grants_authority !== false',
         'proof.intr_governance_admission_observed !== true',
         'proof.reconstruction_state !== "PASS"',
         'proof.site_custody_authority !== false',
@@ -147,13 +157,27 @@ def main() -> int:
         require(marker in auto_recovery, f"custody-proof rendezvous marker missing: {marker}")
 
     boundary = gateway_config.get("authority_boundary") or {}
-    require(gateway_config.get("enabled") is True, "canonical Site gateway config must be enabled")
-    require(str(gateway_config.get("endpoint", "")).startswith("https://"),
-            "canonical Site gateway endpoint must be HTTPS")
+    discovery = gateway_config.get("discovery") or {}
+    optional = gateway_config.get("optional_third_party_fallbacks") or []
+    require(gateway_config.get("schema_version") == "1.3.0",
+            "canonical Site gateway config must use current 1.3.0 schema")
+    require(gateway_config.get("mode") == "SOVEREIGN_LOCAL_DISCOVERY_WITH_OPTIONAL_THIRD_PARTY_FALLBACKS",
+            "canonical Site gateway config must use sovereign-local discovery mode")
+    require(gateway_config.get("enabled") is False and gateway_config.get("endpoint") is None and gateway_config.get("health_endpoint") is None,
+            "static hosted Site gateway must remain disabled")
+    require(discovery.get("enabled") is True and discovery.get("selection_policy") == "FIRST_VALID_SOVEREIGN_LOCAL_ONLY",
+            "canonical Site gateway must discover sovereign local residents only")
+    require(all(item.get("enabled_by_default") is False and
+                item.get("selection_requires_explicit_runtime_opt_in") is True and
+                item.get("production_continuity_dependency") is False and
+                item.get("activation_dependency") is False and
+                item.get("authority_effect") == "NONE" for item in optional),
+            "optional third-party gateway fallbacks must remain explicit opt-in and non-required")
     require(boundary.get("site_execution_authority") is False and
             boundary.get("gateway_execution_authority") is False and
             boundary.get("master_records_authority") is False and
-            boundary.get("node_discovery_grants_authority") is False,
+            boundary.get("node_discovery_grants_authority") is False and
+            boundary.get("third_party_fallback_grants_authority") is False,
             "canonical Site gateway config must preserve non-authorizing rendezvous boundary")
     require('fetch("/api/resident-rendezvous/' not in auto_recovery,
             "SV001 proof relay must not assume GitHub Pages same-origin API routing")
@@ -170,9 +194,9 @@ def main() -> int:
     require("not grandfathered" in readme_normalized and "Admission-only state" in readme_normalized,
             "README does not document no-retroactive-authorization and partial-admission failure semantics")
     require("stegos-web-bootstrap-v15" in propagation and "configured" in propagation.lower() and "resident-rendezvous" in propagation,
-            "dedicated propagation contract must describe the v15 configured-rendezvous successor")
+            "dedicated propagation contract must preserve the v15 configured-rendezvous predecessor evidence")
     require("fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
-            "v15 propagation contract must preserve governance and terminal-source boundaries")
+            "retained v15 propagation contract must preserve governance and terminal-source boundaries")
     require("automatic machine-governed continuation" in readme_normalized.lower(),
             "README must describe automatic continuation after exact G23 source availability")
     require("current governance" in handoff.lower() or "contemporaneous" in handoff.lower(), "handoff lacks contemporaneous governance")
@@ -194,8 +218,10 @@ def main() -> int:
 
     print("MR_SV001_INTR_GOVERNANCE_PASS")
     print("MR_SV001_CUSTODY_PROOF_RENDEZVOUS_SOURCE_PASS")
-    print("MR_SV001_CUSTODY_PROOF_CONFIGURED_GATEWAY_ROUTE_PASS")
-    print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_PASS")
+    print("MR_SV001_CUSTODY_PROOF_SOVEREIGN_LOCAL_DISCOVERY_PASS")
+    print("MR_SV001_CUSTODY_PROOF_HOSTED_AUTO_FALLBACK=false")
+    print("MR_SV001_CUSTODY_PROOF_V16_WRAPPER_PASS")
+    print("MR_SV001_CUSTODY_PROOF_V15_PROPAGATION_EVIDENCE_RETAINED")
     return 0
 
 

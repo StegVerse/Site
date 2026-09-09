@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "data" / "source-publication-recovery.json"
 DNS = ROOT / "data" / "dns-edge-portability.json"
+MATERIALIZATION = ROOT / "data" / "site-recovery-bundle-materialization.json"
 
 
 def die(message: str) -> None:
@@ -16,6 +17,7 @@ def die(message: str) -> None:
 def main() -> None:
     body = json.loads(MANIFEST.read_text(encoding="utf-8"))
     dns = json.loads(DNS.read_text(encoding="utf-8"))
+    materialization = json.loads(MATERIALIZATION.read_text(encoding="utf-8"))
 
     if body.get("schema") != "stegverse.site.source_publication_recovery.v1":
         die("unexpected schema")
@@ -86,21 +88,66 @@ def main() -> None:
             die(f"manifest overclaims proof: {key}")
 
     observation = body.get("current_observation", {})
+    if observation.get("complete_recovery_bundle_materialized") is not True:
+        die("complete recovery bundle materialization evidence missing")
+    if observation.get("recovery_bundle_hash_manifest_observed") is not True:
+        die("recovery bundle hash-manifest evidence missing")
+
+    evidence = materialization.get("ci_materialization_evidence", {})
+    if materialization.get("schema") != "stegverse.site.recovery_bundle_materialization.v1":
+        die("unexpected materialization schema")
+    if materialization.get("ci_materialization_observed") is not True:
+        die("materialization status does not record observed CI evidence")
+    if evidence.get("conclusion") != "success":
+        die("materialization evidence is not successful")
+    if evidence.get("run_id") != observation.get("materialization_evidence_run_id"):
+        die("materialization run binding mismatch")
+    if evidence.get("observed_head") != observation.get("materialization_evidence_head"):
+        die("materialization head binding mismatch")
+
+    # Source/CI materialization is allowed to be observed. Everything that would
+    # establish provider-independent recovery/publication still requires separate
+    # authentic off-GitHub/public evidence and must remain false here.
     for key in (
-        "complete_recovery_bundle_materialized",
-        "recovery_bundle_hash_manifest_observed",
         "off_github_source_restore_observed",
         "off_github_validation_observed",
         "off_github_publication_observed",
         "public_content_equivalence_observed",
     ):
         if observation.get(key) is not False:
-            die(f"premature recovery/publication observation: {key}")
+            die(f"premature off-GitHub recovery/publication observation: {key}")
+    for key in (
+        "off_github_materialization_observed",
+        "off_github_restore_observed",
+        "off_github_validation_observed",
+        "off_github_publication_observed",
+        "external_retention_observed",
+    ):
+        if materialization.get(key) is not False:
+            die(f"materialization record overclaims external proof: {key}")
+
+    remaining = body.get("remaining_proof", [])
+    for completed in (
+        "materialize a complete recovery bundle from an identified canonical commit",
+        "generate and verify its path/hash manifest",
+    ):
+        if completed in remaining:
+            die(f"completed proof item remains pending: {completed}")
+    for pending_fragment in (
+        "outside GitHub",
+        "without GitHub API or GitHub Actions",
+        "non-GitHub origin",
+        "TLS and exact public content equivalence",
+    ):
+        if not any(pending_fragment in item for item in remaining):
+            die(f"required remaining proof missing: {pending_fragment}")
 
     if body.get("authority_effect") != "NONE" or body.get("activation_effect") != "NONE":
         die("recovery contract asserts authority or activation")
 
     print("SOURCE_PUBLICATION_RECOVERY=PASS")
+    print("RECOVERY_BUNDLE_MATERIALIZED=true")
+    print("RECOVERY_BUNDLE_HASH_MANIFEST_OBSERVED=true")
     print("GITHUB_CANONICAL_STATE_OWNER=false")
     print("GITHUB_API_REQUIRED_FOR_RECONSTRUCTION=false")
     print("GITHUB_ACTIONS_REQUIRED_FOR_VALIDATION=false")

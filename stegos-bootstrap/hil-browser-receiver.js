@@ -5,13 +5,17 @@
   var PACKAGE_URL = new URL("./workercoordinator-portable-hil.json", root.location.href).toString();
   var TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001";
   var WORKER_ID = "hil-sovereign-receiver-worker";
+  var REQUEST_ID = "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002";
+  var REQUEST_SHA256 = "6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038";
   var EXPECTED_TRANSITION = "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED";
 
   function fail(reason) { throw new Error("FAIL_CLOSED: " + reason); }
 
   function validateInput(body) {
     if (!body || body.task_id !== TASK_ID) { fail("exact HIL task_id required"); }
+    if (body.resident_request_id !== REQUEST_ID || body.resident_request_sha256 !== REQUEST_SHA256) { fail("exact HIL resident request binding required"); }
     if (!body.node_id) { fail("established StegOS node id required"); }
+    if (!/^ctx_[a-f0-9]{32}$/.test(String(body.browser_context_id || ""))) { fail("browser context id required"); }
     if (body.execution_surface !== "CURRENT_USER_IPHONE") { fail("CURRENT_USER_IPHONE execution surface required"); }
     if (body.credential_authority !== "TV/TVC") { fail("TV/TVC credential authority required"); }
     if (body.github_token_runtime_authority !== "NONE") { fail("GitHub runtime authority prohibited"); }
@@ -120,9 +124,12 @@
       return appendReceipt({
         schema: "stegos.hil_browser_receiver_checkout_binding/v1",
         state: continuationReused ? "RETAINED_CHECKOUT_BOUND_BROWSER_RECEIVER" : "CHECKOUT_BOUND_BROWSER_RECEIVER",
+        resident_request_id: REQUEST_ID,
+        resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
         worker_id: WORKER_ID,
         node_id: body.node_id,
+        browser_context_id: body.browser_context_id,
         claim_id: checkoutReceipt.claim_id,
         fencing_token: checkoutReceipt.fencing_token,
         canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
@@ -148,9 +155,12 @@
       return appendReceipt({
         schema: "stegos.hil_browser_receiver_execution_receipt/v1",
         state: "BROWSER_HIL_LOCAL_READY_OBSERVED",
+        resident_request_id: REQUEST_ID,
+        resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
         worker_id: WORKER_ID,
         node_id: body.node_id,
+        browser_context_id: body.browser_context_id,
         claim_id: checkoutReceipt.claim_id,
         fencing_token: checkoutReceipt.fencing_token,
         canonical_checkout_receipt_sha256: checkoutReceipt.receipt_sha256,
@@ -179,8 +189,11 @@
         return {
           schema: "stegos.hil_browser_receiver_activation_result/v1",
           state: "BROWSER_HIL_LOCAL_READY_OBSERVED",
+          resident_request_id: REQUEST_ID,
+          resident_request_sha256: REQUEST_SHA256,
           task_id: TASK_ID,
           node_id: body.node_id,
+          browser_context_id: body.browser_context_id,
           claim_id: checkoutReceipt.claim_id,
           fencing_token: checkoutReceipt.fencing_token,
           continuation_reused_existing_checkout: continuationReused,
@@ -205,6 +218,8 @@
       return jsonResponse(400, {
         state: "FAIL_CLOSED",
         reason: String(error && error.message ? error.message : error),
+        resident_request_id: REQUEST_ID,
+        resident_request_sha256: REQUEST_SHA256,
         task_id: TASK_ID,
         credential_authority: "TV/TVC",
         github_token_runtime_authority: "NONE",

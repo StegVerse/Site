@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.site.third_party_dependency_reconciliation.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "updated_at": "2026-09-09",
+  "source_handoff": "StegVerse-Labs/StegCore:docs/STEGGATE_HOSTED_CARRIER_RETIREMENT_MIRROR_HANDOFF.md",
+  "source_merges": {
+    "primary_hosted_carrier_retirement": "084477a684193ad1b45d4403aa57844c5135638e",
+    "fallback_hosted_carrier_retirement": "07632a7dcbd12d16440322f33269a51413fa3049"
+  },
+  "reconciled_provider_states": {
+    "cloudflare_quick_tunnel": {
+      "classification": "OPTIONAL_FALLBACK",
+      "current_required_use": false,
+      "canonical_runtime_carrier": false,
+      "automatic_selection": false,
+      "runtime_authority": "NONE",
+      "activation_effect": "NONE",
+      "remaining_gap": "AUTHENTIC_PROVIDER_NEUTRAL_RESIDENT_PUBLIC_RENDEZVOUS_OBSERVATION_PENDING"
+    },
+    "github_actions_runtime": {
+      "classification": "OPTIONAL_FALLBACK",
+      "current_required_use": false,
+      "role": "READ_ONLY_VALIDATION_FALLBACK_ONLY",
+      "runtime_authority": "NONE",
+      "activation_effect": "NONE",
+      "repository_mutation_authority": "NONE"
+    }
+  },
+  "canonical_runtime": "RESIDENT_STEGVERSE",
+  "production_continuity_third_party_dependency": false,
+  "activation_third_party_dependency": false,
+  "automatic_third_party_runtime_selection": false,
+  "supersedes_inventory_claims": [
+    "data/third-party-dependency-inventory.json#cloudflare-tunnel-steggate.classification=REQUIRED_CURRENTLY",
+    "data/third-party-dependency-inventory.json#cloudflare-tunnel-steggate.current_required_use=true"
+  ],
+  "remaining_work": [
+    "rewrite the legacy inventory entry so it no longer conflicts with this reconciliation and third-party-runtime-cutover-current.json",
+    "establish deterministic DNS/edge portability and recovery",
+    "materialize and authentically observe a resident/provider-neutral public rendezvous",
+    "continue eliminating required GitHub source/publication/recovery dependence"
+  ],
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

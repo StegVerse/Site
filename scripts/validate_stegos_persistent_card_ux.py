@@ -8,6 +8,7 @@ RECOVERY = ROOT / "stegos-bootstrap" / "master-records-sv001-recovery.js"
 AUTO_RECOVERY = ROOT / "stegos-bootstrap" / "master-records-auto-recovery.js"
 PACKAGE = ROOT / "stegos-bootstrap" / "master-records-sv001-custody-package.json"
 HANDOFF = ROOT / "docs" / "STEGOS_PERSISTENT_CARD_UX_MIRROR_HANDOFF.md"
+PROPAGATION = ROOT / "docs" / "STEGOS_V15_CONFIGURED_RENDEZVOUS_PROPAGATION.md"
 HELP = ROOT / "stegos-bootstrap" / "help"
 SERVICE_WORKER = ROOT / "stegos-bootstrap" / "service-worker.js"
 SERVICE_WORKER_PREDECESSOR = ROOT / "stegos-bootstrap" / "service-worker-v13-runtime.js"
@@ -33,6 +34,7 @@ recovery = RECOVERY.read_text(encoding="utf-8")
 auto_recovery = AUTO_RECOVERY.read_text(encoding="utf-8")
 package = PACKAGE.read_text(encoding="utf-8")
 handoff = HANDOFF.read_text(encoding="utf-8")
+propagation = PROPAGATION.read_text(encoding="utf-8")
 service_worker = SERVICE_WORKER.read_text(encoding="utf-8")
 predecessor = SERVICE_WORKER_PREDECESSOR.read_text(encoding="utf-8")
 readme = README.read_text(encoding="utf-8")
@@ -83,7 +85,8 @@ checks = {
     "manual fallback remains fail closed": "Manual exact-proof import remains a fail-closed fallback. SV001 must not be rerun." in auto_recovery,
     "root InTr custody gate preserved": "contemporaneous InTr admission required before Master Records custody" in predecessor,
     "historical retroactive authorization prohibited": "retroactive authorization forbidden" in predecessor,
-    "README documents v15 relay propagation": "stegos-web-bootstrap-v15" in readme and "automatic machine-governed continuation" in readme_normalized,
+    "v15 configured rendezvous propagation documented": "stegos-web-bootstrap-v15" in propagation and "configured" in propagation.lower() and "resident-rendezvous" in propagation,
+    "v15 propagation remains non-authorizing": "fresh root-InTr admission remains required before custody" in propagation and "SV001 rerun remains prohibited" in propagation,
     "README preserves non-authority boundary": "recovery does not grant custody authority" in readme_normalized and "source/ci/merge" in readme_normalized,
 }
 

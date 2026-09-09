@@ -1,9 +1,9 @@
 "use strict";
 
-// v14 is a propagation successor only. Runtime/governance behavior remains the
-// exact released v13 implementation below; the successor cache generation forces
-// installed current-device clients to refresh changed shell assets such as the
-// automatic G23 -> contemporaneously governed Master Records continuation.
+// v15 is a propagation successor only. Runtime/governance behavior remains the
+// exact released v13 implementation below; this cache generation exists solely
+// to force installed current-device clients to refresh the corrected configured
+// resident-rendezvous route in master-records-auto-recovery.js.
 importScripts("./service-worker-v13-runtime.js");
 
-CACHE_NAME = "stegos-web-bootstrap-v14";
+CACHE_NAME = "stegos-web-bootstrap-v15";

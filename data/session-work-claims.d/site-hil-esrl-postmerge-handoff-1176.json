@@ -10,9 +10,9 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "docs/hil-esrl-stale-navigation-postmerge-1173",
       "handoff": "docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md",
-      "handoff_revision": "PENDING_BRANCH_HEAD",
+      "handoff_revision": "c1b75e1a7ee095918db727a0da87688c544af5e4",
       "role": "POST_MERGE_HANDOFF_RECONCILIATION",
-      "state": "CLAIMED",
+      "state": "RELEASED",
       "normalized_work_key": "site-hil-esrl-postmerge-handoff-1176",
       "dependency_surface_keys": ["site:hil-esrl-postmerge-handoff"],
       "claimed_paths": [
@@ -21,7 +21,7 @@
         "README.md"
       ],
       "claim_created_at": "2026-09-09T09:39:00-05:00",
-      "claim_expires_when": "Release after exact-head validation and merge of the post-merge handoff reconciliation; the separate stale-navigation runtime claim remains active until public current-iPhone propagation is physically observed.",
+      "claim_expires_when": "RELEASED after exact-head validation and merge of Site PR #1176 at c1b75e1a7ee095918db727a0da87688c544af5e4; the separate stale-navigation runtime claim remains active until public current-iPhone propagation is physically observed.",
       "expected_evidence": [
         "canonical Site handoff records PR #1173 merge SHA",
         "canonical Site handoff records exact-head and post-merge validation evidence",

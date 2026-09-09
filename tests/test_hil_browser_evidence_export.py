@@ -51,3 +51,13 @@ def test_service_worker_rolls_forward_to_request_bound_receiver_without_state_re
     assert 'CACHE_NAME = "stegos-web-bootstrap-v15"' in worker
     assert "indexedDB.deleteDatabase" not in worker
     assert "caches.delete" not in worker
+
+
+def test_activation_forces_fresh_service_worker_import_resolution_before_hil_fetch():
+    page = (BOOT / "hil-activate.html").read_text(encoding="utf-8")
+    assert 'navigator.serviceWorker.register("./service-worker.js", { scope: "./", updateViaCache: "none" })' in page
+    assert "registration.update()" in page
+    assert "waitForControllerReplacement" in page
+    assert 'navigator.serviceWorker.addEventListener("controllerchange"' in page
+    assert 'cache: "no-store"' in page
+    assert "updated HIL service worker did not take control" in page

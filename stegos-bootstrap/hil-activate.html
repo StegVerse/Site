@@ -73,10 +73,43 @@
         } catch (_) {}
       }
 
+      function waitForControllerReplacement(originalController, registration) {
+        if (navigator.serviceWorker.controller && navigator.serviceWorker.controller !== originalController) { return Promise.resolve(); }
+        var candidate = registration.installing || registration.waiting;
+        if (!candidate) { return Promise.resolve(); }
+        return new Promise(function (resolve, reject) {
+          var settled = false;
+          var timer;
+          function cleanup() {
+            navigator.serviceWorker.removeEventListener("controllerchange", changed);
+            candidate.removeEventListener("statechange", stateChanged);
+            if (timer) { clearTimeout(timer); }
+          }
+          function finish() {
+            if (settled) { return; }
+            settled = true; cleanup(); resolve();
+          }
+          function changed() { finish(); }
+          function stateChanged() {
+            if (candidate.state === "activated" && navigator.serviceWorker.controller && navigator.serviceWorker.controller !== originalController) { finish(); }
+          }
+          navigator.serviceWorker.addEventListener("controllerchange", changed);
+          candidate.addEventListener("statechange", stateChanged);
+          timer = setTimeout(function () {
+            if (navigator.serviceWorker.controller && navigator.serviceWorker.controller !== originalController) { finish(); return; }
+            if (settled) { return; }
+            settled = true; cleanup(); reject(new Error("updated HIL service worker did not take control"));
+          }, 5000);
+        });
+      }
+
       function ensureControllingWorker() {
+        var originalController = navigator.serviceWorker ? navigator.serviceWorker.controller : null;
         return window.StegOSWebBootstrap.registerOfflineShell().then(function () {
-          if (!(navigator.serviceWorker && navigator.serviceWorker.ready)) { throw new Error("Service worker is unavailable on this iPhone browser surface."); }
-          return navigator.serviceWorker.ready;
+          if (!(navigator.serviceWorker && navigator.serviceWorker.ready && navigator.serviceWorker.register)) { throw new Error("Service worker is unavailable on this iPhone browser surface."); }
+          return navigator.serviceWorker.register("./service-worker.js", { scope: "./", updateViaCache: "none" });
+        }).then(function (registration) {
+          return registration.update().then(function () { return waitForControllerReplacement(originalController, registration); }).then(function () { return navigator.serviceWorker.ready; });
         }).then(function () {
           if (!navigator.serviceWorker.controller) {
             sessionStorage.setItem("stegos-hil-reload-once", "1");
@@ -118,6 +151,7 @@
           return fetch(ROUTE, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            cache: "no-store",
             body: JSON.stringify({
               task_id: TASK_ID,
               resident_request_id: REQUEST_ID,

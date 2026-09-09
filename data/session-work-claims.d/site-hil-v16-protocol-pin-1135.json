@@ -45,6 +45,7 @@
         "No GitHub runtime authority",
         "No request-consumption promotion from source, CI, merge, or deployment"
       ],
+      "next_task_after_release": "Re-run the same standalone-Safari HIL context on the publicly propagated v16 surface, export the exact component-produced JSON, and submit it to the canonical .github HIL browser-evidence intake validator.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE",
       "non_tv_tvc_secret_or_token_used": false,

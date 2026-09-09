@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.tvc.skap_browser_intr_route/v1",
+  "status": "NOT_PROVISIONED",
+  "provider": "apple_app_store_connect",
+  "transport_protocol": "InTr",
+  "credential_authority": "TV/TVC",
+  "credential_custody_target": "SKAP",
+  "runtime_instance_id": null,
+  "recipient_key_id": null,
+  "activation_receipt_hash": null,
+  "liveness_receipt_hash": null,
+  "lease_expires_at": null,
+  "public_origin": null,
+  "public_ingress_url": null,
+  "route_receipt_hash": null,
+  "public_route_authority": false,
+  "provider_operation_authorized": false,
+  "credential_plaintext_carried": false,
+  "github_token_runtime_authority": false,
+  "github_actions_resident_authority": false,
+  "blind_retry_allowed": false
+}

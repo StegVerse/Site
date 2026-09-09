@@ -7,7 +7,7 @@
 <title>StegVerse — My KV Directory</title>
 <link rel="stylesheet" href="sv-shared.css">
 <style>
-.dir-wrap{max-width:900px;margin:0 auto}.dir-head,.entry-card,.empty-card{background:var(--surface);border:2px solid var(--border);border-radius:18px;padding:16px;margin:0 0 16px}.crumbs{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}.path{font:12px/1.5 var(--mono);word-break:break-all;color:var(--muted)}.status{font:12px/1.5 var(--mono);padding:10px 0}.status.error{color:#ffb4ab}.entry-list{display:grid;gap:12px}.entry-card{margin:0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.entry-card h2{font-size:1rem;margin:0 0 5px}.meta{color:var(--muted);font-size:.86rem}.entry-card button{white-space:nowrap}.kind{font:10px var(--mono);border:1px solid var(--border2);border-radius:999px;padding:3px 7px}.back{display:inline-block;margin:0 0 16px}@media(max-width:640px){.entry-card{grid-template-columns:1fr}.entry-card button{width:100%}}
+.dir-wrap{max-width:900px;margin:0 auto}.dir-head,.entry-card,.empty-card{background:var(--surface);border:2px solid var(--border);border-radius:18px;padding:16px;margin:0 0 16px}.crumbs{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}.path{font:12px/1.5 var(--mono);word-break:break-all;color:var(--muted)}.status{font:12px/1.5 var(--mono);padding:10px 0}.status.error{color:#ffb4ab}.entry-list{display:grid;gap:12px}.entry-card{margin:0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.entry-card h2{font-size:1rem;margin:0 0 5px}.meta{color:var(--muted);font-size:.86rem}.entry-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.entry-card button,.entry-card a{white-space:nowrap}.kind{font:10px var(--mono);border:1px solid var(--border2);border-radius:999px;padding:3px 7px}.back{display:inline-block;margin:0 0 16px}@media(max-width:640px){.entry-card{grid-template-columns:1fr}.entry-actions{justify-content:stretch}.entry-card button,.entry-card a{width:100%;box-sizing:border-box;text-align:center}}
 </style>
 </head>
 <body>
@@ -106,6 +106,14 @@ configureResidentAction();
 var title=document.getElementById("dir-title"), label=document.getElementById("dir-label"), desc=document.getElementById("dir-description"), path=document.getElementById("dir-path"), status=document.getElementById("dir-status"), list=document.getElementById("entry-list");
 
 function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
+function erlRefForEntry(domain,entry){
+  if(domain.id!=="erl")return null;
+  var raw=String(entry.canonical_path||entry.path||"").replace(/^\/KnowledgeVault\//,"").replace(/^\/+/,"");
+  if(raw.indexOf("02_Research/ERL/")===0)return raw;
+  var name=String(entry.name||entry.display_name||"").replace(/^\/+/,"");
+  if(!name||name.indexOf("/")!==-1)return null;
+  return domain.path+"/"+name;
+}
 function renderEntry(domain,entry){
   var card=el("article","entry-card"), left=el("div"), h=el("h2","",entry.name||entry.display_name||"Unnamed entry"), meta=el("div","meta");
   var kind=entry.kind||entry.type||"file";
@@ -113,12 +121,21 @@ function renderEntry(domain,entry){
   if(entry.modified_at){meta.append(" · "+entry.modified_at);}
   if(entry.size_bytes!==undefined&&entry.size_bytes!==null){meta.append(" · "+entry.size_bytes+" bytes");}
   left.append(h,meta); card.appendChild(left);
+  var actions=el("div","entry-actions");
   var b=el("button","sv-btn sv-btn-secondary",kind==="directory"?"Open folder":"Open");
   b.type="button";
   b.addEventListener("click",function(){
     api.openEntry(domain.id,entry,bridge).catch(function(e){status.textContent=e.message;status.className="status error";});
   });
-  card.appendChild(b); list.appendChild(card);
+  actions.appendChild(b);
+  var erlRef=erlRefForEntry(domain,entry);
+  if(erlRef&&kind!=="directory"&&kind!=="folder"){
+    var prep=el("a","sv-btn sv-btn-primary","Prepare post");
+    prep.href="stegsocials-prepare.html?erl_ref="+encodeURIComponent(erlRef)+"&platform=LINKEDIN";
+    prep.setAttribute("aria-label","Prepare a StegSocials post using "+(entry.name||"this ERL artifact"));
+    actions.appendChild(prep);
+  }
+  card.appendChild(actions); list.appendChild(card);
 }
 try{
   var domain=api.getDomain(id);

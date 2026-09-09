@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-SV001-NATIVE-RESIDENT-ACTIVATION-1130",
+      "session_worker_id": "chatgpt:site-sv001-native-resident-activation-1130",
+      "task_id": "SITE-STEGOS-PERSISTENT-CARD-UX-1000",
+      "originating_goal": "Continue the existing Site SV001 same-device custody/rendezvous trajectory by projecting the already-registered canonical Node Receipt #1 into the compiled StegOS Mobile sovereign-local resident activation path, while preserving the released v13 runtime predecessor, hosted-fallback-only semantics, contemporaneous root-InTr custody governance, terminal SV001 non-rerun, and current-iPhone-only operation.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "sv001-native-resident-activation-projection",
+      "handoff": "docs/STEGOS_PERSISTENT_CARD_UX_MIRROR_HANDOFF.md",
+      "handoff_revision": "SV001_NATIVE_RESIDENT_ACTIVATION_PROJECTION_20260908",
+      "role": "ACTIVE_IMPLEMENTATION",
+      "state": "CLAIMED_FOR_INTEGRATION",
+      "normalized_work_key": "site-stegos-persistent-card-ux-1000",
+      "dependency_surface_keys": [
+        "site:stegos-persistent-card-ux-1000",
+        "site:master-records-sv001-same-device-custody",
+        "site:sv001-native-resident-activation",
+        "site:stegos-bootstrap-offline-shell",
+        "stegos:mobile-native-resident-rendezvous"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-sv001-native-resident-activation-1130.json",
+        "stegos-bootstrap/sv001-native-resident-activation.js",
+        "stegos-bootstrap/native-resident-activate.html",
+        "stegos-bootstrap/service-worker.js",
+        "scripts/check_stegos_ipod_bootstrap_projection.py"
+      ],
+      "claim_created_at": "2026-09-08T22:12:00-05:00",
+      "claim_expires_when": "Release after the canonical Receipt #1 activation projection is validated, Site orchestration accepts exactly this active branch claim, PR #1130 merges, public Site asset propagation is observed, and the claim is terminalized without inferring native runtime evidence.",
+      "expected_evidence": [
+        "canonical registered Node Receipt #1 is independently rehashed before native projection",
+        "exact SV-NODE-<24 hex> identity only",
+        "stegverse://resident-rendezvous/activate projection only",
+        "projection authority effect NONE_PROJECTION_ONLY",
+        "native binding authority effect NONE_BINDING_ONLY",
+        "hosted transport remains FALLBACK_ONLY",
+        "released service-worker-v13-runtime.js remains exact",
+        "Site focused custody/governance validation passes",
+        "Site bootstrap/orchestration validation passes with exactly one active branch claim",
+        "runtime listener/custody/SV002 evidence remains unobserved until authentic current-iPhone execution"
+      ],
+      "collision_boundaries": [
+        "Do not create another listener, scheduler, WorkerCoordinator, heartbeat, InTr runtime, claim/fence authority, or credential path",
+        "Do not derive canonical node identity from local hardware labels or web-node identifiers",
+        "Do not rerun terminal SV001",
+        "Do not use G24 duplicate terminal evidence for custody",
+        "Do not bypass contemporaneous root-InTr custody admission",
+        "Do not promote hosted transport above sovereign-local primary",
+        "Do not infer current-iPhone listener availability, custody, reconstruction, evidence retention, continuation completion, or SV002 disposition from source/CI/app-open",
+        "Do not require a second user-operated machine"
+      ],
+      "next_task_after_release": "Continue native app-local durable evidence retention, installed-current-iPhone activation/discovery, fresh root-InTr custody admission, Master Records reconstruction, retained proof transport, continuation completion, and SV002 disposition without rerunning SV001.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": false,
+      "activation_effect": false,
+      "readme_impact_required": false,
+      "material_function_change": true,
+      "archive_eligible": true
+    }
+  ]
+}

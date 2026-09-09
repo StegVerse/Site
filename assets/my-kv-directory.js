@@ -64,7 +64,7 @@
         state: "BRIDGE_UNAVAILABLE",
         domain: domain,
         entries: [],
-        message: "Connected KnowledgeVault directory bridge unavailable. No private files were listed."
+        message: "Current resident DEVICE_KV directory bridge unavailable. No private files were listed."
       });
     }
     return Promise.resolve(bridge.listDirectory({
@@ -82,7 +82,8 @@
         state: "KV_LISTED",
         domain: domain,
         entries: clone(result.entries),
-        message: "Directory loaded from your KnowledgeVault."
+        source_kind: bridge.bridge_kind || "DEVICE_KV_QUERY_RETURN",
+        message: "Directory loaded from the current resident DEVICE_KV projection."
       };
     });
   }

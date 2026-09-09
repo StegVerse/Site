@@ -8,6 +8,7 @@ on:
       - "assets/my-kv-directory.js"
       - "assets/my-kv-device-kv-query-bridge.js"
       - "tests/my-kv-directory.test.cjs"
+      - "tests/my-kv-erldirectory-empty-state.test.cjs"
       - "scripts/check_my_kv_directory.py"
       - "docs/MY_KV_DIRECTORY_LANDING_MIRROR_HANDOFF.md"
       - "docs/MY_KV_DEVICE_KV_QUERY_RETURN_MIRROR_HANDOFF.md"
@@ -18,6 +19,7 @@ on:
       - "my-kv-directory.html"
       - "assets/my-kv-directory.js"
       - "tests/my-kv-directory.test.cjs"
+      - "tests/my-kv-erldirectory-empty-state.test.cjs"
       - "scripts/check_my_kv_directory.py"
       - "docs/MY_KV_DIRECTORY_LANDING_MIRROR_HANDOFF.md"
       - ".github/workflows/my-kv-directory.yml"
@@ -41,5 +43,7 @@ jobs:
         run: python scripts/check_my_kv_directory.py
       - name: Directory contract tests
         run: node tests/my-kv-directory.test.cjs
+      - name: ERL resident-KV empty-state regression
+        run: node tests/my-kv-erldirectory-empty-state.test.cjs
       - name: Existing My KV personal-info tests
         run: node tests/my-kv-personal-info.test.cjs

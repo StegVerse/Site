@@ -30,7 +30,7 @@
 
   <section>
     <strong>Boundary</strong>
-    <p class="sub">This surface only projects the already-registered canonical Node Receipt #1 into the installed StegOS Mobile app. Opening the app does not prove listener readiness, InTr admission, Master Records custody, retained evidence, or SV002 disposition. Hosted transport remains fallback-only.</p>
+    <p class="sub">This surface only projects the already-registered canonical Node Receipt #1 into the installed StegOS Mobile app. A browser-to-app handoff may be observed when Safari leaves the foreground, but that still does not prove listener readiness, InTr admission, Master Records custody, retained evidence, or SV002 disposition. Hosted transport remains fallback-only.</p>
   </section>
 
   <script src="./sv001-native-resident-activation.js"></script>
@@ -43,12 +43,26 @@
       var button = document.getElementById("open-stegos");
       var output = document.getElementById("activation-output");
       var api = window.StegOSNativeResidentActivation;
+      var handoffAttempted = false;
+      var foregroundLeft = false;
+      var handoffTimer = null;
 
       function fail(error) {
         state.textContent = "FAIL_CLOSED";
         button.disabled = true;
         output.textContent = String(error && error.message ? error.message : error);
       }
+
+      function markForegroundDeparture() {
+        if (!handoffAttempted) return;
+        foregroundLeft = true;
+        state.textContent = "APP_HANDOFF_OBSERVED_LISTENER_NOT_PROVEN";
+      }
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") markForegroundDeparture();
+      });
+      window.addEventListener("pagehide", markForegroundDeparture);
 
       api.buildActivationProjection().then(function (projection) {
         state.textContent = projection.state;
@@ -66,10 +80,19 @@
       }).catch(fail);
 
       button.addEventListener("click", function () {
+        handoffAttempted = true;
+        foregroundLeft = false;
         button.disabled = true;
         state.textContent = "APP_OPEN_REQUESTED_NOT_PROVEN";
+        if (handoffTimer) window.clearTimeout(handoffTimer);
         api.openStegOSFromUserGesture().then(function () {
-          window.setTimeout(function () { button.disabled = false; }, 1200);
+          handoffTimer = window.setTimeout(function () {
+            button.disabled = false;
+            if (!foregroundLeft && document.visibilityState === "visible") {
+              state.textContent = "APP_HANDOFF_NOT_OBSERVED";
+              output.textContent = "Safari remained foreground after the stegverse:// handoff request. Native app availability/open was not observed. No listener or runtime state is inferred.";
+            }
+          }, 1800);
         }).catch(function (error) {
           button.disabled = false;
           fail(error);

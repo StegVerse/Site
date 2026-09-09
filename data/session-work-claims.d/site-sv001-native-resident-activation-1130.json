@@ -13,7 +13,7 @@
       "handoff": "docs/STEGOS_PERSISTENT_CARD_UX_MIRROR_HANDOFF.md",
       "handoff_revision": "SV001_NATIVE_RESIDENT_ACTIVATION_PROJECTION_20260908",
       "role": "ACTIVE_IMPLEMENTATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-stegos-persistent-card-ux-1000",
       "dependency_surface_keys": [
         "site:stegos-persistent-card-ux-1000",
@@ -30,7 +30,7 @@
         "scripts/check_stegos_ipod_bootstrap_projection.py"
       ],
       "claim_created_at": "2026-09-08T22:12:00-05:00",
-      "claim_expires_when": "Release after the canonical Receipt #1 activation projection is validated, Site orchestration accepts exactly this active branch claim, PR #1130 merges, public Site asset propagation is observed, and the claim is terminalized without inferring native runtime evidence.",
+      "claim_expires_when": "Released after canonical Receipt #1 projection validation and PR #1130 merge; authentic current-iPhone runtime evidence remains separate.",
       "expected_evidence": [
         "canonical registered Node Receipt #1 is independently rehashed before native projection",
         "exact SV-NODE-<24 hex> identity only",
@@ -61,6 +61,9 @@
       "activation_effect": false,
       "readme_impact_required": false,
       "material_function_change": true,
+      "pull_request": 1130,
+      "release_commit": "b40e5f2c59bed820dfcfdf684de40fde555ef910",
+      "claim_released_at": "2026-09-09T03:23:33Z",
       "archive_eligible": true
     }
   ]

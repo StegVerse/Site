@@ -52,6 +52,17 @@ def test_user_gesture_surface_does_not_claim_native_runtime_success():
     assert 'Hosted transport remains fallback-only' in page
 
 
+def test_surface_distinguishes_observed_browser_handoff_from_unobserved_native_open():
+    page = PAGE.read_text(encoding="utf-8")
+    assert 'visibilitychange' in page
+    assert 'pagehide' in page
+    assert 'APP_HANDOFF_OBSERVED_LISTENER_NOT_PROVEN' in page
+    assert 'APP_HANDOFF_NOT_OBSERVED' in page
+    assert 'Safari remained foreground after the stegverse:// handoff request.' in page
+    assert 'No listener or runtime state is inferred.' in page
+    assert 'foregroundLeft' in page
+
+
 def test_existing_v15_wrapper_propagates_projection_without_mutating_v13_runtime():
     wrapper = WRAPPER.read_text(encoding="utf-8")
     runtime = RUNTIME.read_text(encoding="utf-8")

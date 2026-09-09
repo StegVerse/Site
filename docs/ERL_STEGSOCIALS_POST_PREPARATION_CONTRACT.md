@@ -1,155 +1,102 @@
-# ERL / StegSocials Post Preparation Contract
+# ERL / StegSocials Post Preparation Site Projection Contract
 
-Task: `KV-CONNECTION-REVALIDATION-WORKER-001`
-COSV ID: `50000000102000`
-Status: `SOURCE_CONTRACT_DEFINED / RUNTIME_ACTIVATION_NOT_CLAIMED`
+Canonical task: `SS-EVIDENCE-COMPARISON-001`
+Canonical COSV ID: `40000100100000`
+Canonical owner: `StegVerse-Labs/StegSocials`
+Canonical handoff: `StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md`
+Canonical schema: `stegverse.stegsocials.post-preparation/v1`
+Canonical implementation merge: `StegVerse-Labs/StegSocials@3de2f75a0e9accceebd46485d3f3e4e9c09bc03a`
+Status: `SITE_PROJECTION_IMPLEMENTED / AUTHENTIC_PROVIDER_PUBLICATION_NOT_CLAIMED`
 
 ## Purpose
 
-Define the provider-neutral contract by which any eligible KV instance can expose its ERL lane to StegSocials for post preparation while preserving KV ownership, ERL provenance, user control, and a clear product boundary between standard preparation features and premium automated publication.
+Project the canonical StegSocials ERL-backed preparation capability into MyKV without creating a second preparation contract or evidence authority.
 
-## Core model
+Site exposes the user-facing navigation and local preparation surface. `StegVerse-Labs/StegSocials` owns the canonical preparation schema, deterministic preparation semantics, evidence relationship, and standard-versus-premium product boundary.
 
-```text
-KV instance
-  -> ERL lane
-  -> StegSocials preparation workspace
-  -> platform-specific draft directories
-  -> user review / edit / approve
-  -> manual publication (standard)
-  -> governed automated publication (premium, separately enabled)
-```
-
-ERL remains the evidence/research lane. StegSocials consumes ERL references and source material to prepare social content; it does not become the evidence authority and must not silently copy or rewrite canonical ERL provenance.
-
-## Standard capability: post preparation
-
-Every eligible KV instance SHOULD be able to:
-
-1. Discover ERL artifacts available to that KV instance.
-2. Select one or more ERL artifacts as source material for a post.
-3. Create a StegSocials preparation bundle containing:
-   - source ERL artifact references;
-   - source hashes / provenance references when available;
-   - intended platform(s);
-   - target account/page identity selected by the user;
-   - draft copy;
-   - optional title / hook / hashtags;
-   - media references;
-   - disclosure / citation text where applicable;
-   - character-count / platform-shape validation;
-   - preparation timestamp and draft lineage.
-4. Materialize platform-specific drafts into posting directories such as:
-
-```text
-StegSocials/
-  Drafts/
-    LinkedIn/
-    Facebook/
-    Instagram/
-    X/
-    Other/
-  Evidence/
-  Published/
-  Failed/
-```
-
-5. Allow the user to edit, approve, reject, duplicate, or archive the prepared draft.
-6. Preserve the ERL source reference after edits so downstream publication evidence can reconstruct what research artifact informed the post.
-
-The standard feature is complete when the draft is ready for a user to copy, share, or manually publish. No automated account action is required for standard capability.
-
-## Premium capability: automated publication
-
-Automated posting is a separate premium feature and MUST NOT be implied merely because StegSocials can prepare a draft.
-
-Premium automated publication MAY add:
-
-- authenticated platform connectors;
-- scheduled publication;
-- multi-platform posting;
-- account/page routing;
-- retry / failure handling;
-- publication confirmation;
-- post URL capture;
-- publication receipts;
-- edit / delete workflows where supported;
-- campaign queues;
-- recurring post preparation and publication;
-- governed rules for time, audience, privacy, account identity, and publication scope.
-
-Premium automation must remain opt-in and independently enabled. A user who does not enable premium automation retains the complete post-preparation workflow.
-
-## Directory integration contract
-
-A prepared post bundle SHOULD use a provider-neutral shape similar to:
-
-```json
-{
-  "schema": "stegverse.stegsocials.post-preparation/v1",
-  "draft_id": "...",
-  "kv_instance_id": "...",
-  "erl_refs": ["..."],
-  "platform": "linkedin",
-  "target_identity_ref": "...",
-  "status": "DRAFT_READY",
-  "content": {
-    "text": "...",
-    "title": null,
-    "hashtags": [],
-    "media_refs": []
-  },
-  "provenance": {
-    "source_hashes": [],
-    "prepared_at": "..."
-  },
-  "publication": {
-    "mode": "MANUAL",
-    "premium_automation_enabled": false,
-    "published_url": null,
-    "receipt_ref": null
-  }
-}
-```
-
-Platform-specific preparation adapters may enrich this shape, but they must not erase the common lineage fields.
-
-## KV boundary
-
-- The ERL lane can be globally discoverable or locally curated according to the ERL availability contract.
-- Private KV content is not automatically exposed to StegSocials merely because ERL integration exists.
-- Users may explicitly attach private KV material to a draft, but that is a separate user-selected action.
-- StegSocials drafts remain user-controlled artifacts.
-- Automated publication credentials belong in the governed credential surface (for example SKAP / TV-TVC as applicable), not ordinary KV plaintext, Site source, or public evidence bundles.
-
-## Product boundary
+## Canonical product model
 
 ```text
 STANDARD
-ERL discovery -> source selection -> draft generation -> platform shaping -> evidence linkage -> user review -> manual publication
+eligible KV -> ERL reference -> StegSocials evidence/provenance -> private platform-shaped draft -> user review/edit -> manual publication
 
 PREMIUM
-STANDARD + authenticated connector execution -> scheduling -> automatic publication -> confirmation / receipts -> managed retries / campaigns
+STANDARD + explicit automated-posting entitlement -> separate governed provider release path -> schedule/automatic publish -> result/receipt
 ```
 
-The product UI should communicate this boundary clearly. Preparing a post is ordinary StegSocials functionality. Acting on an external social account without the user manually publishing is premium automation.
+Preparation is standard functionality. Automated or scheduled provider execution is premium. This Site projection never interprets draft preparation as publication.
 
-## Relationship to current KV work
+## Site projection surfaces
 
-This contract is compatible with KV #1 / #2 / #n and provider-neutral storage. It does not depend on a particular provider. A device-local KV, Google Drive KV, iCloud KV, or another eligible provider can expose the same ERL -> StegSocials preparation contract once that KV instance is authentically materialized and readable.
+```text
+assets/my-kv-directory.js
+my-kv-directory.html
+assets/stegsocials-post-preparation.js
+stegsocials-prepare.html
+tests/stegsocials-post-preparation.test.cjs
+.github/workflows/stegsocials-post-preparation.yml
+```
 
-Current source state does not prove arbitrary-provider execution, global ERL mounting, external social connector execution, or automated publication. Those remain separate implementation/runtime predicates.
+`assets/my-kv-directory.js` exposes two additional KnowledgeVault domains:
 
-## Implementation sequence
+```text
+ERL                -> 02_Research/ERL
+StegSocials Drafts -> 02_Research/StegSocials/Drafts
+```
 
-1. Add a provider-neutral ERL selector to My KV / StegSocials preparation surfaces.
-2. Materialize the common draft bundle shape and platform-specific directories.
-3. Add platform validators and character/media shaping.
-4. Preserve ERL lineage into draft and published evidence bundles.
-5. Expose manual-copy/manual-share as the default completion path.
-6. Add premium connector execution only behind explicit entitlement and credential/runtime checks.
-7. Capture publication receipts and URLs only when authentic connector/platform results are observed.
+ERL file entries can link to `stegsocials-prepare.html` with an ERL reference. The preparation surface builds the canonical schema shape for a standard/manual draft, shows the target KV draft path, and offers copy-text/copy-bundle completion. It performs no provider call and does not resolve or store credentials.
 
-## README maintenance requirement
+## Preparation invariants
 
-Any repository that implements this contract must keep its README current with the distinction between standard post preparation and premium automated posting.
+- ERL references must remain under `02_Research/ERL/`.
+- ERL authority remains ERL.
+- Standard preparation uses `PREPARE_ONLY` or `MANUAL` semantics.
+- Automated/scheduled plans require premium entitlement in the canonical StegSocials contract.
+- The Site builder rejects secret/credential-like keys.
+- `provider_call_performed=false` for all preparation bundles constructed by Site.
+- `credential_material_present=false` for all preparation bundles constructed by Site.
+- `publication_authority_effect=NONE_PREPARATION_ONLY`.
+- Site does not claim that a displayed target KV path has been durably written unless an authentic KV write/readback path later proves it.
+- Site does not perform external social publication from the preparation surface.
+
+## KnowledgeVault relationship
+
+The user-owned KnowledgeVault currently contains the canonical platform draft hierarchy:
+
+```text
+02_Research/StegSocials/Drafts/
+  LinkedIn/
+  Facebook/
+  Instagram/
+  X/
+  Other/
+```
+
+A first standard/manual LinkedIn bundle for the NSA/FBI/CISA AI-distillation source was materialized in the user-owned KV. That user-owned artifact is evidence of the draft-lane shape; it is not evidence of arbitrary-user KV propagation or external publication.
+
+## Premium boundary
+
+Premium provider execution remains outside this Site preparation projection and follows the separately registered `SS-KV-SKAP-SOCIAL-RELEASE-001` path. Site preparation does not accept OAuth tokens, cookies, passwords, API keys, refresh tokens, private keys, or other provider credentials.
+
+## Validation
+
+The focused Site workflow runs `node tests/stegsocials-post-preparation.test.cjs` and verifies:
+
+- ERL and StegSocials Drafts directory registration;
+- standard/manual bundle construction;
+- canonical ERL authority reference;
+- platform draft path construction;
+- refusal of standard automated posting;
+- refusal of non-ERL paths;
+- refusal of credential-like material;
+- premium entitlement semantics without provider execution.
+
+## Remaining runtime/product work
+
+1. Prove the MyKV directory bridge can read the ERL and Drafts paths for each authentically materialized KV provider/instance.
+2. Add a canonical authenticated KV draft writer/readback path before claiming the Site-generated bundle is durably saved from the UI.
+3. Expand platform shaping only where backed by current platform constraints.
+4. Keep provider execution entirely behind the premium release task and authentic provider result/receipt evidence.
+5. Preserve ERL and evidence references into any eventual publication record.
+
+Site is a projection and preparation interface. It does not replace the canonical StegSocials implementation or ERL evidence authority.

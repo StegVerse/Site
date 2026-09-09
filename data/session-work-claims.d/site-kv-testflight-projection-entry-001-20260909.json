@@ -10,7 +10,7 @@
       "originating_goal": "Materialize the current-iPhone purpose-bound KV TestFlight projection through the existing Device-to-KV Universal InTr admission path without creating a second runtime, continuity root, credential path, or browser identity authority.",
       "repository": "StegVerse-Labs/Site",
       "branch": "feat/kv-testflight-projection-entry-001",
-      "role": "RELEASED_INTEGRATION",
+      "role": "IMPLEMENTATION",
       "state": "RELEASED",
       "normalized_work_key": "site-kv-testflight-projection-entry-001",
       "dependency_surface_keys": [
@@ -35,9 +35,9 @@
         "data/session-work-claims.d/site-kv-testflight-projection-entry-001-20260909.json"
       ],
       "handoff": "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
-      "handoff_revision": "MERGED_PURPOSE_BOUND_DEVICE_KV_INTR_PROJECTION_ENTRY",
+      "handoff_revision": "PURPOSE_BOUND_DEVICE_KV_INTR_PROJECTION_ENTRY_SOURCE_IMPLEMENTED",
       "claim_created_at": "2026-09-09T22:18:00Z",
-      "claim_expires_when": "Released after focused and repository exact-head validation passed and implementation PR #1178 merged.",
+      "claim_expires_when": "Release only after focused and repository exact-head Site validation pass, the implementation is merged, README/handoff are current, and claim terminalization records the merge evidence.",
       "expected_evidence": [
         "existing current-device Device-KV Universal InTr path reused",
         "purpose CURRENT_IPHONE_TESTFLIGHT_SIGNING bound inside exact admitted request",
@@ -70,17 +70,7 @@
       "pull_request": 1178,
       "release_commit": "3da593a61a536a625fcea4a26df8d1f491f00b44",
       "claim_released_at": "2026-09-09T22:22:37Z",
-      "archive_eligible": true,
-      "release_evidence": {
-        "merge_commit": "3da593a61a536a625fcea4a26df8d1f491f00b44",
-        "focused_validation_run": 34411851951,
-        "site_handoff_orchestrator_run": 34411851907,
-        "ecosystem_heartbeat_run": 34411851962,
-        "site_bootstrap_validation_run": 34411851879,
-        "authority_effect": "NONE",
-        "physical_current_iphone_execution_claimed": false,
-        "testflight_installation_claimed": false
-      }
+      "archive_eligible": true
     }
   ]
 }

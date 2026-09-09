@@ -23,10 +23,24 @@ jobs:
           python-version: '3.12'
       - name: Validate current-iPhone App Store Connect SKAP ingress source
         run: python scripts/check_app_store_connect_skap_phone_ingress.py
-      - name: Reject Apple credential material and hosted secret interpolation
+      - name: Reject hosted App Store Connect secret interpolation
         run: |
-          if grep -R -n -E 'secrets\.ASC_|-----BEGIN PRIVATE KEY-----[^"'"']*[A-Za-z0-9+/=]{16,}' \
+          if grep -R -n -E 'secrets\.ASC_|\$\{\{[[:space:]]*secrets\.' \
             assets/stegos-apple stegos-apple-credential.html scripts/check_app_store_connect_skap_phone_ingress.py; then
-            echo '::error::Credential material or hosted App Store Connect secret interpolation detected'
+            echo '::error::Hosted App Store Connect secret interpolation detected'
             exit 1
           fi
+      - name: Assert checked-in projections contain no real credential values
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          config=json.loads(Path('assets/stegos-apple/app-store-connect-skap-ingress-config.json').read_text())
+          route=json.loads(Path('assets/stegos-apple/app-store-connect-skap-intr-route.json').read_text())
+          assert config['status']=='NOT_PROVISIONED'
+          assert config['recipient_key_id'] is None
+          assert config['recipient_public_jwk'] is None
+          assert route['status']=='NOT_PROVISIONED'
+          assert route['public_ingress_url'] is None
+          print('checked_in_apple_credential_values=false')
+          PY

@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.site.publication_origin_selection.v1",
+  "goal_id": "SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION",
+  "cosv_id": "50000000102000",
+  "selected_at": "2026-09-09",
+  "selection_basis": "EXPLICIT_BOUNDED_RECOVERY_ORIGIN_SELECTION",
+  "source_discovery": "data/publication-origin-discovery-2026-09-09.json",
+  "selected_origin": {
+    "provider": "RENDER",
+    "resource_strategy": "NEW_DEDICATED_SERVICE",
+    "desired_name": "stegverse-site-recovery-origin",
+    "source_repository": "https://github.com/StegVerse-Labs/Site",
+    "source_branch": "main",
+    "artifact_format": "STEGVERSE_SITE_STATIC_PUBLICATION_V1",
+    "build_command": "python3 scripts/materialize_site_publication_artifact.py --output build/site-publication-artifact",
+    "start_command": "python3 -m http.server $PORT --directory build/site-publication-artifact/public",
+    "auto_deploy": false,
+    "provider_is_canonical_state_owner": false,
+    "runtime_authority": "NONE",
+    "activation_effect": "NONE"
+  },
+  "rejected_existing_resources": [
+    {
+      "provider": "VERCEL",
+      "name": "site",
+      "reason": "Existing unlinked project is not the canonical Site publication dependency and is not repurposed."
+    },
+    {
+      "provider": "RENDER",
+      "name": "stegverse-va-claim-guide",
+      "reason": "Existing static site is VA-guide-specific and is not repurposed as the full-Site origin."
+    }
+  ],
+  "selection_state": "SELECTED_NOT_MATERIALIZED",
+  "service_id": null,
+  "origin_url": null,
+  "publication_observed": false,
+  "content_equivalence_observed": false,
+  "dns_or_tls_mutation_performed": false,
+  "authority_effect": "NONE",
+  "activation_effect": "NONE"
+}

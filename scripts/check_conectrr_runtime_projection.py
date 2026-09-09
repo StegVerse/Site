@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the Conectrr runtime projection and immutable import boundary."""
+"""Verify the Conectrr runtime projection, immutable import boundary, and explicit fixture opt-in."""
 from pathlib import Path
 import subprocess
 import sys
@@ -22,10 +22,12 @@ REQUIRED_NODE = [
     "unresolved parent_event_id",
     "JSON.parse(JSON.stringify(event))",
     "eventIndex.has(event.event_id)",
-    "assets/conectrr-interop.js",
 ]
 REQUIRED_LOADER = [
     "conectrr-independent-evaluation.fixture.json",
+    "new URLSearchParams(window.location.search).get('conectrr-fixture') === '1'",
+    "dataset.conectrrFixtureOptIn",
+    "dataset.conectrrInterop = 'disabled'",
     "source_event",
     "downstream_event",
     "structuredClone",
@@ -38,6 +40,8 @@ REQUIRED_LOADER = [
 ]
 REQUIRED_REMOTE_BROWSER = [
     "playwright",
+    "conectrr-fixture=1",
+    "default_path_clean",
     "conectrrInterop",
     "conectrrBrowserTest",
     "conectrrExportReplay",
@@ -93,10 +97,12 @@ def main() -> int:
             print(f"- {error}")
         return 1
     print("CONECTRR_RUNTIME_PROJECTION_CHECK=PASS")
+    print("default_fixture_execution=disabled")
+    print("fixture_opt_in=query:conectrr-fixture=1")
     print("source_event=evidence")
     print("downstream_event=decision")
     print("import_semantics=clone_then_freeze")
-    print("rendering=source_and_decision")
+    print("rendering=source_and_decision_on_opt_in_only")
     print("correlation=bidirectional_stable_event_id")
     print("export_replay=json_and_jsonl")
     print("adapter_conformance=fixture_only_preservation")

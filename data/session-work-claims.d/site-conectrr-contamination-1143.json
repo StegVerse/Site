@@ -1,0 +1,60 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-1143-20260909",
+      "session_worker_id": "repository_native_orchestrator:site-conectrr-contamination-1143",
+      "task_id": "SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001",
+      "originating_goal": "Remove deployed Conectrr fixture records from ordinary Ecosystem Chat governed sessions while preserving explicit opt-in interoperability testing.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/site-1143-conectrr-default-fixture",
+      "handoff": "docs/CONECTRR_INTEROP_MIRROR_HANDOFF.md",
+      "handoff_revision": "921d2e9c254d7ed828d1369a5bdefd8fb72e3dc4",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-conectrr-governance-contamination-001",
+      "dependency_surface_keys": [
+        "site:conectrr-default-session-isolation",
+        "site:ecosystem-node-conectrr-fixture-loader"
+      ],
+      "claimed_paths": [
+        "data/session-work-claims.d/site-conectrr-contamination-1143.json",
+        "data/tasks/SITE-CONECTRR-GOVERNANCE-CONTAMINATION-001.json",
+        "assets/ecosystem-node-views.js",
+        "assets/conectrr-interop.js",
+        "scripts/check_conectrr_browser_projection.py",
+        "scripts/check_conectrr_runtime_projection.py",
+        "scripts/check_conectrr_live_routes.py",
+        "scripts/check_conectrr_remote_browser.py",
+        "docs/CONECTRR_INTEROP_MIRROR_HANDOFF.md"
+      ],
+      "claim_created_at": "2026-09-09T05:58:00Z",
+      "claim_expires_when": "Release after PR #1150 exact-head validation passes, the repair merges, deployed stegverse.org default-path observation proves zero Conectrr fixture events, and the Conectrr handoff/task are reconciled.",
+      "expected_evidence": [
+        "default ecosystem-chat.html does not append assets/conectrr-interop.js",
+        "default path does not fetch data/conectrr-independent-evaluation.fixture.json",
+        "default governed event stream contains neither Conectrr fixture event ID",
+        "explicit ?conectrr-fixture=1 path retains source/decision render and bidirectional correlation",
+        "JSON and JSONL replay remains PASS on explicit fixture path",
+        "exact-head Site validation PASS",
+        "deployed https://stegverse.org/ecosystem-chat.html default-path clean observation"
+      ],
+      "collision_boundaries": [
+        "Do not modify unrelated Ecosystem Chat provider/runtime semantics",
+        "Do not alter canonical event import semantics except fixture admission gating",
+        "Do not remove Conectrr interoperability assets or genuine-output continuation",
+        "Do not create a second Conectrr importer, browser verifier, or event stream",
+        "Do not claim clean deployment from source or CI alone"
+      ],
+      "next_task_after_release": "Reconcile Site #1143, SDK #129, SDK downstream dependency evidence, and COSV 71000000100110 after deployed clean-path observation.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.site-preflight-evidence/v1",
+  "task_id": "SITE-STEGOS-NODE-AUTO-ALLOCATOR-CARRIER-001",
+  "parent_goal": "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "state": "SOURCE_READY_FOR_VALIDATION",
+  "carrier_entry": "stegos-node/index.html",
+  "verified_auto_entry": "stegos-node/org-allocator-bootstrap-auto.html",
+  "trigger_state": "REGISTERED",
+  "one_shot_per_document": true,
+  "same_origin": true,
+  "manual_allocator_action_required": false,
+  "allocator_state_reset": false,
+  "task_0010_product_mutation": false,
+  "canonical_allocator_authority": "StegVerse-Labs/.github organization allocator",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_execution_authority": false,
+  "render_required": false,
+  "authority_effect": "NONE_CARRIER_ONLY"
+}

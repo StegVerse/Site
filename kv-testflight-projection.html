@@ -11,30 +11,51 @@
 <p>This page does not create KV admission authority. It uses the existing current-device Device→KV InTr lane to request the resident KV installation status for the single purpose <code>CURRENT_IPHONE_TESTFLIGHT_SIGNING</code>, requires the authentic <code>INGRESS_ADMITTED</code> receipt and validated KV installation, observes only required browser capabilities, and then derives the exact non-authorizing projection context.</p>
 <p>State: <span id="state" class="state">READY</span></p>
 <button id="materialize" type="button">Create KV Projection Context</button>
+<button id="recover" type="button" hidden>Admit Existing KV Installation Receipt</button>
 <a id="save" hidden download="stegverse-kv-testflight-projection.json">Save Projection JSON</a>
 <pre id="output"></pre>
 <script src="assets/stegverse-node-continuity.js"></script>
 <script src="assets/generated/site-browser-intr-connectors.js"></script>
 <script src="assets/hb-intr-carrier.js"></script>
 <script src="stegos-node/device-kv-intr-sync.js?v=20260909-kv-testflight-r1"></script>
+<script src="assets/my-kv-portable-installation-bridge.js?v=20260910-kv-testflight-recovery-r1"></script>
 <script src="assets/kv-testflight-projection-entry.js?v=20260909-r1"></script>
 <script src="assets/kv-testflight-projection-export.js?v=20260909-r1"></script>
 <script>
 (function(){
 "use strict";
-var button=document.getElementById("materialize"),save=document.getElementById("save"),state=document.getElementById("state"),output=document.getElementById("output"),url=null;
-button.addEventListener("click",function(){
-  button.disabled=true;save.hidden=true;state.textContent="REQUESTING_KV_ADMISSION";output.textContent="";
-  if(url){URL.revokeObjectURL(url);url=null;}
+var button=document.getElementById("materialize"),recover=document.getElementById("recover"),save=document.getElementById("save"),state=document.getElementById("state"),output=document.getElementById("output"),url=null;
+function clearProjection(){save.hidden=true;if(url){URL.revokeObjectURL(url);url=null;}}
+function showFailure(error){
+  var message=String(error&&error.message?error.message:error);
+  state.textContent="FAIL_CLOSED";
+  output.textContent=message;
+  recover.hidden=message.indexOf("resident KV installation not verified")===-1;
+}
+function runProjection(){
+  button.disabled=true;recover.disabled=true;recover.hidden=true;clearProjection();state.textContent="REQUESTING_KV_ADMISSION";output.textContent="";
   var bridge=window.StegVerseKVTestFlightProjectionExport;
-  if(!bridge||typeof bridge.materialize!=="function"){state.textContent="FAIL_CLOSED";output.textContent="KV projection adapter unavailable";button.disabled=false;return;}
-  bridge.materialize().then(function(result){
+  if(!bridge||typeof bridge.materialize!=="function"){state.textContent="FAIL_CLOSED";output.textContent="KV projection adapter unavailable";button.disabled=false;recover.disabled=false;return Promise.resolve(null);}
+  return bridge.materialize().then(function(result){
     state.textContent="PROJECTION_CONTEXT_READY";
     var text=JSON.stringify(result.projection_context,null,2)+"\n";
     url=URL.createObjectURL(new Blob([text],{type:"application/json"}));
     save.href=url;save.hidden=false;
     output.textContent=JSON.stringify({schema:result.schema,state:result.state,projection_schema:result.projection_context.schema,purpose:result.projection_context.purpose,entry_state:result.projection_context.entry_state,browser_capability_state:result.projection_context.browser_capability_state,kv_installation_receipt_sha256:result.evidence.kv_installation_receipt_sha256,authority_effect:result.authority_effect},null,2);
-  }).catch(function(error){state.textContent="FAIL_CLOSED";output.textContent=String(error&&error.message?error.message:error);}).finally(function(){button.disabled=false;});
+    return result;
+  }).catch(function(error){showFailure(error);return null;}).finally(function(){button.disabled=false;recover.disabled=false;});
+}
+button.addEventListener("click",runProjection);
+recover.addEventListener("click",function(){
+  var installBridge=window.StegVerseKVInstallationBridge;
+  if(!installBridge||typeof installBridge.installAndVerify!=="function"){showFailure(new Error("FAIL_CLOSED: canonical KV installation admission bridge unavailable"));return;}
+  button.disabled=true;recover.disabled=true;clearProjection();state.textContent="ADMITTING_KV_INSTALLATION_RECEIPT";output.textContent="Select the canonical _System/installation.receipt.json from your KnowledgeVault or Files.";
+  installBridge.installAndVerify().then(function(result){
+    if(!result||result.device_local_kv_materialization_observed!==true) throw new Error("FAIL_CLOSED: KV installation receipt admission was not observed on DEVICE_KV");
+    state.textContent="KV_INSTALLATION_RECEIPT_ADMITTED";
+    output.textContent="Canonical installation receipt admitted through DEVICE_KV. Retrying the purpose-bound TestFlight projection.";
+    return runProjection();
+  }).catch(function(error){showFailure(error);}).finally(function(){button.disabled=false;recover.disabled=false;});
 });
 window.addEventListener("pagehide",function(){if(url)URL.revokeObjectURL(url);});
 })();

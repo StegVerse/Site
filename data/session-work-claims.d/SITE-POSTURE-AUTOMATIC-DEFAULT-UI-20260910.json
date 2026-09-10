@@ -1,0 +1,31 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [{
+    "claim_id": "SITE-POSTURE-AUTOMATIC-DEFAULT-UI-20260910",
+    "session_worker_id": "chatgpt:site-posture-automatic-default-ui-20260910",
+    "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+    "originating_goal": "Represent no explicit posture selection as Automatic ecosystem posture rather than a fabricated SECURE request in MyKV and Organizational KV.",
+    "repository": "StegVerse-Labs/Site",
+    "branch": "posture-automatic-default-ui-002",
+    "role": "IMPLEMENTATION",
+    "state": "CLAIMED_FOR_IMPLEMENTATION",
+    "normalized_work_key": "federal-health-pii-exceedance-hardening-001-site-posture-automatic-default",
+    "dependency_surface_keys": ["site:my-kv-security-posture","site:organizational-kv-security-posture"],
+    "claimed_paths": ["assets/my-kv-personal-form-profile.js","organizational-kv.html","scripts/check_security_posture_ui.py","docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md","data/session-work-claims.d/SITE-POSTURE-AUTOMATIC-DEFAULT-UI-20260910.json"],
+    "handoff": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "handoff_revision": "eb4a7bd4c1250b3c874db9bbb78ae79c98b76a6d",
+    "claim_created_at": "2026-09-10T13:26:00-05:00",
+    "claim_expires_when": "Release after automatic-default semantics validate and merge.",
+    "expected_evidence": ["Automatic is default selection","selected_tier null when no explicit selection","selection_present false is preserved","lower explicit choices disabled after InTr resolution"],
+    "collision_boundaries": ["Do not invent a SECURE request when user did not select one","Do not derive authoritative posture in Site","Do not alter TV/TVC or InTr authority"],
+    "next_task_after_release": "Bind live Site posture events to authoritative InTr resolution transport.",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE_IN_SITE_SOURCE_OR_CI",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": "NONE",
+    "render_required": false,
+    "authority_effect": false,
+    "activation_effect": false
+  }]
+}

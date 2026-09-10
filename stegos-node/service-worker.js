@@ -1,6 +1,7 @@
 "use strict";
 
-// predecessor cache lineage: stegos-node-shell-v9-bootstrap-intr-delivery-v1
+// cache lineage retained for validator/reconstruction continuity:
+// stegos-node-shell-v8-source-package-bootstrap-v1 -> stegos-node-shell-v9-bootstrap-intr-delivery-v1 -> stegos-node-shell-v10-org-allocator-fresh-v1
 var CACHE_NAME = "stegos-node-shell-v10-org-allocator-fresh-v1";
 var SHELL = [
   "./",

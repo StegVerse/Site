@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/iphone-org-allocator-auto-execution",
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
-      "handoff_revision": "e4b1403daf8e56c79040c2e8878131ae2fd531d8",
+      "handoff_revision": "7bba26ec029bac5f46b134bafdf7aa3363c67496",
       "role": "IMPLEMENTATION_REPAIR",
       "state": "CLAIMED_FOR_IMPLEMENTATION",
       "normalized_work_key": "site-iphone-org-allocator-auto-execution",

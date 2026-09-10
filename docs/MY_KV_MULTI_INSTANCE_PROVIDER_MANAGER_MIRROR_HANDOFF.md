@@ -5,7 +5,7 @@ Branch: `document-mykv-service-federation-20260910`
 Updated: 2026-09-10
 Goal Task ID: `KV-CONNECTION-REVALIDATION-WORKER-001`
 COSV ID: `50000000102000`
-State: `SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_SOURCE_IMPLEMENTED / SKAP_FIRST_ACCOUNT_ONBOARDING_SOURCE_IMPLEMENTED / VALIDATION_IN_PROGRESS`
+State: `SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_SOURCE_IMPLEMENTED_VALIDATED / SKAP_FIRST_ACCOUNT_ONBOARDING_SOURCE_IMPLEMENTED_VALIDATED / README_RECONCILIATION_PENDING / PROVIDER_RUNTIME_NOT_ACTIVATED`
 Authority effect: `NONE`
 Activation effect: `false`
 
@@ -97,31 +97,19 @@ The UX must support passwords where a provider still accepts them, and provider-
 
 Credential material, refresh tokens, session tokens, private keys, reusable API secrets, and one-time authentication links are prohibited from ordinary KV federation projections.
 
-## Implemented source in PR #1196
+## Implemented and validated source in PR #1196
 
-`assets/my-kv-service-federation.js` now implements:
-
-- `stegverse.kv.service-binding/v1` validation;
-- `stegverse.site.my-kv.account-onboarding-request/v1` construction;
-- `stegverse.kv.service-projection/v1` unified projections;
-- multi-account and multi-provider bindings;
-- provenance-preserving unified projections with `custody_merged=false`;
-- independent relationship state per binding;
-- custody posture validation for `REFERENCE_ONLY`, `SYNCED_TO_KV`, and `KV_PRIMARY_OR_SOVEREIGN`;
-- SKAP-first onboarding requests with `credential_destination=SKAP_VAULT`;
-- provider capability discovery requirement;
-- `relationship_default=NOT_CONNECTED`;
-- default false values for sync, AI interaction, destructive mutation, sharing, publication, and provider-operation authority;
-- `PENDING_INTERLOCK_INTR` governance state;
-- fail-closed rejection of credential-like fields in ordinary federation projections/results.
+`assets/my-kv-service-federation.js` implements `stegverse.kv.service-binding/v1`, `stegverse.site.my-kv.account-onboarding-request/v1`, and `stegverse.kv.service-projection/v1`; multi-account/multi-provider bindings; provenance-preserving unified service projections with `custody_merged=false`; independent relationship state; custody posture validation; SKAP-first onboarding requests; provider capability discovery requirements; fail-closed defaults; and credential-like field rejection.
 
 `tests/my-kv-service-federation.test.cjs` covers binding validation, multiple accounts/providers, independent per-binding relationships, secret rejection, duplicate rejection, SKAP-first onboarding semantics, and fail-closed behavior without a governed onboarding bridge.
 
-`.github/workflows/my-kv-instance-manager.yml` now runs the federation suite and static fail-closed checks. Initial federation validation run `34524573983` failed because the generic sensitive-field scanner incorrectly rejected the explicit `credential_material_present=false` sentinel. Source was repaired in commit `04e3490e8d8fc8bad3869376bd761d35596a208a` to allow that sentinel only when it is exactly false. Follow-up validation run `34524646420` is the current validation target.
+The first validation run `34524573983` exposed one source defect: the generic sensitive-field scanner rejected the explicit `credential_material_present=false` sentinel. Commit `04e3490e8d8fc8bad3869376bd761d35596a208a` repaired the validator so that sentinel is allowed only when it is exactly false.
+
+Follow-up run `34524646420` completed successfully. Every workflow step passed, including existing KV provider/request tests, the new service-federation/SKAP-first onboarding suite, DEVICE_KV transport validation, KV-set projection admission, MyKV multi-instance UI validation, syntax validation, and the combined bounded-authority/federation invariant check.
 
 ## Authority boundary
 
-The new Site source does not itself connect Gmail, Microsoft 365, iCloud, Google Drive, OneDrive, or any other provider. It does not receive provider credentials, execute provider operations, mint Interlock/InTr admission, or activate relationships.
+The new Site source does not itself connect Gmail, Microsoft 365, iCloud, Google Drive, OneDrive, or another provider. It does not receive provider credentials, execute provider operations, mint Interlock/InTr admission, or activate relationships.
 
 Credential/provider authorization remains behind TV/TVC + SKAP. Governed provider/service activation remains behind Interlock/InTr. Source presence, CI success, merge, or public deployment is not provider runtime evidence.
 
@@ -129,25 +117,12 @@ Magic-link authentication remains ephemeral: MyKV may display/review the mail ob
 
 ## Runtime completion predicates
 
-Authentic service-federation completion still requires:
-
-1. current-iPhone MyKV loads the federation implementation;
-2. owner initiates one `Add account` flow;
-3. provider-native authorization completes under TV/TVC + SKAP without ordinary KV secret persistence;
-4. provider capability discovery returns an observed service set;
-5. only admitted non-secret service/account bindings are materialized;
-6. at least two mail account bindings are selectable in one MyKV Mail surface;
-7. unified Mail view preserves provider/account provenance;
-8. at least one provider-affecting operation routes to the exact originating account/provider;
-9. relationship state is independently selectable and enforced per binding;
-10. no raw credential, refresh token, session token, magic-link token, or equivalent capability is retained in ordinary KV content;
-11. runtime result/evidence receipts enter the canonical custody/reconstruction path.
+Authentic service-federation completion still requires current-iPhone loading of the federation implementation, one real Add account flow, provider-native authorization under TV/TVC + SKAP, observed capability discovery, admitted binding materialization, at least two selectable mail bindings, provenance-preserving unified view, exact source-account mutation routing, independent relationship enforcement, no ordinary-KV credential/token retention, and canonical runtime receipt custody/reconstruction.
 
 ## Remaining work
 
-- Finish and verify PR #1196 validation.
 - Update root `README.md` before merge to list the federation source and its non-authorizing/runtime-unproven status.
-- Merge only after required checks are green and README maintenance is complete.
+- Merge PR #1196 only after README maintenance and any newly-triggered checks are green.
 - Preserve the existing Google Drive KV #2 request as pending until authentic downstream InTr/provider evidence exists; do not re-emit it.
 - Bind Gmail and Microsoft 365 Mail as the first cross-provider runtime proof using existing TV/TVC provider-authority paths, not duplicate credential stacks.
 - Extend the same binding/provenance model to Calendar, Notes, Files, Contacts, Tasks, Documents, Social, and later registered service classes.

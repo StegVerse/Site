@@ -16,6 +16,8 @@ def test_bootstrap_projection_is_exact_and_non_authorizing():
     assert result["task_0010_claim_observed"] is False
     assert result["physical_iphone_execution_observed"] is False
     assert result["immediate_target_task_id"]=="TASK-2026-0010"
+    assert result["allocator_assets_network_only"] is True
+    assert result["allocator_release"]=="g5-cachefix-20260909-1"
 
 def test_runner_does_not_touch_task_gated_product_paths():
     html=(ROOT/"stegos-node/org-allocator-bootstrap.html").read_text(encoding="utf-8")
@@ -23,6 +25,19 @@ def test_runner_does_not_touch_task_gated_product_paths():
     assert 'site_grants_claim_authority:false' in html
     assert 'browser_shell_grants_claim_authority:false' in html
     assert 'StegVersePortableOrgClaimAllocator.allocate' in html
+
+def test_allocator_assets_bypass_stale_service_worker_cache():
+    worker=(ROOT/"stegos-node/service-worker.js").read_text(encoding="utf-8")
+    html=(ROOT/"stegos-node/org-allocator-bootstrap.html").read_text(encoding="utf-8")
+    assert 'stegos-node-shell-v10-org-allocator-fresh-v1' in worker
+    assert 'NETWORK_ONLY_PATHS[url.pathname]' in worker
+    assert 'fetch(event.request, {cache: "no-store"})' in worker
+    assert '/stegos-node/org-allocator-bootstrap.html' in worker
+    assert '/stegos-node/org-allocator-portable.js' in worker
+    assert '/stegos-node/org-allocator-current-iphone-package.json' in worker
+    assert 'org-allocator-portable.js?v=g5-cachefix-20260909-1' in html
+    assert 'ORG_ALLOCATOR_RELEASE="g5-cachefix-20260909-1"' in html
+    assert 'portable_package_source_binding:sourceBinding' in html
 
 def test_exact_upstream_git_blobs_are_pinned():
     mod=load()

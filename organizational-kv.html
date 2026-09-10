@@ -28,16 +28,16 @@
     <section class="card">
       <span class="state">NOT CONNECTED</span>
       <div class="posture" id="okv-security-posture" aria-label="Organizational KV security posture">
-        <div class="posture-head"><strong>Security posture</strong><span id="okv-effective-posture">SECURE</span></div>
-        <div class="posture-detail"><span>Automatic: <strong>SECURE</strong></span><span>Selected: <strong id="okv-selected-posture">SECURE</strong></span></div>
-        <label>Select a stronger posture
-          <select id="okv-posture-select" aria-label="Select Organizational KV security posture">
+        <div class="posture-head"><strong>Security posture</strong><span id="okv-effective-posture">Awaiting InTr</span></div>
+        <div class="posture-detail"><span>Automatic: <strong id="okv-automatic-posture">Awaiting InTr</strong></span><span>Selected: <strong id="okv-selected-posture">SECURE</strong></span><span>Authority: <strong id="okv-posture-authority">Pending</strong></span></div>
+        <label>Requested posture
+          <select id="okv-posture-select" aria-label="Select requested Organizational KV security posture">
             <option value="SECURE" selected>SECURE</option>
             <option value="HIGH">HIGH</option>
             <option value="HIGHEST">HIGHEST</option>
           </select>
         </label>
-        <small>The ecosystem selects the automatic floor for the current task. A member may strengthen it, but cannot lower it below that floor.</small>
+        <small>This control only requests a posture. Interlock/InTr derives the automatic floor and authoritative effective posture for the exact task; Site cannot lower, grant, or reinterpret it.</small>
       </div>
       <h1>Organizational KV</h1>
       <p>An Organizational KnowledgeVault is the governed shared-vault entry point for an organization and its authorized members.</p>
@@ -47,10 +47,12 @@
     </section>
   </main>
 <script>
-(function(){
- var select=document.getElementById('okv-posture-select');
- select.addEventListener('change',function(){document.getElementById('okv-selected-posture').textContent=select.value;document.getElementById('okv-effective-posture').textContent=select.value;});
-}());
+(function(root){
+ var order=['SECURE','HIGH','HIGHEST'],select=document.getElementById('okv-posture-select');
+ function rank(v){return order.indexOf(String(v||''));}
+ select.addEventListener('change',function(){document.getElementById('okv-selected-posture').textContent=select.value;root.dispatchEvent(new CustomEvent('stegverse:security-posture-selected',{detail:{surface:'OrganizationalKV',selected_tier:select.value,authority_effect:'NONE_REQUEST_INPUT_ONLY'}}));});
+ root.addEventListener('stegverse:security-posture-resolution',function(event){var r=event&&event.detail||{};if(r.resolution_authority!=='INTERLOCK_INTR'||!r.automatic_posture||!r.effective_posture)return;var floor=r.automatic_posture.tier;document.getElementById('okv-automatic-posture').textContent=floor;document.getElementById('okv-effective-posture').textContent=r.effective_posture.tier;document.getElementById('okv-posture-authority').textContent='Interlock/InTr';Array.prototype.forEach.call(select.options,function(o){o.disabled=rank(o.value)<rank(floor);});if(rank(select.value)<rank(floor)){select.value=floor;document.getElementById('okv-selected-posture').textContent=floor;}});
+}(window));
 </script>
 </body>
 </html>

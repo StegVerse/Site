@@ -12,7 +12,7 @@
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
       "handoff_revision": "a168c3d1903105000a52755977d4b2391332c6e5",
       "role": "IMPLEMENTATION_REPAIR",
-      "state": "CLAIMED_FOR_VALIDATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-iphone-org-allocator-g5-collision-refresh",
       "dependency_surface_keys": [
         "site:org-allocator-admission-bootstrap"
@@ -50,6 +50,9 @@
       "render_required": false,
       "authority_effect": false,
       "activation_effect": false,
+      "pull_request": 1183,
+      "release_commit": "dbc2ff9eedfe6b49c74de704889b9a7e230bd634",
+      "claim_released_at": "2026-09-10T02:00:11Z",
       "archive_eligible": false
     }
   ]

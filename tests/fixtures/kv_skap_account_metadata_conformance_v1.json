@@ -1,0 +1,51 @@
+{
+  "intr_boundary_envelope": {
+    "canonical_state_changed": false,
+    "credential_material_transferred": false,
+    "destination_boundary": "SKAP_Vault",
+    "direction": "KNOWLEDGEVAULT_TO_SKAP_VAULT",
+    "intr_receipt_ref": null,
+    "payload_sha256": "sha256:f77c77ac19d5d70039de92d21989bbb7b48feac62663f461314bc120bfe46807",
+    "request_id": "KVSKAP-CONFORMANCE-001",
+    "request_sha256": "sha256:00e3da1080ad45b4dfe76081dc6e8cdfed5ae7c7c3c65ddb1697da9576201f27",
+    "schema": "stegverse.intr.boundary-transfer/v1",
+    "source_boundary": "KnowledgeVault",
+    "transfer_id": "kvskap_c8564db385394db07006317f",
+    "transfer_packet_sha256": "sha256:d2a76f6d30dc04d404f183e1113dda46b501d4c3870cd57223ebca99028e33d8"
+  },
+  "kv_interlock_request": {
+    "authority_ref": "owner://conformance",
+    "candidate_writeback": {
+      "candidate_type": "SKAP_ACCOUNT_METADATA_TRANSFER",
+      "payload_ref": "sha256:f77c77ac19d5d70039de92d21989bbb7b48feac62663f461314bc120bfe46807",
+      "requested_destination": "skap://internal/account-metadata"
+    },
+    "disclosure_mode": "SOURCE_REFERENCE_ONLY",
+    "minimum_necessary_justification": "Only provider class/status and evidence references are required to establish an internal SKAP account binding without exporting provider identifiers or secrets.",
+    "operation": "COMMIT_CANDIDATE",
+    "purpose": "Transfer owner-selected non-secret account metadata from KnowledgeVault to the internal SKAP Vault boundary.",
+    "record_class": "SKAP_ACCOUNT_METADATA_TRANSFER",
+    "request_id": "KVSKAP-CONFORMANCE-001",
+    "requested_scope": ["provider_org_ref", "account_class", "account_status", "source_evidence_ref", "source_evidence_sha256"],
+    "requester": {"component": "SKAPAccountMetadataTransfer", "module": "KnowledgeVault"},
+    "schema_version": "kv.interlock.request.v1"
+  },
+  "packet": {
+    "account_class": "social",
+    "account_status": "ACTIVE",
+    "contains_secret_material": false,
+    "destination_boundary": "SKAP_Vault",
+    "direction": "KNOWLEDGEVAULT_TO_SKAP_VAULT",
+    "owner_selection_ref": "kv://selection/conformance-linkedin-001",
+    "payload_sha256": "sha256:f77c77ac19d5d70039de92d21989bbb7b48feac62663f461314bc120bfe46807",
+    "provider_org_ref": "org:linkedin",
+    "raw_provider_account_identifier_present": false,
+    "requested_transition": "SKAP_ACCOUNT_METADATA_ADMIT",
+    "schema": "stegverse.kv-skap.account-metadata-transfer/v1",
+    "source_boundary": "KnowledgeVault",
+    "source_evidence_ref": "evidence://provider-observation/conformance-linkedin-001",
+    "source_evidence_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "transfer_id": "kvskap_c8564db385394db07006317f"
+  },
+  "schema": "stegverse.kv-skap.account-metadata-conformance-vector/v1"
+}

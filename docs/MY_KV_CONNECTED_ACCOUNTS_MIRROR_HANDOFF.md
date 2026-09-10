@@ -3,45 +3,51 @@
 Goal Task ID: `SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001`
 Parent Goal Task ID: `SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001`
 Repository: `StegVerse-Labs/Site`
-Status: `IMPLEMENTED / EXACT-HEAD REVALIDATION REQUIRED AFTER HANDOFF UPDATE`
+Status: `KV_SKAP_CONFORMANCE_ADAPTER_IMPLEMENTED / LIVE_DISPATCH_PENDING`
 
 ## Scope
 
-Expose Connected Accounts as a first-class selectable item on the My KV landing UI. Selecting it opens a dedicated owner-controlled account-selection surface where eligible provider-account observations may be reviewed and individually selected for bounded non-secret SKAP/KV metadata admission.
+Expose Connected Accounts as a first-class selectable My KV item and bind its eventual population path to the exact non-secret KnowledgeVault -> SKAP Vault protocol. The UI must never request, render, or persist raw provider account identifiers, provider credentials, tokens, keys, or secret payloads.
 
-The UI must never request, display, or persist passwords, access tokens, refresh tokens, private keys, credential payloads, or raw provider account identifiers. Provider observations remain observations until admitted through the existing governed SKAP/InTr path.
+## Merged UI
 
-## Implemented UI contract
+Site PR #1192 merged the `Connected Accounts` card, `my-kv-connected-accounts.html`, bounded account-observation client, per-account owner selection, static validation, and focused tests.
 
-- `assets/my-kv-directory.js` registers `Connected Accounts` as a first-class My KV item at the bounded metadata path `_Vault/SKAP/Accounts`.
-- The item routes to `my-kv-connected-accounts.html`, not raw `_Vault/SKAP/Receipts` browsing.
-- The dedicated page exposes `Find connected accounts`, individual account checkboxes, and `Add selected to My KV`.
-- `assets/my-kv-connected-accounts.js` accepts only bounded provider/account references and rejects secret-bearing or raw-provider-ID fields before rendering or submission.
-- Unselected accounts are untouched.
-- Submission requests only `SKAP_NONSECRET_ACCOUNT_METADATA` and explicitly carries `synthetic_input_allowed=false`, `raw_provider_identifiers_present=false`, and `credential_material_present=false`.
-- Missing observation/population bridges fail closed and do not fabricate accounts or persistence.
-- `tests/my-kv-connected-accounts.test.cjs` covers routing, normalization, bounded discovery, raw provider-ID refusal, and token refusal.
-- `scripts/check_my_kv_directory.py` requires the selector/page/bridge/test and the bounded-population markers.
+## KV -> SKAP protocol now available
 
-## Pre-work claim repair
+Upstream protocol and receiver are now canonical:
 
-The first Site validation attempt failed because branch `task/my-kv-connected-accounts-20260910` did not resolve to exactly one active pre-work claim. No UI contract failure was identified by that run. The branch now carries:
+- continuity-vault-kit PR #207 merged the exact `stegverse.kv-skap.account-metadata-transfer/v1` packet, canonical `kv.interlock.request.v1` `COMMIT_CANDIDATE`, and `stegverse.intr.boundary-transfer/v1` envelope;
+- continuity-vault-kit PR #208 merged a deterministic shared conformance vector;
+- TVC PR #374 merged the SKAP receiver requiring exact InTr `ADMITTED` bindings and emitting `stegverse.skap.account-metadata-receipt/v1`;
+- StegOS PR #321 merged the narrow `kv-skap-account-metadata` profile for operation `SKAP_ACCOUNT_METADATA_ADMIT`, without widening `kv-skap` or `kv-skap-custody`.
 
-`data/session-work-claims.d/site-skap-authentic-account-metadata-population-001-20260910.json`
+## Current Site integration branch
 
-with task `SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001`, role `IMPLEMENTATION`, state `CLAIMED_FOR_IMPLEMENTATION`, exact branch/handoff/path scope, and no overlapping ownership of the KV/InTr runtime.
+Branch: `task/my-kv-skap-account-transfer-20260910`
 
-After the claim repair, the previously failing Site bootstrap validation, handoff reconciliation, and heartbeat-contract checks completed successfully at head `3460fdc3c2c56a150a8db783465bc1bf2fc1b27a`; the complete check set contained no failure conclusion. Because this handoff update advances the PR head, exact-head checks must be observed again before merge.
+Added:
 
-## Completion boundary
+- `assets/my-kv-skap-account-transfer.js` — browser-side deterministic packet/request/envelope builder, exact profile guard, materialization builder, and structured SKAP receipt validator;
+- `tests/fixtures/kv_skap_account_metadata_conformance_v1.json` — the same wire vector used by CVK and TVC;
+- expanded `tests/my-kv-connected-accounts.test.cjs` — requires exact CVK packet/request/envelope regeneration, rejects use of the older `kv-skap` profile, and validates exact structured SKAP receipts;
+- scoped Site pre-work claim for this task.
 
-Static UI implementation, CI, preview build, or merge do not prove live provider-account population. Authentic task completion still requires:
+The conformance adapter explicitly fails closed unless generated InTr exposes `kv-skap-account-metadata`. A boolean-only success result is not treated by the adapter as SKAP receipt proof.
 
-1. runtime `StegVerseKVAccountObservationBridge` backed by bounded authenticated provider observations;
-2. `populateSelectedAccountMetadata` bound to the existing SKAP/InTr metadata transition;
-3. one owner-selected real account producing a retained non-secret SKAP/InTr receipt;
-4. parent TVC projection enumerating that authentic populated account; and
-5. ERL reconciliation consuming the resulting projection.
+## Current runtime gap
+
+The root current-device `intr-service-worker.js` still advertises only its existing KV/HIL/Master Records profiles and its materialization dispatcher does not yet admit destination `SKAP_VAULT / SKAP:Vault` for `SKAP_ACCOUNT_METADATA_ADMIT`. Site's checked-in generated browser connector also predates the newly merged profile.
+
+Therefore source-level wire conformance is testable now, but authentic current-iPhone KV -> SKAP execution is not yet claimed.
+
+## Next
+
+1. Run Site branch validation and repair any conformance failure.
+2. Propagate the merged StegOS `kv-skap-account-metadata` profile into Site's generated browser connector.
+3. Extend the existing root Universal InTr service worker/dispatcher with the exact SKAP account-metadata destination/operation; do not create a second service worker or InTr runtime.
+4. Replace the remaining generic population bridge behavior with structured packet/materialization/receipt flow.
+5. Execute one authentic owner-selected account, persist its SKAP receipt, re-run TVC inventory projection, then feed that projection into ERL reconciliation.
 
 ## Manual work
 

@@ -1,0 +1,49 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-SECURITY-POSTURE-STACK-UI-20260910",
+      "session_worker_id": "chatgpt:site-security-posture-stack-ui-20260910",
+      "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+      "originating_goal": "Project the canonical automatic, selected, and effective task security-posture identities into MyKV and Organizational KV without allowing Site UI to become posture or transition authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "security-posture-stack-ui-001",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "federal-health-pii-exceedance-hardening-001-site-posture-ui",
+      "dependency_surface_keys": ["site:my-kv-security-posture", "site:organizational-kv-security-posture"],
+      "claimed_paths": [
+        "assets/my-kv-personal-form-profile.js",
+        "organizational-kv.html",
+        "scripts/check_security_posture_ui.py",
+        "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/SITE-SECURITY-POSTURE-STACK-UI-20260910.json"
+      ],
+      "handoff": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+      "handoff_revision": "d698ba55a4d2c0e816f42451c5857cf53ed36236",
+      "claim_created_at": "2026-09-10T13:12:00-05:00",
+      "claim_expires_when": "Release after the UI displays automatic, selected, and effective posture provenance, rejects selection below the automatic floor, and binds to canonical task-specific posture state without granting Site policy or transition authority.",
+      "expected_evidence": [
+        "MyKV and Organizational KV visibly display automatic, selected, and effective posture identifiers",
+        "weaker-than-automatic posture choices are disabled or rejected",
+        "Site UI consumes canonical posture state rather than minting authoritative posture",
+        "no Interlock/InTr or TV/TVC authority is granted by UI selection"
+      ],
+      "collision_boundaries": [
+        "Do not make Site a security-policy authority",
+        "Do not let UI selection downgrade the ecosystem-computed automatic floor",
+        "Do not mint transition or credential authority from posture display state",
+        "Preserve current MyKV and Organizational KV node semantics"
+      ],
+      "next_task_after_release": "Bind Site posture projection to the exact task-scoped posture object emitted by the canonical Interlock/InTr resolver.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_IN_SITE_SOURCE_OR_CI",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

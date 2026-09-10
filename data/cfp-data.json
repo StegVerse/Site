@@ -2,9 +2,9 @@
   "schema_version": "2.0.0",
   "season": 2026,
   "phase": "PRE_CFP_RANKINGS",
-  "last_updated": "2026-09-09T21:55:42Z",
+  "last_updated": "2026-09-10T00:07:47Z",
   "freshness": {
-    "generated_at": "2026-09-09T21:55:42Z",
+    "generated_at": "2026-09-10T00:07:47Z",
     "current_season_only": true,
     "historical_rankings_carried_forward": false,
     "rankings_state": "NOT_YET_PUBLISHED_OR_NOT_OBSERVED",

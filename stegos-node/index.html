@@ -140,6 +140,19 @@
       var registrationStatus = document.getElementById("registration-status");
       var stateNode = document.getElementById("node-state");
       var errorNode = document.getElementById("node-error");
+      var allocatorCarrierStarted = false;
+
+      function startVerifiedAllocatorCarrier() {
+        if (allocatorCarrierStarted || stateNode.textContent !== "REGISTERED") return;
+        allocatorCarrierStarted = true;
+        var carrier = document.createElement("iframe");
+        carrier.hidden = true;
+        carrier.setAttribute("aria-hidden", "true");
+        carrier.setAttribute("title", "StegVerse verified allocator auto-execution carrier");
+        carrier.dataset.stegosAllocatorCarrier = "verified-auto-execution";
+        carrier.src = "./org-allocator-bootstrap-auto.html?v=normal-node-carrier-20260909-1";
+        document.body.appendChild(carrier);
+      }
 
       function refreshRegistrationActions() {
         var registered = stateNode.textContent === "REGISTERED";
@@ -148,6 +161,7 @@
         registeredDeviceActions.hidden = !registered;
         if (registered) {
           registrationStatus.textContent = "Canonical Receipt #1 detected. This device is already registered.";
+          startVerifiedAllocatorCarrier();
         } else if (unregistered) {
           registrationStatus.textContent = "No canonical Receipt #1 detected for this browser-local device state.";
         } else {

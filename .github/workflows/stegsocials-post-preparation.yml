@@ -8,14 +8,17 @@ on:
       - 'assets/stegsocials-post-preparation.js'
       - 'assets/stegsocials-kv-draft-write-bridge.js'
       - 'assets/stegsocials-bounded-group-kv-conditional-write.js'
+      - 'assets/stegsocials-bounded-group-device-kv-cas-receiver.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
       - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
       - 'tests/stegsocials-bounded-group-kv-conditional-write.test.cjs'
+      - 'tests/stegsocials-bounded-group-device-kv-cas-receiver.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
       - 'docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md'
+      - 'docs/STEGSOCIALS_BOUNDED_GROUP_DEVICE_KV_CAS_MIRROR_HANDOFF.md'
       - 'README.md'
       - '.github/workflows/stegsocials-post-preparation.yml'
   push:
@@ -26,14 +29,17 @@ on:
       - 'assets/stegsocials-post-preparation.js'
       - 'assets/stegsocials-kv-draft-write-bridge.js'
       - 'assets/stegsocials-bounded-group-kv-conditional-write.js'
+      - 'assets/stegsocials-bounded-group-device-kv-cas-receiver.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
       - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
       - 'tests/stegsocials-bounded-group-kv-conditional-write.test.cjs'
+      - 'tests/stegsocials-bounded-group-device-kv-cas-receiver.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
       - 'docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md'
+      - 'docs/STEGSOCIALS_BOUNDED_GROUP_DEVICE_KV_CAS_MIRROR_HANDOFF.md'
       - 'README.md'
       - '.github/workflows/stegsocials-post-preparation.yml'
   workflow_dispatch:
@@ -52,6 +58,8 @@ jobs:
         run: node tests/stegsocials-kv-draft-write-bridge.test.cjs
       - name: Test bounded-group Personal-KV conditional-write contract
         run: node tests/stegsocials-bounded-group-kv-conditional-write.test.cjs
+      - name: Test bounded-group resident DEVICE_KV CAS receiver
+        run: node tests/stegsocials-bounded-group-device-kv-cas-receiver.test.cjs
       - name: Verify preparation page is non-publishing
         run: |
           grep -q 'Prepare a StegSocials post' stegsocials-prepare.html
@@ -60,4 +68,6 @@ jobs:
           grep -q 'provider_call_performed:false' assets/stegsocials-post-preparation.js
           grep -q 'provider_call_performed:false' assets/stegsocials-kv-draft-write-bridge.js
           grep -q 'exact_content_bytes_readback_verified:false' assets/stegsocials-kv-draft-write-bridge.js
+          grep -q '03_Records/StegSocials/PostGroupState/' assets/stegsocials-bounded-group-device-kv-cas-receiver.js
+          grep -q 'stegverse-device-local-intr-v1' assets/stegsocials-bounded-group-device-kv-cas-receiver.js
           grep -q '02_Research/StegSocials/Drafts' assets/stegsocials-post-preparation.js

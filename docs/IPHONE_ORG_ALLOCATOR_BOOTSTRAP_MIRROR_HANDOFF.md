@@ -78,7 +78,7 @@ Site PR #1185 advanced the cache lineage to `stegos-node-shell-v10-org-allocator
 
 ## Verified auto-execution
 
-The manual `Run canonical allocation` control is not an authority requirement. It was a bootstrap safeguard. The successor `stegos-node/org-allocator-bootstrap-auto.html` removes that manual claim-control interaction while preserving the same authority boundary.
+The manual `Run canonical allocation` control is not an authority requirement. It was a bootstrap safeguard. Site PR #1188 merged successor `stegos-node/org-allocator-bootstrap-auto.html`, removing that manual claim-control interaction while preserving the same authority boundary.
 
 Auto-execution is permitted only after all of these predicates pass:
 
@@ -107,6 +107,36 @@ Successful auto-execution evidence records:
 - canonical claim observation/fencing tokens;
 - the appended established-node journal entry and replay tail.
 
+## Normal StegOS Node carrier
+
+The allocator auto-execution page is an internal carrier, not a URL the user should have to know or invoke. The ordinary `stegos-node/index.html` lifecycle starts exactly one same-origin hidden carrier only after the dashboard observes canonical `REGISTERED` state.
+
+```text
+ordinary StegOS Node page active
+-> node-state resolves to REGISTERED
+-> startVerifiedAllocatorCarrier()
+-> one hidden same-origin iframe
+-> ./org-allocator-bootstrap-auto.html?v=normal-node-carrier-20260909-1
+-> verified auto-execution predicates run
+-> canonical allocator preview
+-> real allocator CAS only if preview is admissible
+-> same-device receipt retained in established node journal
+```
+
+Carrier invariants:
+
+```text
+unregistered/loading/error state -> no carrier start
+REGISTERED -> carrier starts once per active document
+no special allocator URL required from the user
+no Run canonical allocation button
+no allocator implementation duplicated into index.html
+no allocator IndexedDB reset
+no claim/fence authority transferred to Site or browser shell
+```
+
+The carrier only makes existing verified allocator auto-execution part of ordinary StegOS Node activity. It does not create background execution while iOS has no active eligible runtime surface.
+
 ## Runtime evidence
 
 Authentic evidence is retained as:
@@ -123,7 +153,8 @@ canonical allocator TASK-0010 collision remediation: MERGED / VALIDATED
 Site corrected allocator/package source projection: MERGED
 stale service-worker cache remediation: MERGED / PUBLICLY OBSERVED
 immutable corrected G6 entry: MERGED
-verified auto-execution entry: IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
+verified auto-execution entry: MERGED / VALIDATED / PUBLICLY OBSERVED
+normal StegOS Node auto-execution carrier: IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
 physical current-iPhone TASK-0010 allocation: NOT OBSERVED
 G6/fence 6: NOT OBSERVED
 TASK-0010 product branch mutation: NOT STARTED
@@ -142,4 +173,4 @@ second user-operated device required: false
 external non-StegVerse machine required: false
 ```
 
-The auto-execution entry changes trigger semantics only. It does not reset retained allocator state, grant TASK-0010 outside canonical allocator selection, release TASK-0009, authorize task-gated product files, or create any alternate runtime/claim authority.
+The normal-node carrier changes invocation topology only. It does not reset retained allocator state, grant TASK-0010 outside canonical allocator selection, release TASK-0009, authorize task-gated product files, or create any alternate runtime/claim authority.

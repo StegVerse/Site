@@ -1,0 +1,52 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-STEGOS-NODE-AUTO-ALLOCATOR-CARRIER-20260909",
+      "session_worker_id": "chatgpt:site-stegos-node-auto-allocator-carrier-20260909",
+      "task_id": "SITE-STEGOS-NODE-AUTO-ALLOCATOR-CARRIER-001",
+      "originating_goal": "Make verified canonical allocator auto-execution part of the normal established StegOS Node surface so no special allocator URL or Run button is required.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/stegos-node-auto-allocator-entry",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "11339ebba797280ec23d523620866e8574796779",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-stegos-node-auto-allocator-carrier",
+      "dependency_surface_keys": ["site:org-allocator-admission-bootstrap"],
+      "claimed_paths": [
+        "stegos-node/index.html",
+        "tests/test_stegos_node_allocator_auto_carrier.py",
+        "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/preflight/stegos-node-auto-allocator-carrier-001.json",
+        "data/session-work-claims.d/site-stegos-node-auto-allocator-carrier-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T22:26:00-05:00",
+      "claim_expires_when": "Release after normal-node carrier validation, Site validation, merge, and public observation complete.",
+      "expected_evidence": [
+        "normal StegOS Node starts the verified auto allocator carrier only after REGISTERED continuity is observed",
+        "no manual allocator button or special allocator URL is required",
+        "auto carrier remains same-origin and uses the existing verified auto-execution entry",
+        "no allocator state reset or authority widening occurs"
+      ],
+      "collision_boundaries": [
+        "No TASK-0010 product path mutation",
+        "No allocator IndexedDB reset",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or hosted fallback"
+      ],
+      "next_task_after_release": "Use ordinary established StegOS Node activity as the carrier for verified allocator auto-execution; inspect authentic journal evidence for TASK-2026-0010/G6 and continue directly into its Site TestFlight static projection when observed.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/stegos-node-auto-allocator-entry",
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
-      "handoff_revision": "7bba26ec029bac5f46b134bafdf7aa3363c67496",
+      "handoff_revision": "11339ebba797280ec23d523620866e8574796779",
       "role": "IMPLEMENTATION_REPAIR",
       "state": "CLAIMED_FOR_IMPLEMENTATION",
       "normalized_work_key": "site-stegos-node-auto-allocator-carrier",

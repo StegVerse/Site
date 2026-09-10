@@ -8,5 +8,16 @@ function setIdentity(p,v){var n=clone(p);n.identity.display_name=String(v.displa
 function addIdentifier(p,v){var n=clone(p);n.identifiers.push({kind:String(v.kind||""),value:String(v.value||"").trim(),label:String(v.label||"").trim()||null});return assertValid(n);}
 function setFilingDefaults(p,v){var n=clone(p);Object.keys(n.filing_defaults).forEach(function(k){if(Object.prototype.hasOwnProperty.call(v,k))n.filing_defaults[k]=v[k];});return assertValid(n);}
 function setSignatureRef(p,ref,name){var n=clone(p);n.signature={skap_ref:String(ref||"").trim()||null,display_name:String(name||"").trim()||null,auto_apply:false};return assertValid(n);}
-return {SCHEMA:SCHEMA,newProfile:newProfile,validateProfile:validate,setIdentity:setIdentity,addIdentifier:addIdentifier,setFilingDefaults:setFilingDefaults,setSignatureRef:setSignatureRef};
+function installSecurityPosturePanel(){
+ if(typeof document==="undefined"||document.getElementById("kv-security-posture"))return;
+ var nav=document.querySelector(".sv-nav");if(!nav)return;
+ var panel=document.createElement("section");panel.id="kv-security-posture";panel.setAttribute("aria-label","KnowledgeVault security posture");
+ panel.style.cssText="max-width:920px;margin:12px auto 18px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);display:grid;gap:8px";
+ panel.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>Security posture</strong><span id="kv-effective-posture" style="font:11px var(--mono)">HIGH</span></div><div style="display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font:11px var(--mono)"><span>Automatic: <strong>HIGH</strong></span><span>Selected: <strong id="kv-selected-posture">HIGH</strong></span></div><label style="display:grid;gap:5px;color:var(--muted);font-size:12px">Select a stronger posture<select id="kv-posture-select" style="min-height:42px;border:1px solid var(--border2);border-radius:10px;background:#080d16;color:var(--text);padding:8px"><option value="SECURE" disabled>SECURE — below automatic floor</option><option value="HIGH" selected>HIGH</option><option value="HIGHEST">HIGHEST</option></select></label><div style="color:var(--muted);font-size:12px">The ecosystem selects the automatic floor for this context. You may strengthen it; you cannot lower it.</div>';
+ nav.insertAdjacentElement("afterend",panel);
+ var select=panel.querySelector("#kv-posture-select");
+ select.addEventListener("change",function(){var v=select.value;panel.querySelector("#kv-selected-posture").textContent=v;panel.querySelector("#kv-effective-posture").textContent=v;});
+}
+if(typeof document!=="undefined"){if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",installSecurityPosturePanel);else installSecurityPosturePanel();}
+return {SCHEMA:SCHEMA,newProfile:newProfile,validateProfile:validate,setIdentity:setIdentity,addIdentifier:addIdentifier,setFilingDefaults:setFilingDefaults,setSignatureRef:setSignatureRef,installSecurityPosturePanel:installSecurityPosturePanel};
 }));

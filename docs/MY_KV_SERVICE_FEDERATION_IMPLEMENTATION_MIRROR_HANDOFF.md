@@ -7,11 +7,11 @@ COSV: `50000000102000`
 Parent handoff: `docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md`
 Design contract: `docs/MY_KV_SERVICE_FEDERATION_CONTRACT.md`
 PR: `#1196`
-State: `SOURCE_IMPLEMENTED / VALIDATION_PENDING / PROVIDER_RUNTIME_NOT_ACTIVATED`
+State: `SOURCE_IMPLEMENTED_VALIDATED / PROVIDER_RUNTIME_NOT_ACTIVATED`
 
 ## Implemented source
 
-`assets/my-kv-service-federation.js` now implements the provider-neutral binding and onboarding core described by the design contract.
+`assets/my-kv-service-federation.js` implements the provider-neutral binding and onboarding core described by the design contract.
 
 Implemented source surfaces:
 
@@ -30,19 +30,13 @@ Implemented source surfaces:
 - credential-like field rejection in ordinary federation projections/results;
 - `PENDING_INTERLOCK_INTR` account onboarding requests with `provider_operation_authorized=false`.
 
-## Tests
+## Validation
 
-`tests/my-kv-service-federation.test.cjs` covers:
+`tests/my-kv-service-federation.test.cjs` covers binding validation, multi-account/multi-provider projection, independent relationship state, sensitive-field rejection, duplicate binding rejection, SKAP-first onboarding request semantics, and fail-closed behavior without a governed onboarding bridge.
 
-- service binding validation;
-- multi-account/multi-provider projection;
-- independent relationship state by binding;
-- sensitive-field rejection;
-- duplicate binding rejection;
-- SKAP-first onboarding request semantics;
-- fail-closed behavior when no governed onboarding bridge exists.
+Initial run `34524573983` correctly exposed an implementation defect: the generic sensitive-field scanner rejected the explicit `credential_material_present=false` sentinel. Commit `04e3490e8d8fc8bad3869376bd761d35596a208a` repaired the validator so the sentinel is allowed only when exactly false.
 
-`.github/workflows/my-kv-instance-manager.yml` now runs the federation test and checks the new fail-closed source markers.
+Follow-up My KV Multi-Instance Provider Manager run `34524646420` completed successfully. All steps passed, including the existing KV provider/request tests, the new service-federation/SKAP-first onboarding suite, DEVICE_KV transport validation, KV-set projection admission, MyKV multi-instance UI validation, syntax validation, and the combined bounded-authority/federation invariant check.
 
 ## Authority boundary
 
@@ -70,4 +64,4 @@ Authentic completion still requires, at minimum:
 
 ## README impact
 
-This source adds a real federation/onboarding implementation surface but does not yet expose a public runtime UI or provider execution path. The root README should be updated before merge to list the new source and explicitly state its non-authorizing, runtime-unproven status. Until that update lands, this handoff is the current implementation scope record.
+This source adds a real federation/onboarding implementation surface but does not yet expose a public runtime UI or provider execution path. The root README still requires a bounded source-status entry before PR #1196 is merged. That entry must not claim provider authorization, live account connection, synchronization, AI-corpus admission, external mutation, or runtime activation.

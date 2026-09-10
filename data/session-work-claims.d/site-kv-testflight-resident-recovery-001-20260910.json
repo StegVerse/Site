@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-KV-TESTFLIGHT-RESIDENT-RECOVERY-001-20260910",
+      "session_worker_id": "chatgpt:global-runtime-evidence-closure-001:kv-testflight-resident-recovery-20260910",
+      "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+      "originating_goal": "Repair the authentically observed current-iPhone Safari KV TestFlight projection failure by reusing the existing owner-mediated canonical installation-receipt admission path, without creating a second Device-KV runtime, admission authority, credential path, browser identity root, or durable projection store.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/kv-testflight-resident-recovery-001",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-kv-testflight-resident-recovery-001",
+      "dependency_surface_keys": [
+        "site:kv-testflight-projection-entry"
+      ],
+      "governing_dependency_keys": [
+        "site:kv-testflight-projection-entry"
+      ],
+      "incidental_dependency_keys": [
+        "site:device-kv-intr-runtime",
+        "site:my-kv-portable-installation-bridge",
+        "cvk:kv-ephemeral-browser-projection",
+        "stegos:current-iphone-testflight-bootstrap"
+      ],
+      "claimed_paths": [
+        "kv-testflight-projection.html",
+        "tests/kv-testflight-projection-recovery.test.cjs",
+        "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-kv-testflight-resident-recovery-001-20260910.json"
+      ],
+      "handoff": "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
+      "handoff_revision": "AUTHENTIC_SAFARI_RESIDENT_KV_VERIFICATION_FAILURE_RECOVERY_IN_VALIDATION",
+      "claim_created_at": "2026-09-10T21:13:00Z",
+      "claim_expires_when": "Release only after focused and repository exact-head Site validation pass, the recovery implementation is merged, the canonical handoff remains current, and a claim-registry-only terminalization records the merge evidence.",
+      "expected_evidence": [
+        "authentic Safari current-iPhone FAIL_CLOSED resident KV installation not verified observation retained",
+        "existing StegVerseKVInstallationBridge reused rather than duplicated",
+        "canonical _System/installation.receipt.json admitted only through existing Device-KV Universal InTr path",
+        "device_local_kv_materialization_observed required before retry",
+        "original CURRENT_IPHONE_TESTFLIGHT_SIGNING projection automatically retried after admission",
+        "Save Projection JSON remains unavailable until PROJECTION_CONTEXT_READY",
+        "focused KV TestFlight projection regression workflow passes",
+        "Site bootstrap, handoff orchestration, and heartbeat validation succeed"
+      ],
+      "collision_boundaries": [
+        "Do not modify or create a second root InTr service worker",
+        "Do not create a second KV installation or Device-KV admission bridge",
+        "Do not make Site the KV continuity authority",
+        "Do not collect or authorize browser identity, user-agent, or device fingerprint",
+        "Do not introduce browser-local durable projection state",
+        "TV/TVC remains credential authority",
+        "No GitHub-token runtime authority",
+        "No TestFlight/runtime completion claim from source or CI"
+      ],
+      "next_task_after_release": "Re-invoke the deployed projection page in Safari on the current iPhone, admit the canonical installation receipt through the exposed recovery control if needed, retain the exact projection JSON only after PROJECTION_CONTEXT_READY, and feed it to the merged StegOS TestFlight bootstrap.",
+      "canonical_task_marks_render_critical": false,
+      "distinct_support_role": false,
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

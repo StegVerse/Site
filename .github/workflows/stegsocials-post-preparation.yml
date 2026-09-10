@@ -7,12 +7,15 @@ on:
       - 'assets/my-kv-device-kv-query-bridge.js'
       - 'assets/stegsocials-post-preparation.js'
       - 'assets/stegsocials-kv-draft-write-bridge.js'
+      - 'assets/stegsocials-bounded-group-kv-conditional-write.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
       - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
+      - 'tests/stegsocials-bounded-group-kv-conditional-write.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
+      - 'docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md'
       - 'README.md'
       - '.github/workflows/stegsocials-post-preparation.yml'
   push:
@@ -22,12 +25,15 @@ on:
       - 'assets/my-kv-device-kv-query-bridge.js'
       - 'assets/stegsocials-post-preparation.js'
       - 'assets/stegsocials-kv-draft-write-bridge.js'
+      - 'assets/stegsocials-bounded-group-kv-conditional-write.js'
       - 'my-kv-directory.html'
       - 'stegsocials-prepare.html'
       - 'tests/stegsocials-post-preparation.test.cjs'
       - 'tests/stegsocials-kv-draft-write-bridge.test.cjs'
+      - 'tests/stegsocials-bounded-group-kv-conditional-write.test.cjs'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_CONTRACT.md'
       - 'docs/ERL_STEGSOCIALS_POST_PREPARATION_HANDOFF.md'
+      - 'docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md'
       - 'README.md'
       - '.github/workflows/stegsocials-post-preparation.yml'
   workflow_dispatch:
@@ -44,6 +50,8 @@ jobs:
         run: node tests/stegsocials-post-preparation.test.cjs
       - name: Test governed MyKV draft admission and hash readback boundary
         run: node tests/stegsocials-kv-draft-write-bridge.test.cjs
+      - name: Test bounded-group Personal-KV conditional-write contract
+        run: node tests/stegsocials-bounded-group-kv-conditional-write.test.cjs
       - name: Verify preparation page is non-publishing
         run: |
           grep -q 'Prepare a StegSocials post' stegsocials-prepare.html

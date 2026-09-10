@@ -5,12 +5,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 required = [
     ROOT / "docs" / "MY_KV_DIRECTORY_LANDING_MIRROR_HANDOFF.md",
+    ROOT / "docs" / "MY_KV_CONNECTED_ACCOUNTS_MIRROR_HANDOFF.md",
     ROOT / "my-kv.html",
     ROOT / "my-kv-directory.html",
+    ROOT / "my-kv-connected-accounts.html",
     ROOT / "assets" / "my-kv-directory.js",
+    ROOT / "assets" / "my-kv-connected-accounts.js",
     ROOT / "assets" / "my-kv-portable-direct-source-bridge.js",
     ROOT / "assets" / "my-kv-device-kv-query-bridge.js",
     ROOT / "tests" / "my-kv-directory.test.cjs",
+    ROOT / "tests" / "my-kv-connected-accounts.test.cjs",
 ]
 
 for path in required:
@@ -19,12 +23,15 @@ for path in required:
 
 landing = (ROOT / "my-kv.html").read_text(encoding="utf-8")
 browser = (ROOT / "my-kv-directory.html").read_text(encoding="utf-8")
+accounts_page = (ROOT / "my-kv-connected-accounts.html").read_text(encoding="utf-8")
 js = (ROOT / "assets" / "my-kv-directory.js").read_text(encoding="utf-8")
+accounts_js = (ROOT / "assets" / "my-kv-connected-accounts.js").read_text(encoding="utf-8")
 portable = (ROOT / "assets" / "my-kv-portable-direct-source-bridge.js").read_text(encoding="utf-8")
 query_bridge = (ROOT / "assets" / "my-kv-device-kv-query-bridge.js").read_text(encoding="utf-8")
 
 for text in [
     "Your continuity directories",
+    "Connected Accounts",
     "Pictures & Media",
     "Music",
     "Email",
@@ -36,6 +43,7 @@ for text in [
         raise SystemExit(f"missing My KV directory label/contract: {text}")
 
 for canonical in [
+    "_Vault/SKAP/Accounts",
     "03_Records/Finance",
     "03_Records/Assets",
     "03_Records/Liabilities",
@@ -45,6 +53,15 @@ for canonical in [
 ]:
     if canonical not in js:
         raise SystemExit(f"missing canonical directory mapping: {canonical}")
+
+if "my-kv-connected-accounts.html" not in js:
+    raise SystemExit("Connected Accounts must route to its dedicated selection surface")
+for marker in ["Find connected accounts", "Add selected to My KV", "You choose each account", "StegVerseKVAccountObservationBridge"]:
+    if marker not in accounts_page:
+        raise SystemExit(f"Connected Accounts UI contract missing: {marker}")
+for marker in ["synthetic_input_allowed:false", "raw_provider_identifiers_present:false", "credential_material_present:false", "FAIL_CLOSED"]:
+    if marker not in accounts_js:
+        raise SystemExit(f"Connected Accounts bounded-population contract missing: {marker}")
 
 if "StegVerseKVDirectoryBridge" not in browser:
     raise SystemExit("directory browser must use canonical KV directory bridge")
@@ -102,7 +119,7 @@ for marker in ["REVALIDATION_REQUIRED", "credential_material_present", "provider
         raise SystemExit(f"connection-health contract missing: {marker}")
 
 for forbidden in ["type=\"password\"", "access_token", "refresh_token", "private_key"]:
-    if forbidden == "type=\"password\"" and forbidden in landing + browser:
+    if forbidden == "type=\"password\"" and forbidden in landing + browser + accounts_page:
         raise SystemExit("secret-bearing input field prohibited")
 
 print("My KV directory static checks: PASS")

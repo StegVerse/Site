@@ -7,6 +7,7 @@
   "use strict";
 
   var DOMAINS = [
+    { id: "connected-accounts", label: "Connected Accounts", icon: "↔", path: "_Vault/SKAP/Accounts", href: "my-kv-connected-accounts.html", description: "Review connected provider accounts and choose which ones may be represented as non-secret account metadata in your KV." },
     { id: "pictures", label: "Pictures & Media", icon: "▣", path: "04_Media/Pictures", description: "Photos, image continuity, and related media records." },
     { id: "music", label: "Music", icon: "♫", path: "04_Media/Music", description: "Playlists, listening continuity, song moments, and music records." },
     { id: "email", label: "Email", icon: "✉", path: "03_Records/Email", description: "Governed email continuity records admitted into your KV." },
@@ -38,7 +39,8 @@
   }
 
   function directoryHref(id) {
-    return "my-kv-directory.html?dir=" + encodeURIComponent(getDomain(id).id);
+    var domain = getDomain(id);
+    return domain.href || ("my-kv-directory.html?dir=" + encodeURIComponent(domain.id));
   }
 
   function assertSafeListing(value, path) {

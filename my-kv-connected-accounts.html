@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Review connected provider accounts and choose which may be represented as non-secret metadata in your StegVerse KnowledgeVault.">
+<title>StegVerse — My KV Connected Accounts</title>
+<link rel="stylesheet" href="sv-shared.css">
+<style>
+.accounts-wrap{max-width:820px;margin:0 auto}.intro,.account-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 0 14px}.account-list{display:grid;gap:12px}.account-card label{display:flex;gap:12px;align-items:flex-start}.account-card input{margin-top:4px;width:22px;height:22px}.provider{font-weight:900}.meta{color:var(--muted);font:12px/1.5 var(--mono);margin-top:4px}.actions{display:grid;gap:10px;margin-top:16px}.status{font:12px/1.5 var(--mono);min-height:1.5em}.status.error{color:#ffb4ab}.status.ok{color:var(--green)}.privacy{border-left:4px solid #315a8a;padding:12px 14px;background:rgba(49,90,138,.1);margin:14px 0}@media(min-width:640px){.actions{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<nav class="sv-nav"><a class="sv-nav-brand" href="index.html">StegVerse</a><a class="active" href="my-kv.html">My KV</a><a href="organizational-kv.html">Organizational KV</a><a href="stegos-node/">My Node</a></nav>
+<div class="sv-wrap accounts-wrap">
+<a href="my-kv.html">← Back to My KV</a>
+<section class="intro">
+<h1>Connected Accounts</h1>
+<p>Review provider accounts currently observable through connected StegVerse surfaces and choose which ones you want represented as non-secret account metadata in your KnowledgeVault.</p>
+<div class="privacy"><strong>You choose each account.</strong> Unselected accounts are left untouched. This page does not request or display passwords, access tokens, refresh tokens, private keys, credential payloads, or raw provider account identifiers.</div>
+<p class="meta">Destination: /KnowledgeVault/_Vault/SKAP/Accounts · account metadata only</p>
+</section>
+<section class="intro">
+<h2>Available accounts</h2>
+<div id="account-list" class="account-list"><p class="meta">No provider accounts loaded.</p></div>
+<div class="actions"><button id="discover-accounts" class="sv-btn sv-btn-secondary" type="button">Find connected accounts</button><button id="add-selected" class="sv-btn sv-btn-primary" type="button" disabled>Add selected to My KV</button></div>
+<p id="account-status" class="status" role="status" aria-live="polite"></p>
+</section>
+</div>
+<script src="assets/my-kv-connected-accounts.js"></script>
+<script>
+(function(){
+"use strict";
+var api=window.StegVerseMyKVConnectedAccounts;
+var bridge=window.StegVerseKVAccountObservationBridge||null;
+var list=document.getElementById("account-list"),discover=document.getElementById("discover-accounts"),add=document.getElementById("add-selected"),status=document.getElementById("account-status");
+var observed=[];
+function setStatus(text,kind){status.textContent=text||"";status.className="status"+(kind?" "+kind:"");}
+function render(accounts){
+ observed=accounts||[];list.replaceChildren();
+ if(!observed.length){var empty=document.createElement("p");empty.className="meta";empty.textContent="No eligible connected accounts were returned.";list.appendChild(empty);add.disabled=true;return;}
+ observed.forEach(function(account,index){
+  var card=document.createElement("div");card.className="account-card";
+  var label=document.createElement("label");
+  var check=document.createElement("input");check.type="checkbox";check.dataset.index=String(index);check.addEventListener("change",refreshAddState);
+  var body=document.createElement("div");
+  var name=document.createElement("div");name.className="provider";name.textContent=account.label;
+  var meta=document.createElement("div");meta.className="meta";meta.textContent=account.provider_org_ref+" · "+account.account_class+" · "+account.status;
+  body.append(name,meta);label.append(check,body);card.appendChild(label);list.appendChild(card);
+ });
+ refreshAddState();
+}
+function selected(){return Array.from(list.querySelectorAll('input[type="checkbox"]:checked')).map(function(box){return observed[Number(box.dataset.index)];});}
+function refreshAddState(){add.disabled=selected().length===0;}
+discover.addEventListener("click",function(){
+ discover.disabled=true;setStatus("Checking bounded provider-account observations…");
+ api.discover(bridge).then(function(accounts){render(accounts);setStatus(accounts.length+" eligible account"+(accounts.length===1?"":"s")+" found. Select only the accounts you want represented in your KV.","ok");}).catch(function(error){render([]);setStatus(error.message,"error");}).finally(function(){discover.disabled=false;});
+});
+add.addEventListener("click",function(){
+ var chosen=selected();if(!chosen.length)return;
+ add.disabled=true;setStatus("Submitting selected non-secret account metadata…");
+ api.populate(chosen,bridge).then(function(result){setStatus("Selected account metadata accepted for governed SKAP/KV population. Receipt: "+String(result.receipt_ref||"retained by runtime"),"ok");}).catch(function(error){setStatus(error.message,"error");}).finally(refreshAddState);
+});
+}());
+</script>
+</body>
+</html>

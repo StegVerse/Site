@@ -5,8 +5,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 EXPECTED={
- "stegos-node/org-allocator-portable.js":"238c0f9ba4e9952fcd12ab4a5d8bfc7a1ab0c9e5",
- "stegos-node/org-allocator-current-iphone-package.json":"3eef719830889c41a14f20f30eccc533ce3278b8",
+ "stegos-node/org-allocator-portable.js":"af4ada6b50647ffab0061960e7e4a153dbd83b68",
+ "stegos-node/org-allocator-current-iphone-package.json":"f244f4cbc792a3bce1dc6486654be9a47fac6dec",
 }
 
 def git_blob_sha(path:Path)->str:
@@ -57,6 +57,15 @@ def verify()->dict:
         raise RuntimeError("portable allocator immediate target stale")
     if pkg.get("immediate_target_dependency_surface") != "site:current-iphone-testflight-static-bootstrap":
         raise RuntimeError("portable allocator target surface stale")
+    task9=next(task for task in pkg["tasks"] if task["task_id"]=="TASK-2026-0009")
+    task10=next(task for task in pkg["tasks"] if task["task_id"]=="TASK-2026-0010")
+    scope9=task9["requirements"]["mandatory"][0]["scope"]
+    scope10=task10["requirements"]["mandatory"][0]["scope"]
+    for key in ("paths","contracts","release_surfaces","capabilities","dependency_surfaces"):
+        if not set(scope9.get(key,[])).isdisjoint(set(scope10.get(key,[]))):
+            raise RuntimeError(f"TASK-0010 retains G5 collision in {key}")
+    if pkg.get("source_binding",{}).get("task_0010_git_blob_sha") != "248bed8cf5428c3ba759ee0d34db5fec8949a835":
+        raise RuntimeError("TASK-0010 corrected source binding stale")
     return {
       "schema":"stegverse.site.iphone-org-allocator-bootstrap-validation/v1",
       "state":"PASS",
@@ -64,6 +73,7 @@ def verify()->dict:
       "exact_package_blob":EXPECTED["stegos-node/org-allocator-current-iphone-package.json"],
       "task_catalog":["TASK-2026-0007","TASK-2026-0008","TASK-2026-0009","TASK-2026-0010"],
       "immediate_target_task_id":"TASK-2026-0010",
+      "g5_collision_removed":True,
       "site_product_authority":False,
       "canonical_allocator_remains_claim_authority":True,
       "task_0010_claim_observed":False,

@@ -77,7 +77,7 @@
     var successor9Sha=source.task_0009_git_blob_sha;
     var successor10Sha=source.task_0010_git_blob_sha;
     if(successor9Sha!==undefined&&successor9Sha!=="eeb661ca59f305ce8a86c2f46adced37056baec8"){fail("source binding mismatch: task_0009_git_blob_sha");}
-    if(successor10Sha!==undefined&&successor10Sha!=="bd67e9e6f289a388e4836e844a5f8ff7eaacccca"){fail("source binding mismatch: task_0010_git_blob_sha");}
+    if(successor10Sha!==undefined&&successor10Sha!=="248bed8cf5428c3ba759ee0d34db5fec8949a835"){fail("source binding mismatch: task_0010_git_blob_sha");}
     if(!Array.isArray(pkg.tasks)||(pkg.tasks.length<2||pkg.tasks.length>4)){fail("portable allocator current task package mismatch");}
     var ids=pkg.tasks.map(function(t){return t.task_id;}).sort().join("|");
     var predecessorIds="TASK-2026-0007|TASK-2026-0008";

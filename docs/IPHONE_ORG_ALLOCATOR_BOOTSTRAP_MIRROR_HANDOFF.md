@@ -4,6 +4,7 @@ Updated: 2026-09-09
 Repository: `StegVerse-Labs/Site`
 Issue: #945
 Original claim: `SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-945-20260902`
+Parent goal: `STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001`
 
 ## Purpose
 
@@ -11,7 +12,7 @@ Break allocator/publication bootstrap circularity without bypassing the canonica
 
 Canonical allocator authority:
 - `StegVerse-Labs/.github#884`;
-- current successor-catalog merge `e484be32e5b017a4a6f172635ea80c5d46913d8e`.
+- successor-catalog lineage through `.github#1308` / merge `933a388b0b2ff156446bcbfe5e423fd3f91dc5a0`.
 
 Site role is orchestration/bootstrap transport only.
 
@@ -26,10 +27,10 @@ Current exact projections:
 
 ```text
 stegos-node/org-allocator-portable.js
-  blob 238c0f9ba4e9952fcd12ab4a5d8bfc7a1ab0c9e5
+  blob af4ada6b50647ffab0061960e7e4a153dbd83b68
 
 stegos-node/org-allocator-current-iphone-package.json
-  blob 3eef719830889c41a14f20f30eccc533ce3278b8
+  blob f244f4cbc792a3bce1dc6486654be9a47fac6dec
 ```
 
 ## Same-device execution
@@ -56,13 +57,20 @@ The product successor for the current-iPhone TestFlight static assets is separat
 
 The product branch `claim/current-iphone-testflight-static-bootstrap-r1` remains untouched until an authentic current-iPhone allocator claim for TASK-0010 is observed.
 
-## Retained state and successor catalog
+## Authentic G5 failure evidence and remediation
 
-The physical current iPhone previously executed the same portable allocator authority epoch and retained the authentic TASK-0008 G4/fence-4 observation. The current package now contains exact task identities TASK-0007, TASK-0008, TASK-0009, and TASK-0010 while preserving the same authority epoch and seed state.
+The physical current iPhone retained the authentic allocator lineage and advanced through:
 
-The allocator does not reset retained state when a new catalog task is absent from persisted `task_statuses`; it falls back to that task's packaged queued state. Existing active claims remain collision inputs.
+```text
+TASK-2026-0007 -> generation/fence 3
+TASK-2026-0008 -> generation/fence 4
+TASK-2026-0009 -> generation/fence 5
+next allocation -> selected null / generation 5 / only TASK-2026-0010 queued
+```
 
-Source regression proves that a retained G3/G4/G5 state can select TASK-0010 only at monotonic generation/fence 6 when its exact Site scope is non-conflicting. This is source behavior only until the current iPhone actually performs the CAS.
+The G5 null-selection was correct fail-closed behavior. Inspection found two accidental scoped-exclusive collisions between the retained TASK-0009 G5 claim and TASK-0010: shared `README.md` path ownership and the generic `stegos.current-iphone-site-projection-successor.v1` contract. `.github#1308` removed both shared coordination surfaces from TASK-0010 while preserving its unique TestFlight product/runtime paths, signing-executor contract, release surface, capabilities and dependency surface.
+
+A proper `unittest.TestCase` regression now reconstructs the retained G3/G4/G5 claim topology and requires TASK-0010 to select at generation/fence 6. The full deterministic repository suite and Heartbeat validation both passed before #1308 merged.
 
 ## Runtime evidence
 
@@ -75,10 +83,10 @@ Authentic evidence is retained as:
 Current truth:
 
 ```text
-canonical allocator TASK-0010 source: MERGED
+canonical allocator TASK-0010 collision remediation: MERGED / VALIDATED
 Site bootstrap allocator bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
 Site bootstrap package bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
-public bootstrap route with refreshed bytes: NOT YET OBSERVED
+public bootstrap route with corrected G5-collision bytes: NOT YET OBSERVED
 physical current-iPhone TASK-0010 allocation: NOT OBSERVED
 G6/fence 6: NOT OBSERVED
 TASK-0010 product branch mutation: NOT STARTED
@@ -97,4 +105,4 @@ second user-operated device required: false
 external non-StegVerse machine required: false
 ```
 
-The bootstrap refresh exists because public Site was still serving the original two-task allocator/package from September 2 after canonical successor tasks were added. That stale transport was the concrete defect permitted by the original bootstrap handoff's remediation clause. Refreshing these byte-identical bootstrap artifacts does not itself grant TASK-0010 or authorize its product files.
+This bootstrap refresh transports the corrected byte-identical canonical allocator after an authentic current-iPhone collision exposed a source-scope defect. It does not grant TASK-0010, reset retained allocator state, release TASK-0009, or authorize any TASK-0010 product file.

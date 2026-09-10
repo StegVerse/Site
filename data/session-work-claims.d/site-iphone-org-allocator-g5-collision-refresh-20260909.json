@@ -1,0 +1,56 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-G5-COLLISION-REFRESH-20260909",
+      "session_worker_id": "chatgpt:site-iphone-org-allocator-g5-collision-refresh-20260909",
+      "task_id": "SITE-IPHONE-ORG-ALLOCATOR-G5-COLLISION-REFRESH-001",
+      "originating_goal": "Project the merged .github#1308 allocator/package correction into the existing current-iPhone stegos-node bootstrap so the authentic retained generation-5 allocator state can retry TASK-2026-0010 without modifying TASK-0010 product paths.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/iphone-org-allocator-g5-collision-refresh",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "a168c3d1903105000a52755977d4b2391332c6e5",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_VALIDATION",
+      "normalized_work_key": "site-iphone-org-allocator-g5-collision-refresh",
+      "dependency_surface_keys": [
+        "site:org-allocator-admission-bootstrap"
+      ],
+      "claimed_paths": [
+        "stegos-node/org-allocator-portable.js",
+        "stegos-node/org-allocator-current-iphone-package.json",
+        "scripts/check_iphone_org_allocator_bootstrap.py",
+        "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-iphone-org-allocator-g5-collision-refresh-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T20:56:00-05:00",
+      "claim_expires_when": "Release after exact bootstrap, Site handoff, heartbeat-orchestration, and StegOS Node public-observation validation pass and the refresh PR merges.",
+      "expected_evidence": [
+        "Site allocator JavaScript is byte-identical to merged .github#1308 blob af4ada6b50647ffab0061960e7e4a153dbd83b68",
+        "Site allocator package is byte-identical to merged .github#1308 blob f244f4cbc792a3bce1dc6486654be9a47fac6dec",
+        "TASK-0010 source binding is 248bed8cf5428c3ba759ee0d34db5fec8949a835",
+        "TASK-0009 and TASK-0010 scopes are disjoint across paths, contracts, release surfaces, capabilities, and dependency surfaces",
+        "No TASK-0010 product mutation or physical G6 claim is inferred from this bootstrap transport update"
+      ],
+      "collision_boundaries": [
+        "No stegos-bootstrap task-gated product files",
+        "No TASK-0009 claim release or mutation",
+        "No retained allocator-state reset",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or other hosted fallback"
+      ],
+      "next_task_after_release": "Allow the established current iPhone to rerun the canonical allocator from authentic retained generation 5; proceed to TASK-2026-0010 product projection only after authentic generation/fence 6 claim evidence.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

@@ -50,9 +50,9 @@ async function expectReject(action, fragment){
   await expectReject(()=>bridge.buildRequest(current,next,expected,{...proof,session_state_destroyed:false}),'terminal StegBrowser destruction proof required');
 
   const replay=baseState(1,[1]);
-  const replayNext=baseState(2,[1]);
+  const replayNext=baseState(1,[1]);
   const replayEtag=await bridge.stateEtag(replay);
-  await expectReject(()=>bridge.buildRequest(replay,replayNext,replayEtag,proof),'use-state must add exactly one index');
+  await expectReject(()=>bridge.buildRequest(replay,replayNext,replayEtag,proof),'state must consume exactly one successful post');
 
   const tampered=baseState(1,[1]); tampered.access_token='forbidden';
   await expectReject(()=>bridge.stateEtag(tampered),'secret-like field prohibited');

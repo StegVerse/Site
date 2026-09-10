@@ -32,9 +32,9 @@
         "data/session-work-claims.d/site-kv-testflight-resident-recovery-001-20260910.json"
       ],
       "handoff": "docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md",
-      "handoff_revision": "AUTHENTIC_SAFARI_RESIDENT_KV_VERIFICATION_FAILURE_RECOVERY_MERGED",
+      "handoff_revision": "AUTHENTIC_SAFARI_RESIDENT_KV_VERIFICATION_FAILURE_RECOVERY_IN_VALIDATION",
       "claim_created_at": "2026-09-10T21:13:00Z",
-      "claim_expires_when": "Released after exact-head focused and repository validations passed and the recovery implementation merged.",
+      "claim_expires_when": "Release only after focused and repository exact-head Site validation pass, the recovery implementation is merged, the canonical handoff remains current, and a claim-registry-only terminalization records the merge evidence.",
       "expected_evidence": [
         "authentic Safari current-iPhone FAIL_CLOSED resident KV installation not verified observation retained",
         "existing StegVerseKVInstallationBridge reused rather than duplicated",

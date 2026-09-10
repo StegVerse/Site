@@ -11,7 +11,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/kv-testflight-resident-recovery-001",
       "role": "IMPLEMENTATION",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-kv-testflight-resident-recovery-001",
       "dependency_surface_keys": [
         "site:kv-testflight-projection-entry"
@@ -65,7 +65,10 @@
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
       "activation_effect": false,
-      "archive_eligible": false
+      "pull_request": 1197,
+      "release_commit": "bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
+      "claim_released_at": "2026-09-10T21:17:42Z",
+      "archive_eligible": true
     }
   ]
 }

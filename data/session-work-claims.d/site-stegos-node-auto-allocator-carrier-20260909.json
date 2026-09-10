@@ -19,6 +19,7 @@
         "stegos-node/index.html",
         "tests/test_stegos_node_allocator_auto_carrier.py",
         "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/preflight/stegos-node-auto-allocator-carrier-001.json",
         "data/session-work-claims.d/site-stegos-node-auto-allocator-carrier-20260909.json"
       ],
       "claim_created_at": "2026-09-09T22:26:00-05:00",

@@ -1,8 +1,8 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `reconcile-google-drive-kv2-owner-retry-20260908`
-State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING_OBSERVED / EVENT_EPHEMERAL_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING
+Branch: `document-mykv-service-federation-20260910`
+State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING_OBSERVED / EVENT_EPHEMERAL_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_DESIGN_DOCUMENTED
 Updated: 2026-09-10
 Authority effect: NONE
 Activation effect: false
@@ -46,7 +46,7 @@ No private Drive locator is exposed on the public page. No provider execution, i
 
 ## Merged transport and compatibility basis
 
-Site PR #1122 merged the prepared resident Google Drive KV #2 adoption transport at `b5c3939878bafc7f3aeb40a52458c7f3aeb40a52458c7a4528c6628` after required validation and Pages deployment.
+Site PR #1122 merged the prepared resident Google Drive KV #2 adoption transport at `b5c3939878bafc7f3aeb40a52458c7a4528c6628` after required validation and Pages deployment.
 
 The first authentic owner attempt then failed before resident ingress because the current registered `stegos-node-v1` IndexedDB predates the `intr_outbox` object store.
 
@@ -104,21 +104,13 @@ Canonical Site evidence file:
 data/runtime-evidence/google-drive-kv2-owner-retry.20260908.json
 ```
 
-## Current reconciliation branch
+## Current documentation branch
 
-Branch `reconcile-google-drive-kv2-owner-retry-20260908` performs evidence-only reconciliation:
-
-- releases the completed #1124 compatibility claim;
-- records the exact owner-visible request ID and bounded fields;
-- explicitly records transport origin as not owner-observed;
-- preserves `PENDING_INTERLOCK_INTR`;
-- preserves `instance_materialized=false`;
-- preserves `provider_operation_authorized=false`;
-- introduces no provider, credential, relationship, data movement, replication, AI-corpus, authority, or activation effect.
+Branch `document-mykv-service-federation-20260910` records the agreed provider-neutral multi-account service federation architecture. It does not claim provider execution, relationship mutation, synchronization, AI-corpus admission, or runtime activation.
 
 ## Agreed MyKV service federation direction — 2026-09-10
 
-The multi-instance/provider model is now explicitly extended from storage topology into provider-neutral, multi-account service federation.
+The multi-instance/provider model is explicitly extended from storage topology into provider-neutral, multi-account service federation.
 
 Canonical design contract:
 

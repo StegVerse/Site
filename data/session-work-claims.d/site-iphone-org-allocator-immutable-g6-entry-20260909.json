@@ -1,0 +1,50 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-IMMUTABLE-G6-ENTRY-20260909",
+      "session_worker_id": "chatgpt:site-iphone-org-allocator-immutable-g6-entry-20260909",
+      "task_id": "SITE-IPHONE-ORG-ALLOCATOR-IMMUTABLE-G6-ENTRY-001",
+      "originating_goal": "Provide a never-before-used allocator bootstrap URL so the established current iPhone cannot reuse the prior document/BFCache surface while preserving retained generation-5 allocator state.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/iphone-org-allocator-immutable-g6-entry",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "e4b1403daf8e56c79040c2e8878131ae2fd531d8",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-iphone-org-allocator-immutable-g6-entry",
+      "dependency_surface_keys": ["site:org-allocator-admission-bootstrap"],
+      "claimed_paths": [
+        "stegos-node/org-allocator-bootstrap-g6.html",
+        "data/session-work-claims.d/site-iphone-org-allocator-immutable-g6-entry-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T21:28:00-05:00",
+      "claim_expires_when": "Release after the immutable bootstrap entry validates, merges, deploys, and is observed from the established current iPhone.",
+      "expected_evidence": [
+        "new bootstrap path has never existed in prior service-worker cache lineage",
+        "new bootstrap bytes are exactly the corrected g5-cachefix allocator HTML",
+        "exported evidence contains allocator_release g5-cachefix-20260909-1",
+        "exported evidence contains TASK-0010 source binding 248bed8cf5428c3ba759ee0d34db5fec8949a835",
+        "retained IndexedDB generation-5 allocator state remains unchanged before execution"
+      ],
+      "collision_boundaries": [
+        "No stegos-bootstrap task-gated product files",
+        "No allocator IndexedDB reset",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or hosted fallback"
+      ],
+      "next_task_after_release": "Open /stegos-node/org-allocator-bootstrap-g6.html on the same established iPhone, run exactly one canonical allocation, export evidence, and interpret the result only if allocator_release and the exact TASK-0010 source binding are present.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

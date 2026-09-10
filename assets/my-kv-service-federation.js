@@ -21,10 +21,14 @@
     if(Array.isArray(value)){value.forEach(function(v,i){rejectSensitive(v,path+"["+i+"]");});return;}
     if(!value||typeof value!=="object") return;
     Object.keys(value).forEach(function(key){
-      var lower=String(key).toLowerCase();
+      var lower=String(key).toLowerCase(),child=value[key];
+      if(lower==="credential_material_present"||lower==="credential_material_included"){
+        requireValue(child===false,"credential-material sentinel must remain false at "+path+"."+key);
+        return;
+      }
       var forbidden=["password","passcode","secret","token","access_token","refresh_token","private_key","client_secret","authorization_code","magic_link","session_cookie","raw_credential","credential_material"];
       if(forbidden.some(function(part){return lower===part||lower.indexOf(part)>=0;})) throw new Error("FAIL_CLOSED: sensitive federation field prohibited at "+path+"."+key);
-      rejectSensitive(value[key],path+"."+key);
+      rejectSensitive(child,path+"."+key);
     });
   }
   function bindingKey(binding){

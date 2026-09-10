@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001-20260910",
+      "session_worker_id": "chatgpt:ss-skap-authentic-account-metadata-population-001:site-20260910",
+      "task_id": "SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001",
+      "originating_goal": "Expose Connected Accounts as a first-class My KV selector and preserve explicit owner selection before bounded non-secret provider-account metadata enters the existing SKAP/InTr population path.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "task/my-kv-connected-accounts-20260910",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-my-kv-connected-accounts",
+      "dependency_surface_keys": [
+        "site:my-kv-connected-accounts"
+      ],
+      "governing_dependency_keys": [
+        "site:my-kv-connected-accounts"
+      ],
+      "incidental_dependency_keys": [
+        "site:my-kv-directory",
+        "tvc:skap-account-metadata-population",
+        "cvk:knowledgevault"
+      ],
+      "claimed_paths": [
+        "assets/my-kv-directory.js",
+        "assets/my-kv-connected-accounts.js",
+        "my-kv-connected-accounts.html",
+        "tests/my-kv-connected-accounts.test.cjs",
+        "scripts/check_my_kv_directory.py",
+        "docs/MY_KV_CONNECTED_ACCOUNTS_MIRROR_HANDOFF.md",
+        "README.md",
+        "data/session-work-claims.d/site-skap-authentic-account-metadata-population-001-20260910.json"
+      ],
+      "handoff": "docs/MY_KV_CONNECTED_ACCOUNTS_MIRROR_HANDOFF.md",
+      "handoff_revision": "MY_KV_CONNECTED_ACCOUNTS_SELECTOR_IMPLEMENTATION",
+      "claim_created_at": "2026-09-10T14:32:00Z",
+      "claim_expires_when": "Release only after focused and repository exact-head Site validation pass, implementation is merged, README and handoff are current, and claim terminalization records merge evidence.",
+      "expected_evidence": [
+        "Connected Accounts appears as a first-class selectable My KV item",
+        "dedicated account page requires explicit per-account owner selection",
+        "raw provider account identifiers and credential-bearing fields are rejected",
+        "missing observation or population bridge fails closed",
+        "static UI validation and focused tests pass",
+        "Site bootstrap, handoff orchestration, and heartbeat validation succeed",
+        "source and CI do not claim authentic SKAP population"
+      ],
+      "collision_boundaries": [
+        "Do not create a second KV or InTr runtime",
+        "Do not make Site credential authority",
+        "Do not persist raw provider account identifiers in public repository state",
+        "Do not request or render passwords, access tokens, refresh tokens, private keys, or credential payloads",
+        "Unselected accounts remain untouched",
+        "TV/TVC remains credential authority",
+        "InTr remains transition governance",
+        "No authentic account population claim from source or CI"
+      ],
+      "next_task_after_release": "Bind the runtime provider-observation bridge and selected-account population action to the existing SKAP/InTr metadata transition, retain one authentic non-secret receipt, and rerun the TVC projection plus ERL reconciliation.",
+      "canonical_task_marks_render_critical": false,
+      "distinct_support_role": false,
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "pull_request": 1192,
+      "release_commit": null,
+      "claim_released_at": null,
+      "archive_eligible": false
+    }
+  ]
+}

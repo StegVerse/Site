@@ -6,7 +6,7 @@ Updated: 2026-09-10
 goal_id: FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001
 repository: StegVerse-Labs/Site
 state: ACTIVE
-branch: security-posture-stack-ui-001
+branch: posture-automatic-default-ui-002
 posture_resolution_authority: Interlock/InTr
 credential_authority: TV/TVC
 github_runtime_authority: NONE
@@ -16,9 +16,11 @@ github_runtime_authority: NONE
 
 Site renders posture request and posture evidence. It is not posture-resolution, transition, or credential authority.
 
-MyKV and Organizational KV expose the selected/requested posture immediately below their node/state context. Before an authoritative Interlock/InTr result exists, Automatic and Effective are displayed as `Awaiting InTr` and Authority as `Pending`. A selection emits `stegverse:security-posture-selected` with `authority_effect=NONE_REQUEST_INPUT_ONLY`.
+MyKV and Organizational KV expose posture state immediately below their node/state context. The selector defaults to `Automatic (ecosystem floor)` rather than fabricating an explicit `SECURE` request. Before an authoritative Interlock/InTr result exists, Automatic and Effective display `Awaiting InTr`, Selected displays `Automatic`, and Authority displays `Pending`.
 
-When a `stegverse:security-posture-resolution` event carries `resolution_authority=INTERLOCK_INTR`, Site displays the returned Automatic, Selected, and Effective posture identities, identifies Interlock/InTr as authority, and disables options below the returned automatic floor. Site does not locally derive or reinterpret the authoritative effective tier.
+An explicit tier selection emits `stegverse:security-posture-selected` with `selection_present=true` and `authority_effect=NONE_REQUEST_INPUT_ONLY`. Returning to Automatic emits `selected_tier=null` with `selection_present=false`.
+
+When `stegverse:security-posture-resolution` carries `resolution_authority=INTERLOCK_INTR`, Site displays returned Automatic/Selected/Effective provenance, identifies Interlock/InTr as authority, and disables explicit tiers below the automatic floor. If `selection_present=false`, the UI continues to identify the selection source as `Automatic`. Site never locally derives the authoritative effective tier.
 
 ## UI placement
 
@@ -29,8 +31,8 @@ Organizational KV: directly below NOT CONNECTED node/state indicator
 
 ## Evidence boundary
 
-Source validation can establish placement, labels, event semantics, fail-closed UI behavior, and absence of Site authority claims. It does not establish a live InTr resolution or runtime posture binding.
+Source validation establishes placement, labels, request semantics and absence of Site authority claims. It does not establish a live InTr resolution or runtime posture binding.
 
 ## Next
 
-Validate the exact PR head, repair orchestration/source failures, merge when green, then bind the live Site event producer to the merged authoritative InTr posture-resolution object.
+Validate and merge the automatic-default correction, then wire the live Site event producer to the authoritative InTr posture-resolution object.

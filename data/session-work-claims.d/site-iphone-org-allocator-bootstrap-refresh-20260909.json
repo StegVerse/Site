@@ -15,7 +15,7 @@
       "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-REFRESH-20260909",
       "session_worker_id": "chatgpt:site-iphone-org-allocator-bootstrap-refresh-20260909",
       "task_id": "SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-REFRESH-001",
-      "originating_goal": "Repair the stale current-iPhone organization allocator bootstrap transport so the existing public stegos-node bootstrap carries the current canonical four-task allocator catalog including TASK-2026-0010 without touching task-gated product paths.",
+      "originating_goal": "Repair the stale current-iPhone organization allocator bootstrap transport so the existing public stegos-node bootstrap carries the current canonical four-task allocator catalog including TASK-2026-0010 without touching task-gated product paths; reconcile the stale HIL sync source validator exposed by the required StegOS Node gate.",
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/iphone-org-allocator-bootstrap-refresh-001",
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
@@ -31,6 +31,8 @@
         "stegos-node/org-allocator-current-iphone-package.json",
         "scripts/check_iphone_org_allocator_bootstrap.py",
         "tests/test_iphone_org_allocator_bootstrap.py",
+        "scripts/check_hil_intr_node_sync.py",
+        "tests/test_hil_intr_node_sync.py",
         "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
         "data/session-work-claims.d/site-iphone-org-allocator-bootstrap-refresh-20260909.json"
       ],
@@ -41,6 +43,7 @@
         "Site stegos-node allocator package is byte-identical to merged StegVerse-Labs/.github blob 3eef719830889c41a14f20f30eccc533ce3278b8",
         "package catalog contains TASK-2026-0007 through TASK-2026-0010 and immediate target TASK-2026-0010",
         "bootstrap runner remains outside stegos-bootstrap task-gated product paths",
+        "HIL node-sync validation preserves KV and HIL while accepting the already-canonical additive MasterRecords:SV001Custody profile",
         "Site validation passes without claiming physical current-iPhone TASK-0010 allocation"
       ],
       "collision_boundaries": [
@@ -48,6 +51,7 @@
         "No stegos-bootstrap task-gated product files",
         "No TASK-2026-0008 reactivation",
         "No TASK-2026-0010 claim fabrication",
+        "No removal or weakening of MasterRecords:SV001Custody",
         "No second allocator or WorkerCoordinator",
         "No HeartBeat claim/execution authority",
         "No GitHub runtime authority",

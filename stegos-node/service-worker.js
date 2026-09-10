@@ -21,6 +21,8 @@ var SHELL = [
 ];
 var NETWORK_ONLY_PATHS = {
   "/stegos-node/org-allocator-bootstrap.html": true,
+  "/stegos-node/org-allocator-bootstrap-g6.html": true,
+  "/stegos-node/org-allocator-bootstrap-auto.html": true,
   "/stegos-node/org-allocator-portable.js": true,
   "/stegos-node/org-allocator-current-iphone-package.json": true
 };

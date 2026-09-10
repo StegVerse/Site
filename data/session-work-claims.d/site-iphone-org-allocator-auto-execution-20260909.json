@@ -1,0 +1,54 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-AUTO-EXECUTION-20260909",
+      "session_worker_id": "chatgpt:site-iphone-org-allocator-auto-execution-20260909",
+      "task_id": "SITE-IPHONE-ORG-ALLOCATOR-AUTO-EXECUTION-001",
+      "originating_goal": "Remove the unnecessary manual Run canonical allocation control from the established current-iPhone allocator while preserving canonical allocator authority and fail-closed predicates.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/iphone-org-allocator-auto-execution",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "7bba26ec029bac5f46b134bafdf7aa3363c67496",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-iphone-org-allocator-auto-execution",
+      "dependency_surface_keys": ["site:org-allocator-admission-bootstrap"],
+      "claimed_paths": [
+        "stegos-node/org-allocator-bootstrap-auto.html",
+        "stegos-node/service-worker.js",
+        "tests/test_iphone_org_allocator_auto_execution.py",
+        "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-iphone-org-allocator-auto-execution-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T21:34:00-05:00",
+      "claim_expires_when": "Release after verified auto-execution source validation, Site validation, merge, and public observation complete.",
+      "expected_evidence": [
+        "continuity verifies before allocator mutation",
+        "exact current package source binding is validated before allocator mutation",
+        "retained allocator state is reconstructed before allocation",
+        "auto-execution invokes the canonical allocator once after predicates pass",
+        "invalid or ambiguous state fails closed without claim mutation",
+        "exported evidence records allocator release and exact source binding"
+      ],
+      "collision_boundaries": [
+        "No allocator IndexedDB reset",
+        "No TASK-0010 product path mutation",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or hosted fallback"
+      ],
+      "next_task_after_release": "Load the immutable auto-execution entry on the established current iPhone; the canonical allocator should progress automatically from retained G5 when and only when all predicates pass. Inspect exported evidence only if fail-closed or G6 is not reached.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

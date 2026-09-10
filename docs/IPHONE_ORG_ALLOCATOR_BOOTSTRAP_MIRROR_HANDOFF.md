@@ -70,25 +70,42 @@ next allocation -> selected null / generation 5 / only TASK-2026-0010 queued
 
 The original G5 null-selection exposed two accidental scoped-exclusive collisions between TASK-0009 and TASK-0010: shared `README.md` ownership and shared `stegos.current-iphone-site-projection-successor.v1` contract ownership. `.github#1308` removed both and source validation proved retained G3/G4/G5 can select TASK-0010 at generation/fence 6.
 
-## Authentic post-remediation G5 evidence and stale-cache defect
+## Cache-freshness remediation
 
-A second physical current-iPhone execution at `2026-09-10T02:09:07.725Z` still returned selected `null`, generation 5, only TASK-0010 queued, and the same allocator receipt hash as the pre-remediation null run while appending a new node-journal entry. This demonstrated that execution occurred but the browser-visible allocator inputs had not changed.
+A later physical retry still returned selected `null`, generation 5, only TASK-0010 queued, while appending a fresh node-journal entry. Root cause was cache-first service-worker handling of allocator HTML/JS/package responses.
 
-Root cause: `stegos-node/service-worker.js` used cache-first handling for every GET. Although the allocator package loader requested `cache:"no-store"`, the active service worker intercepted the request first and returned `caches.match(event.request)` when an older allocator HTML/JS/package response existed. The allocator artifacts were not in the static SHELL list, but the generic fetch handler cached every successful GET, so the old pair could persist across source updates while `CACHE_NAME` remained unchanged.
+Site PR #1185 advanced the cache lineage to `stegos-node-shell-v10-org-allocator-fresh-v1`, made allocator HTML/JS/package paths network-only, versioned JS/package requests, and added `allocator_release` plus `portable_package_source_binding` to exported execution evidence. Site PR #1187 then added a never-before-used immutable `org-allocator-bootstrap-g6.html` entry so an already-open pre-fix document could not masquerade as the corrected page.
 
-Remediation on `fix/iphone-org-allocator-stale-sw-cache`:
+## Verified auto-execution
+
+The manual `Run canonical allocation` control is not an authority requirement. It was a bootstrap safeguard. The successor `stegos-node/org-allocator-bootstrap-auto.html` removes that manual claim-control interaction while preserving the same authority boundary.
+
+Auto-execution is permitted only after all of these predicates pass:
 
 ```text
-service-worker cache epoch -> stegos-node-shell-v10-org-allocator-fresh-v1
-allocator HTML path -> network-only
-allocator JS path -> network-only
-allocator package path -> network-only
-allocator JS request -> versioned with g5-cachefix-20260909-1
-allocator package request -> versioned with g5-cachefix-20260909-1
-exported execution evidence -> includes allocator_release + portable_package_source_binding
+1. established current-iPhone node continuity validates;
+2. the node/device binding receipt is present and the node journal replays exactly;
+3. canonical portable allocator package validation passes;
+4. package source_binding.task_0010_git_blob_sha == 248bed8cf5428c3ba759ee0d34db5fec8949a835;
+5. retained portable allocator state already exists; no automatic reset or initial-state replacement is allowed;
+6. the canonical allocator itself is run first against a non-persistent cloned preview store;
+7. preview has zero blocked_missing_dependency_declaration entries;
+8. preview exposes exactly one queued canonical successor;
+9. that successor is TASK-2026-0010 and is selected by the canonical allocator;
+10. preview generation is exactly retained generation + 1;
+11. only then is the same canonical allocator invoked once against the real IndexedDB atomic compare-and-swap store;
+12. committed selected task and generation must equal the preview result.
 ```
 
-The versioned request pair is intentional defense-in-depth: even a still-active predecessor cache-first service worker has no cached match for the new query-qualified allocator JS/package URLs, while the v10 worker permanently excludes the allocator bootstrap assets from persistent cache-first storage.
+If any predicate fails, the page reports `FAIL_CLOSED`, records no claim-authority assertion, and does not reset or replace retained allocator state. The preview uses the canonical allocator implementation itself; Site does not reimplement conflict, dependency, priority, or selection logic.
+
+Successful auto-execution evidence records:
+- `execution_trigger: VERIFIED_AUTO_EXECUTION`;
+- allocator release `g6-auto-20260909-1`;
+- the exact portable package source binding;
+- selected task and claim generation;
+- canonical claim observation/fencing tokens;
+- the appended established-node journal entry and replay tail.
 
 ## Runtime evidence
 
@@ -97,17 +114,16 @@ Authentic evidence is retained as:
 - allocator receipt;
 - claim observation;
 - established StegOS node continuity journal entry;
-- exact portable package source binding used by the execution after cache-fix deployment.
+- exact portable package source binding used by execution.
 
 Current truth:
 
 ```text
 canonical allocator TASK-0010 collision remediation: MERGED / VALIDATED
 Site corrected allocator/package source projection: MERGED
-physical current-iPhone post-source-fix retry: OBSERVED / STILL G5 NULL
-stale service-worker cache root cause: IDENTIFIED
-cache-bypass remediation: IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
-physical current-iPhone execution with allocator_release g5-cachefix-20260909-1: NOT OBSERVED
+stale service-worker cache remediation: MERGED / PUBLICLY OBSERVED
+immutable corrected G6 entry: MERGED
+verified auto-execution entry: IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
 physical current-iPhone TASK-0010 allocation: NOT OBSERVED
 G6/fence 6: NOT OBSERVED
 TASK-0010 product branch mutation: NOT STARTED
@@ -126,4 +142,4 @@ second user-operated device required: false
 external non-StegVerse machine required: false
 ```
 
-The cache fix changes transport freshness only. It does not reset retained allocator state, grant TASK-0010, release TASK-0009, authorize task-gated product files, or create any alternate runtime/claim authority.
+The auto-execution entry changes trigger semantics only. It does not reset retained allocator state, grant TASK-0010 outside canonical allocator selection, release TASK-0009, authorize task-gated product files, or create any alternate runtime/claim authority.

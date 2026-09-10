@@ -1,0 +1,68 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-STEGSOCIALS-BOUNDED-GROUP-NODE-INTR-ROUTING-20260910",
+      "session_worker_id": "chatgpt:site-stegsocials-bounded-group-node-intr-routing-20260910",
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "originating_goal": "Route an already-admitted bounded StegSocials post-group use-state transition through the existing registered StegVerse Node and Universal InTr materialization path into the existing resident DEVICE_KV CAS receiver without creating another worker/runtime or granting Site transition authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "ss-bounded-group-node-intr-routing-001",
+      "role": "INTEGRATION",
+      "state": "CLAIMED_FOR_INTEGRATION",
+      "normalized_work_key": "site-stegsocials-bounded-group-node-intr-routing",
+      "dependency_surface_keys": [
+        "stegsocials:bounded-post-group-use-state",
+        "kv:device-local-intr-v1",
+        "site:registered-node-intr-materialization",
+        "site:stegsocials-resident-cas-receiver"
+      ],
+      "claimed_paths": [
+        "assets/stegsocials-bounded-group-node-intr-bridge.js",
+        "assets/my-kv-set-projection-admission-receiver.js",
+        "tests/stegsocials-bounded-group-node-intr-bridge.test.cjs",
+        ".github/workflows/stegsocials-post-preparation.yml",
+        "docs/STEGSOCIALS_BOUNDED_GROUP_NODE_INTR_ROUTING_README.md",
+        "docs/STEGSOCIALS_BOUNDED_GROUP_NODE_INTR_ROUTING_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-stegsocials-bounded-group-node-intr-routing-20260910.json"
+      ],
+      "handoff": "docs/STEGSOCIALS_BOUNDED_GROUP_NODE_INTR_ROUTING_MIRROR_HANDOFF.md",
+      "handoff_revision": "REGISTERED_NODE_INTR_TO_EXISTING_DEVICE_KV_WORKER_ROUTING_20260910",
+      "claim_created_at": "2026-09-10T18:00:00-05:00",
+      "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
+      "expected_evidence": [
+        "existing registered StegVerse Node status is required before routing",
+        "existing StegVerseGeneratedInTr intent and materialization request primitives are reused",
+        "existing HB-derived carrier is correlation only and grants no transition authority",
+        "existing MyKV DEVICE_KV service-worker URL and scope are reused rather than registering another worker runtime",
+        "Node outbox trigger is hash-bound to node/interlock/materialization request",
+        "resident worker validates the bounded-group materialization destination and request binding before CAS",
+        "resident worker delegates only local state persistence to the existing bounded-group DEVICE_KV CAS receiver",
+        "publication/destruction/credential fail-closed predicates remain preserved",
+        "deterministic Node/InTr routing tests PASS",
+        "StegSocials Post Preparation workflow PASS",
+        "SESSION_WORK_CLAIMS_PASS",
+        "Site Handoff Orchestrator PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS"
+      ],
+      "collision_boundaries": [
+        "Do not create a second service worker runtime for bounded-group CAS",
+        "Do not create another DEVICE_KV database or object store",
+        "Do not create another InTr authority plane",
+        "Do not treat HB as execution or transition authority",
+        "Do not make Site publication authority",
+        "Do not accept or persist SKAP/social-provider credential material",
+        "Do not claim authentic current-iPhone execution from deterministic CI"
+      ],
+      "next_task_after_release": "Exercise the merged route on the retained current-iPhone Node/DEVICE_KV, retain exact external InTr admission and pre/post-state readback evidence, then bind authentic StegBrowser publication/destruction evidence for a multi-post bounded-group test.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_NODE_INTR_DEVICE_KV_STATE_ROUTE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

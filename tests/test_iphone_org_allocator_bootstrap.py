@@ -13,10 +13,11 @@ def test_bootstrap_projection_is_exact_and_non_authorizing():
     assert result["state"]=="PASS"
     assert result["canonical_allocator_remains_claim_authority"] is True
     assert result["site_product_authority"] is False
-    assert result["task_0008_claim_observed"] is False
+    assert result["task_0010_claim_observed"] is False
     assert result["physical_iphone_execution_observed"] is False
+    assert result["immediate_target_task_id"]=="TASK-2026-0010"
 
-def test_runner_does_not_touch_task_0008_product_paths():
+def test_runner_does_not_touch_task_gated_product_paths():
     html=(ROOT/"stegos-node/org-allocator-bootstrap.html").read_text(encoding="utf-8")
     assert "stegos-bootstrap/" not in html
     assert 'site_grants_claim_authority:false' in html

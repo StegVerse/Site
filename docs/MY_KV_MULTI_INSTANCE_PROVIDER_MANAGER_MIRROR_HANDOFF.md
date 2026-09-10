@@ -1,24 +1,25 @@
 # My KV Multi-Instance / Provider Manager Mirror Handoff
 
 Repository: `StegVerse-Labs/Site`
-Branch: `reconcile-google-drive-kv2-owner-retry-20260908`
-State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING_OBSERVED / EVENT_EPHEMERAL_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING
-Updated: 2026-09-08
-Authority effect: NONE
-Activation effect: false
+Branch: `document-mykv-service-federation-20260910`
+Updated: 2026-09-10
+Goal Task ID: `KV-CONNECTION-REVALIDATION-WORKER-001`
+COSV ID: `50000000102000`
+State: `SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_SOURCE_IMPLEMENTED_VALIDATED / SKAP_FIRST_ACCOUNT_ONBOARDING_SOURCE_IMPLEMENTED_VALIDATED / README_RECONCILIATION_PENDING / PROVIDER_RUNTIME_NOT_ACTIVATED`
+Authority effect: `NONE`
+Activation effect: `false`
 
-## Canonical task binding
+## Canonical bindings
 
-```text
-GOAL TASK ID: KV-CONNECTION-REVALIDATION-WORKER-001
-COSV ID: 50000000102000
-CANONICAL COSV HANDOFF: StegVerse-Labs/.github/KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md
-UPSTREAM CAPABILITY HANDOFF: StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md
-```
+- Canonical COSV handoff: `StegVerse-Labs/.github/KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md`
+- Upstream capability handoff: `StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md`
+- Service federation contract: `docs/MY_KV_SERVICE_FEDERATION_CONTRACT.md`
+- Federation implementation handoff: `docs/MY_KV_SERVICE_FEDERATION_IMPLEMENTATION_MIRROR_HANDOFF.md`
+- Active PR: `StegVerse-Labs/Site#1196`
 
-## Resident/runtime basis
+## Existing resident/runtime basis
 
-The current iPhone resident KV remains:
+Current owner-observed iPhone resident KV remains:
 
 ```text
 State: INSTALLED
@@ -42,36 +43,9 @@ adoption.receipt.json: sha256:64a3af27be0bd6ae36b05b35e52894581413fff048cea237d3
 my-kv-set-projection.json: sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2dd81af5532f0e34cf4
 ```
 
-No private Drive locator is exposed on the public page. No provider execution, identity rewrite, private-content rewrite, relationship mutation, data movement, replication, or AI-corpus exposure is claimed.
-
-## Merged transport and compatibility basis
-
-Site PR #1122 merged the prepared resident Google Drive KV #2 adoption transport at `b5c3939878bafc7f3aeb40a52458c7a4528c6628` after required validation and Pages deployment.
-
-The first authentic owner attempt then failed before resident ingress because the current registered `stegos-node-v1` IndexedDB predates the `intr_outbox` object store.
-
-Site PR #1124 repaired only that exact legacy-Node condition. It merged at `297301230b0e17ffc6d6050d708847ab75b8ce7e`; all six required gates passed and the exact merge Pages deployment completed successfully.
-
-Normal path remains:
+The owner-visible retry after Site #1124 showed:
 
 ```text
-registered Node -> persisted intr_outbox -> generated InTr -> HB-derived carrier -> resident adoption receiver
-```
-
-Exact legacy compatibility path remains:
-
-```text
-registered Node identity -> generated InTr materialization request -> HB-derived carrier -> STEGOS_NODE_EVENT_EPHEMERAL -> resident adoption receiver
-```
-
-The fallback does not claim a durable outbox write, and unrelated queue errors remain fail-closed.
-
-## Authentic owner retry — resident ingress observed
-
-After #1124 deployment, the owner retried the same prepared action once on the current iPhone. The owner-visible result showed:
-
-```text
-Resident adoption request emitted.
 request_id=SITE-CLOUD-KV-4347408852127319cbda574f02e03edb
 governance=PENDING_INTERLOCK_INTR
 resident_ingress_observed=true
@@ -80,51 +54,79 @@ instance_materialized=false
 provider_operation_authorized=false
 ```
 
-The same owner-visible surface also continued to show:
+This proves bounded request emission and resident ingress only. It does not prove Google Drive provider execution, KV #2 materialization, relationship mutation, synchronization, or AI-corpus exposure.
+
+## Agreed MyKV service federation architecture
+
+MyKV is the preferred provider-neutral interaction shell over independently owned external services. The federation key is:
 
 ```text
-resident KV #1: kvi_0d5d4cfd531db51bbcf7fdfc0311f5dc
-resident exact_readback=true
-resident durability=BEST_EFFORT_BROWSER_ORIGIN
-existing cloud identity: kvi_a31335d2cc3745fa987b635432cfed2c
-current cloud ordinal=KV #1
-requested peer ordinal=KV #2
-relationship=NOT_CONNECTED
-private-content rewrite=false
-existing-identity rewrite=false
+service_class × provider × account × kv_instance × relationship
 ```
 
-This is authentic evidence of request emission and resident ingress. It is not evidence of Google Drive provider execution or KV #2 materialization.
+Initial service classes include Mail, Calendar, Notes, Files, Contacts, Tasks, Documents, Social, Messaging, Research, Business, Development, Finance, and later registered services.
 
-The owner-visible result did **not** display `resident_transport_origin`, `provider_execution_attempted`, `relationship_mutation_attempted`, or `resident_materialization_observed`. Those values must not be inferred from the deployed compatibility code alone.
+A service may expose zero, one, or many account bindings. Multiple accounts from the same provider and multiple providers for one service are valid simultaneously. Unified views such as `All Inboxes`, `All Calendars`, `All Notes`, and `All Files` are projections only; provider/account provenance and exact mutation routing remain intact.
 
-Canonical Site evidence file:
+Relationship state applies independently per service/account binding:
 
 ```text
-data/runtime-evidence/google-drive-kv2-owner-retry.20260908.json
+NOT_CONNECTED
+CONNECTED
+SYNCED
+AI_INTERACTION
 ```
 
-## Current reconciliation branch
+No higher state is inferred from a lower state. Authorization of one provider account does not automatically authorize sync, AI interaction, destructive mutation, sharing, or publication.
 
-Branch `reconcile-google-drive-kv2-owner-retry-20260908` performs evidence-only reconciliation:
+## SKAP-first account onboarding
 
-- releases the completed #1124 compatibility claim;
-- records the exact owner-visible request ID and bounded fields;
-- explicitly records transport origin as not owner-observed;
-- preserves `PENDING_INTERLOCK_INTR`;
-- preserves `instance_materialized=false`;
-- preserves `provider_operation_authorized=false`;
-- introduces no provider, credential, relationship, data movement, replication, AI-corpus, authority, or activation effect.
+The preferred owner UX is one account-add operation:
 
-## Remaining sequence
+```text
+MyKV -> Add account
+-> owner supplies the provider-required credential OR completes provider-native authorization
+-> credential/capability is sealed/resolved through SKAP under TV/TVC authority
+-> provider capabilities are discovered
+-> MyKV materializes non-secret candidate service/account bindings
+-> Interlock/InTr governs requested service/relationship activation
+-> admitted projections appear in MyKV
+```
 
-1. Validate and merge the owner-retry evidence reconciliation.
-2. Propagate the same bounded request evidence to the canonical COSV handoff without strengthening it.
-3. Bind request `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` to authentic downstream Interlock/InTr governance/provider execution.
-4. Observe explicit provider execution / downstream result evidence.
-5. Materialize the existing Google Drive vault as KV #2 only after that authentic downstream evidence exists.
-6. Then continue provider authorization through SKAP Vault and relationship progression/recovery testing.
+The UX must support passwords where a provider still accepts them, and provider-native OAuth, MFA, passkeys, device approval, magic links, or equivalent authorization challenges without requiring repetitive per-service configuration.
+
+Credential material, refresh tokens, session tokens, private keys, reusable API secrets, and one-time authentication links are prohibited from ordinary KV federation projections.
+
+## Implemented and validated source in PR #1196
+
+`assets/my-kv-service-federation.js` implements `stegverse.kv.service-binding/v1`, `stegverse.site.my-kv.account-onboarding-request/v1`, and `stegverse.kv.service-projection/v1`; multi-account/multi-provider bindings; provenance-preserving unified service projections with `custody_merged=false`; independent relationship state; custody posture validation; SKAP-first onboarding requests; provider capability discovery requirements; fail-closed defaults; and credential-like field rejection.
+
+`tests/my-kv-service-federation.test.cjs` covers binding validation, multiple accounts/providers, independent per-binding relationships, secret rejection, duplicate rejection, SKAP-first onboarding semantics, and fail-closed behavior without a governed onboarding bridge.
+
+The first validation run `34524573983` exposed one source defect: the generic sensitive-field scanner rejected the explicit `credential_material_present=false` sentinel. Commit `04e3490e8d8fc8bad3869376bd761d35596a208a` repaired the validator so that sentinel is allowed only when it is exactly false.
+
+Follow-up run `34524646420` completed successfully. Every workflow step passed, including existing KV provider/request tests, the new service-federation/SKAP-first onboarding suite, DEVICE_KV transport validation, KV-set projection admission, MyKV multi-instance UI validation, syntax validation, and the combined bounded-authority/federation invariant check.
+
+## Authority boundary
+
+The new Site source does not itself connect Gmail, Microsoft 365, iCloud, Google Drive, OneDrive, or another provider. It does not receive provider credentials, execute provider operations, mint Interlock/InTr admission, or activate relationships.
+
+Credential/provider authorization remains behind TV/TVC + SKAP. Governed provider/service activation remains behind Interlock/InTr. Source presence, CI success, merge, or public deployment is not provider runtime evidence.
+
+Magic-link authentication remains ephemeral: MyKV may display/review the mail object, but a usable one-time link must be handed transiently to the originating StegBrowser session when same-browser binding is required and must not become durable ordinary KV content.
+
+## Runtime completion predicates
+
+Authentic service-federation completion still requires current-iPhone loading of the federation implementation, one real Add account flow, provider-native authorization under TV/TVC + SKAP, observed capability discovery, admitted binding materialization, at least two selectable mail bindings, provenance-preserving unified view, exact source-account mutation routing, independent relationship enforcement, no ordinary-KV credential/token retention, and canonical runtime receipt custody/reconstruction.
+
+## Remaining work
+
+- Update root `README.md` before merge to list the federation source and its non-authorizing/runtime-unproven status.
+- Merge PR #1196 only after README maintenance and any newly-triggered checks are green.
+- Preserve the existing Google Drive KV #2 request as pending until authentic downstream InTr/provider evidence exists; do not re-emit it.
+- Bind Gmail and Microsoft 365 Mail as the first cross-provider runtime proof using existing TV/TVC provider-authority paths, not duplicate credential stacks.
+- Extend the same binding/provenance model to Calendar, Notes, Files, Contacts, Tasks, Documents, Social, and later registered service classes.
 
 ## Manual work
 
-None required during evidence reconciliation. Do not emit the Google Drive adoption request again, clear Safari/stegverse.org data, reinstall the resident KV, rebuild the Node, authorize Google Drive, or create another cloud peer until the current request is reconciled downstream.
+None required for the current source/validation work. Do not re-emit the Google Drive adoption request, clear Safari/stegverse.org data, reinstall the resident KV, rebuild the Node, authorize Google Drive, or create another cloud peer while the existing request remains pending downstream reconciliation.

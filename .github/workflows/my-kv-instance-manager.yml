@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "assets/my-kv-instance-manager.js"
+      - "assets/my-kv-service-federation.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
       - "assets/my-kv-n-device-kv-receiver.js"
       - "assets/my-kv-set-projection-admission-bridge.js"
@@ -11,9 +12,11 @@ on:
       - "assets/my-kv-instance-ui.js"
       - "my-kv-instances.html"
       - "tests/my-kv-instance-manager.test.cjs"
+      - "tests/my-kv-service-federation.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "tests/my-kv-set-projection-admission.test.cjs"
       - "tests/my-kv-instance-ui.test.cjs"
+      - "docs/MY_KV_SERVICE_FEDERATION_CONTRACT.md"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
       - "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json"
@@ -24,6 +27,7 @@ on:
   push:
     paths:
       - "assets/my-kv-instance-manager.js"
+      - "assets/my-kv-service-federation.js"
       - "assets/my-kv-instance-device-kv-bridge.js"
       - "assets/my-kv-n-device-kv-receiver.js"
       - "assets/my-kv-set-projection-admission-bridge.js"
@@ -31,9 +35,11 @@ on:
       - "assets/my-kv-instance-ui.js"
       - "my-kv-instances.html"
       - "tests/my-kv-instance-manager.test.cjs"
+      - "tests/my-kv-service-federation.test.cjs"
       - "tests/my-kv-instance-device-kv-bridge.test.cjs"
       - "tests/my-kv-set-projection-admission.test.cjs"
       - "tests/my-kv-instance-ui.test.cjs"
+      - "docs/MY_KV_SERVICE_FEDERATION_CONTRACT.md"
       - "docs/MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER_MIRROR_HANDOFF.md"
       - "data/session-work-claims.d/site-kv-n-provider-manager-20260908.json"
       - "data/session-work-claims.d/site-kv-n-device-kv-transport-20260908.json"
@@ -56,22 +62,26 @@ jobs:
           node-version: "22"
       - name: Validate bounded KV set/provider request contract
         run: node tests/my-kv-instance-manager.test.cjs
+      - name: Validate MyKV service federation and SKAP-first onboarding contract
+        run: node tests/my-kv-service-federation.test.cjs
       - name: Validate bounded DEVICE_KV transport client
         run: node tests/my-kv-instance-device-kv-bridge.test.cjs
       - name: Validate bounded KV-set projection admission
         run: node tests/my-kv-set-projection-admission.test.cjs
       - name: Validate bounded MyKV multi-instance UI
         run: node tests/my-kv-instance-ui.test.cjs
-      - name: Validate resident receiver syntax
+      - name: Validate resident receiver and federation syntax
         run: |
+          node --check assets/my-kv-service-federation.js
           node --check assets/my-kv-n-device-kv-receiver.js
           node --check assets/my-kv-set-projection-admission-receiver.js
           node --check assets/my-kv-set-projection-admission-bridge.js
-      - name: Prove bounded authority, resident receivers, admission, and UI boundary
+      - name: Prove bounded authority, resident receivers, admission, UI, and federation boundary
         run: |
           python3 - <<'PY'
           from pathlib import Path
           src = Path('assets/my-kv-instance-manager.js').read_text(encoding='utf-8')
+          federation = Path('assets/my-kv-service-federation.js').read_text(encoding='utf-8')
           transport = Path('assets/my-kv-instance-device-kv-bridge.js').read_text(encoding='utf-8')
           receiver = Path('assets/my-kv-n-device-kv-receiver.js').read_text(encoding='utf-8')
           admission = Path('assets/my-kv-set-projection-admission-bridge.js').read_text(encoding='utf-8')
@@ -91,6 +101,23 @@ jobs:
           missing = [x for x in required if x not in src]
           if missing:
               raise SystemExit('missing fail-closed markers: ' + ', '.join(missing))
+          federation_required = [
+              'stegverse.kv.service-binding/v1',
+              'stegverse.site.my-kv.account-onboarding-request/v1',
+              'PROVIDER_NATIVE_OR_SKAP_SEALED',
+              'credential_destination:"SKAP_VAULT"',
+              'provider_capability_discovery_required:true',
+              'relationship_default:"NOT_CONNECTED"',
+              'sync_default:false',
+              'ai_interaction_default:false',
+              'provider_operation_authorized:false',
+              'custody_merged:false',
+              'provenance_preserved:true',
+              'PENDING_INTERLOCK_INTR',
+          ]
+          federation_missing = [x for x in federation_required if x not in federation]
+          if federation_missing:
+              raise SystemExit('missing federation fail-closed markers: ' + ', '.join(federation_missing))
           transport_required = [
               'MY_KV_INSTANCE_SET_PROJECTION',
               'MY_KV_PROVIDER_OPERATION_REQUEST',
@@ -175,16 +202,18 @@ jobs:
           if controller_missing:
               raise SystemExit('missing UI controller markers: ' + ', '.join(controller_missing))
           forbidden = ['provider_execution_attempted:true','relationship_mutation_attempted:true','data_moved:true','replication_started:true','ai_corpus_exposed:true','provider_operation_authorized:true','relationship_mutation_authorized:true']
-          surfaces = receiver + ui + controller + admission + admission_receiver
+          surfaces = receiver + ui + controller + admission + admission_receiver + federation
           present = [x for x in forbidden if x in surfaces]
           if present:
-              raise SystemExit('MyKV resident/UI surface contains prohibited authority/effect markers: ' + ', '.join(present))
+              raise SystemExit('MyKV surface contains prohibited authority/effect markers: ' + ', '.join(present))
           print('MY_KV_MULTI_INSTANCE_PROVIDER_MANAGER=PASS')
+          print('MY_KV_SERVICE_FEDERATION=PASS')
+          print('MY_KV_SKAP_FIRST_ONBOARDING_SOURCE=PASS')
+          print('MY_KV_MULTI_ACCOUNT_PROVENANCE=PASS')
           print('MY_KV_DEVICE_KV_RESIDENT_TRANSPORT=PASS')
           print('MY_KV_SET_PROJECTION_ADMISSION=PASS')
           print('MY_KV_SET_PROJECTION_EXACT_READBACK_CONTRACT=PASS')
           print('MY_KV_MULTI_INSTANCE_UI=PASS')
-          print('MY_KV_SET_PROJECTION_SOURCE=OWNER_SELECTED_VALIDATED_ONLY')
           print('MY_KV_PROVIDER_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_RELATIONSHIP_EXECUTION_AUTHORITY=NONE')
           print('MY_KV_CREDENTIAL_MATERIAL=PROHIBITED')

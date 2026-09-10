@@ -44,6 +44,7 @@
         "Do not claim runtime admission from source or CI",
         "Do not create a second InTr runtime or SKAP vault"
       ],
+      "next_task_after_release": "Propagate the merged StegOS kv-skap-account-metadata profile into Site's generated browser connector and extend the existing root Universal InTr dispatcher for exact SKAP_ACCOUNT_METADATA_ADMIT handling, then execute one authentic owner-selected account transfer.",
       "canonical_task_marks_render_critical": false,
       "distinct_support_role": false,
       "credential_authority": "TV/TVC",

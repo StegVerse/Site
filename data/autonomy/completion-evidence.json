@@ -5,7 +5,7 @@
     "manual_user_action_required": false,
     "site_runtime_completion_is_adapter_activation": false
   },
-  "critical_blockers": 1,
+  "critical_blockers": 0,
   "evidence_urls": [
     "https://stegverse-labs.github.io/Site/autonomy-live.html",
     "https://stegverse-labs.github.io/Site/autonomy-roadmap.html",
@@ -15,23 +15,21 @@
   "manual_completion_dependency": false,
   "objective_id": "site-public-autonomy-observability",
   "observed_results": {
-    "failed_required_check_ids": [
-      "freshness"
-    ],
+    "failed_required_check_ids": [],
     "mobile_flows_verified": [
       "autonomy-live.html",
       "autonomy-roadmap.html"
     ],
-    "passed_required_checks": 6,
+    "passed_required_checks": 7,
     "public_organization_count": 8,
     "public_repository_inventory_count": 68,
     "required_checks": 7,
-    "runtime_verification_state": "FAIL"
+    "runtime_verification_state": "PASS"
   },
   "repository": "StegVerse-Labs/Site",
   "runtime_observed": true,
   "schema_version": "1.0",
-  "user_visible_outcome_verified": false,
-  "verified_at": "2026-09-09T21:59:14.154528Z",
+  "user_visible_outcome_verified": true,
+  "verified_at": "2026-09-10T00:37:19.270619Z",
   "verifier_source": "github-actions-runtime-verification"
 }

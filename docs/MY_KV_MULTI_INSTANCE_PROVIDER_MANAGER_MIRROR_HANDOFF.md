@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/Site`
 Branch: `document-mykv-service-federation-20260910`
-State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING_OBSERVED / EVENT_EPHEMERAL_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_DESIGN_DOCUMENTED
+State: SOURCE_CONTRACT_MERGED / DEVICE_LOCAL_KV_INSTALL_MERGED_DEPLOYED / DEVICE_LOCAL_RUNTIME_INSTALL_OWNER_OBSERVED_EXACT_READBACK / PERSISTENCE_NOT_GRANTED_DURABILITY_CLASSIFIED / GOOGLE_DRIVE_EXISTING_KV_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_PREPARED_PROFILE_MERGED_DEPLOYED / LEGACY_NODE_INTR_OUTBOX_STORE_MISSING_OBSERVED / EVENT_EPHEMERAL_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_OWNER_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / MYKV_SERVICE_FEDERATION_DESIGN_DOCUMENTED / SKAP_FIRST_ACCOUNT_ONBOARDING_DOCUMENTED
 Updated: 2026-09-10
 Authority effect: NONE
 Activation effect: false
@@ -145,7 +145,27 @@ Mail is the first concrete service expected to prove this generalized model. Gma
 
 Magic-link email authentication is explicitly treated as an ephemeral capability flow: MyKV may present/review the message, but the raw usable one-time link is handed transiently to the originating StegBrowser session when same-browser authentication is required and is not promoted into durable KV content.
 
-This design decision does not claim that multi-account service federation is implemented or activated. It establishes the required architecture for subsequent source work and testing.
+### SKAP-first account onboarding
+
+The agreed account-add UX is intentionally minimal:
+
+```text
+MyKV -> Add account
+-> owner supplies only the credential or completes the provider-native authorization challenge
+-> credential/capability is sealed or resolved through SKAP under TV/TVC authority
+-> provider capabilities are discovered
+-> MyKV creates non-secret account/service bindings
+-> Interlock/InTr governs relationship/service activation
+-> approved Mail/Calendar/Contacts/Notes/Files/Tasks/etc. projections appear in MyKV
+```
+
+One provider account should not require repetitive setup for each service it exposes. After successful owner authorization, provider capability discovery should determine the eligible service classes and MyKV should complete the remaining binding/projection work according to explicit account-level defaults and governance policy.
+
+Entering credentials into SKAP is therefore the simple conceptual UX, but the implementation must also support providers that require OAuth, MFA, passkeys, device approval, magic links, or other provider-native authorization. Plaintext passwords, refresh tokens, reusable API secrets, session tokens, and one-time authentication links must not be stored in ordinary KV content.
+
+Account authorization does not imply `SYNCED`, `AI_INTERACTION`, destructive mutation rights, publication rights, or sharing rights. Those remain independently governed per service/account binding.
+
+This design decision does not claim that multi-account service federation or SKAP-first onboarding is implemented or activated. It establishes the required architecture for subsequent source work and testing.
 
 ## README impact determination
 
@@ -160,11 +180,12 @@ This change documents a design contract and updates the canonical task handoff. 
 5. Materialize the existing Google Drive vault as KV #2 only after that authentic downstream evidence exists.
 6. Continue provider authorization through SKAP Vault and relationship progression/recovery testing.
 7. Implement the provider-neutral service/account binding schema from `MY_KV_SERVICE_FEDERATION_CONTRACT.md`.
-8. Implement selectable single-account, multi-account, and unified service projections without erasing provenance.
-9. Bind Gmail and Microsoft 365 Mail as the first cross-provider service-federation proof using existing provider-authority paths rather than creating duplicate credential stacks.
-10. Extend the same service federation contract to Calendar, Notes, Files, Contacts, Tasks, Documents, Social, and later registered service classes.
-11. Produce authentic current-iPhone evidence for at least two mail accounts visible through one MyKV Mail UI, with exact source-account mutation routing and relationship-state enforcement.
-12. Preserve fail-closed behavior for ambiguous account/provider/destination/authority state and verify no raw provider credential or one-time authentication capability is retained in ordinary KV content.
+8. Implement SKAP-first account onboarding with provider-native authorization fallback/challenge handling, provider capability discovery, and non-secret binding materialization.
+9. Implement selectable single-account, multi-account, and unified service projections without erasing provenance.
+10. Bind Gmail and Microsoft 365 Mail as the first cross-provider service-federation proof using existing provider-authority paths rather than creating duplicate credential stacks.
+11. Extend the same service federation contract to Calendar, Notes, Files, Contacts, Tasks, Documents, Social, and later registered service classes.
+12. Produce authentic current-iPhone evidence for at least two mail accounts visible through one MyKV Mail UI, with exact source-account mutation routing and relationship-state enforcement.
+13. Preserve fail-closed behavior for ambiguous account/provider/destination/authority state and verify no raw provider credential or one-time authentication capability is retained in ordinary KV content.
 
 ## Manual work
 

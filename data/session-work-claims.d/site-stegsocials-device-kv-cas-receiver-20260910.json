@@ -10,7 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "ss-bounded-group-device-kv-cas-receiver-001",
       "role": "INTEGRATION",
-      "state": "CLAIMED_FOR_INTEGRATION",
+      "state": "RELEASED_COMPLETE",
       "normalized_work_key": "site-stegsocials-device-kv-cas-receiver",
       "dependency_surface_keys": [
         "stegsocials:bounded-post-group-use-state",
@@ -59,7 +59,10 @@
       "non_tv_tvc_secret_or_token_used": false,
       "authority_effect": false,
       "activation_effect": false,
-      "archive_eligible": false
+      "archive_eligible": true,
+      "pull_request": 1201,
+      "release_commit": "20b44eaf431f9565d9bb178611d99b3b2d19b58d",
+      "claim_released_at": "2026-09-10T22:57:41Z"
     }
   ]
 }

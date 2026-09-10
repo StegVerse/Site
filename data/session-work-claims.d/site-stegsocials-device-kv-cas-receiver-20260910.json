@@ -22,11 +22,12 @@
         "assets/stegsocials-bounded-group-device-kv-cas-receiver.js",
         "tests/stegsocials-bounded-group-device-kv-cas-receiver.test.cjs",
         ".github/workflows/stegsocials-post-preparation.yml",
-        "docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md",
+        "docs/STEGSOCIALS_BOUNDED_GROUP_DEVICE_KV_CAS_README.md",
+        "docs/STEGSOCIALS_BOUNDED_GROUP_DEVICE_KV_CAS_MIRROR_HANDOFF.md",
         "data/session-work-claims.d/site-stegsocials-device-kv-cas-receiver-20260910.json"
       ],
-      "handoff": "docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md",
-      "handoff_revision": "DEVICE_KV_SINGLE_TRANSACTION_CAS_RECEIVER_INTEGRATION_20260910",
+      "handoff": "docs/STEGSOCIALS_BOUNDED_GROUP_DEVICE_KV_CAS_MIRROR_HANDOFF.md",
+      "handoff_revision": "DEVICE_KV_SINGLE_TRANSACTION_CAS_RECEIVER_IMPLEMENTATION_AND_VALIDATION_20260910",
       "claim_created_at": "2026-09-10T17:10:00-05:00",
       "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
       "expected_evidence": [
@@ -38,7 +39,11 @@
         "persisted canonical state bytes hash to the requested next etag",
         "credential-like fields remain absent",
         "deterministic receiver tests PASS",
-        "Site orchestration and validation PASS"
+        "StegSocials Post Preparation workflow PASS",
+        "SESSION_WORK_CLAIMS_PASS",
+        "Site Handoff Orchestrator PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS"
       ],
       "collision_boundaries": [
         "Do not create another DEVICE_KV database or object store",

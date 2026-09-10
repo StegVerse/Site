@@ -15,6 +15,8 @@
     "allocator_git_blob_sha": "7c0105c8529b682c24a94b39ba31a8ca574c3717",
     "task_0007_git_blob_sha": "a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
     "task_0008_git_blob_sha": "f534167633c867bbee6b397ae345b10ed502aa2b",
+    "task_0009_git_blob_sha": "eeb661ca59f305ce8a86c2f46adced37056baec8",
+    "task_0010_git_blob_sha": "bd67e9e6f289a388e4836e844a5f8ff7eaacccca",
     "claims_git_blob_sha": "9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
     "queue_git_blob_sha": "6cab961c8750495dab36d1a523980516b1ac3a5e"
   },
@@ -27,69 +29,9 @@
       "status": "queued",
       "requested_at": "2026-08-22T04:39:00Z",
       "priority_class": "release",
-      "rank_reason": [
-        "StegVerse-Labs/Site#239 now canonically defines four governed capability families through the unified conversational surface rather than four competing primary chat applications",
-        "StegVerse-Labs/Site#113 now defines VACC as the broad VA specialty capability consumed by the shared surface",
-        "StegVerse-Labs/Site#240 now defines the universal mathematics educator capability, including image-to-transcription-to-guided-solution behavior",
-        "legacy Site handoffs and machine status still contain older four-app/two-entry wording that can drive duplicate UI/runtime implementation if not reconciled",
-        "the common capability contract must be installed once before specialty implementations continue to diverge"
-      ],
-      "requirements": {
-        "mandatory": [
-          {
-            "repository": {
-              "host": "github.com",
-              "owner": "StegVerse-Labs",
-              "name": "Site",
-              "full_name": "StegVerse-Labs/Site",
-              "default_branch": "main"
-            },
-            "mode": "scoped_exclusive",
-            "preemptible": true,
-            "scope": {
-              "paths": [
-                "docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
-                "data/unified-conversational-capabilities.json",
-                "scripts/check_unified_conversational_capabilities.py",
-                "tests/test_unified_conversational_capabilities.py",
-                "docs/STEGGATE_FOUR_APP_MIRROR_HANDOFF.md",
-                "data/steggate-four-app-status.json",
-                "scripts/check_steggate_four_app_status.py",
-                "docs/VA_CLAIM_ASSISTANT_MIRROR_HANDOFF.md",
-                "math-solver/README.md",
-                "docs/TWO_ENTRY_POINTS_MIRROR_HANDOFF.md",
-                "data/two-entry-points-execution-state.json",
-                "docs/SITE_UNIFIED_GOVERNED_EXPERIENCE_STATUS.md"
-              ],
-              "contracts": [
-                "stegverse.site.unified-conversational-capability.v1"
-              ],
-              "release_surfaces": [
-                "site:unified-conversational-capability-contract"
-              ],
-              "capabilities": [
-                "shared-conversation-runtime-contract",
-                "specialty-capability-routing",
-                "vacc-va-specialty-profile",
-                "mathematics-educator-specialty-profile"
-              ],
-              "workflows": [],
-              "dependency_surfaces": [
-                "site:unified-conversational-capability-contract"
-              ]
-            }
-          }
-        ],
-        "optional": []
-      },
+      "requirements": {"mandatory": [{"repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "Site", "full_name": "StegVerse-Labs/Site", "default_branch": "main"}, "mode": "scoped_exclusive", "preemptible": true, "scope": {"paths": ["docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md", "data/unified-conversational-capabilities.json", "scripts/check_unified_conversational_capabilities.py", "tests/test_unified_conversational_capabilities.py", "docs/STEGGATE_FOUR_APP_MIRROR_HANDOFF.md", "data/steggate-four-app-status.json", "scripts/check_steggate_four_app_status.py", "docs/VA_CLAIM_ASSISTANT_MIRROR_HANDOFF.md", "math-solver/README.md", "docs/TWO_ENTRY_POINTS_MIRROR_HANDOFF.md", "data/two-entry-points-execution-state.json", "docs/SITE_UNIFIED_GOVERNED_EXPERIENCE_STATUS.md"], "contracts": ["stegverse.site.unified-conversational-capability.v1"], "release_surfaces": ["site:unified-conversational-capability-contract"], "capabilities": ["shared-conversation-runtime-contract", "specialty-capability-routing", "vacc-va-specialty-profile", "mathematics-educator-specialty-profile"], "workflows": [], "dependency_surfaces": ["site:unified-conversational-capability-contract"]}}], "optional": []},
       "dependencies": [],
-      "workspace": {
-        "branch": "claim/unified-conversational-capabilities-site-239-r1",
-        "base_commit": "f493acbb1d4c0f47a0b7e61f01303713a7bd8216",
-        "merge_target": "main",
-        "direct_push_allowed": false,
-        "pull_request_required": true
-      }
+      "workspace": {"branch": "claim/unified-conversational-capabilities-site-239-r1", "base_commit": "f493acbb1d4c0f47a0b7e61f01303713a7bd8216", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true}
     },
     {
       "schema": "stegverse.org-task/v0.2",
@@ -99,103 +41,45 @@
       "status": "queued",
       "requested_at": "2026-09-03T00:28:00Z",
       "priority_class": "release",
-      "rank_reason": [
-        "StegVerse-Labs/StegOS#172 is CLOSED_COMPLETED; PR #173 merged as 62fcc9db38548d82ae656447913595f0027ed395 from pinned source 353555b927e6c42c7444ecfd48d636c3d92ce63d",
-        "The current-iPhone projection package supersedes the older five-file DE-006-only projection while retaining exact DE-006 admitted-inference binding",
-        "StegVerse-Labs/.github#837 exact DE-006 parent-candidate verifier is merged as b2bf987cad9aed84d923d79c662f657586de3c31",
-        "StegVerse-Labs/Site#932 is the canonical collision-safe Site publication task",
-        "The full current iOS projection is required before fresh current-iPhone execution can produce admissible evidence",
-        "This task subsumes stale TASK-2026-0006 / Site#399 command-ingress publication rather than creating a competing Site owner"
-      ],
-      "requirements": {
-        "mandatory": [
-          {
-            "repository": {
-              "host": "github.com",
-              "owner": "StegVerse-Labs",
-              "name": "Site",
-              "full_name": "StegVerse-Labs/Site",
-              "default_branch": "main"
-            },
-            "mode": "scoped_exclusive",
-            "preemptible": true,
-            "scope": {
-              "paths": [
-                "stegos-bootstrap/index.html",
-                "stegos-bootstrap/stegos-bootstrap.js",
-                "stegos-bootstrap/admitted-inference.js",
-                "stegos-bootstrap/service-worker.js",
-                "stegos-bootstrap/command-ingress.js",
-                "stegos-bootstrap/command.html",
-                "stegos-bootstrap/kv-readiness-persistence.js",
-                "stegos-bootstrap/kv-session-persistence.js",
-                "stegos-bootstrap/workercoordinator-portable-checkout.js",
-                "stegos-bootstrap/workercoordinator-portable-adapter.js",
-                "stegos-bootstrap/workercoordinator-portable-sv001.json",
-                "stegos-bootstrap/workercoordinator-portable-authority-contract.json",
-                "stegos-bootstrap/tvc-sv001-portable-lease.js",
-                "stegos-bootstrap/tvc-sv001-portable-lease-package.json",
-                "stegos-bootstrap/tvc-sv001-portable-tv-request.json",
-                "stegos-bootstrap/tvc-sv001-portable-lease-policy.json",
-                "stegos-bootstrap/tvc-sv001-portable-lease-state.schema.json",
-                "docs/STEGOS_DE006_BOUND_INFERENCE_PROJECTION_MIRROR_HANDOFF.md",
-                "scripts/check_stegos_de006_bound_inference_projection.py",
-                "data/tasks/SITE-STEGOS-DE006-BOUND-INFERENCE-932.json"
-              ],
-              "contracts": [
-                "stegos.web_command.v1",
-                "stegos.web_execution_binding.v1",
-                "stegos.web_admitted_inference_receipt.v1",
-                "stegverse.workercoordinator-portable-checkout-package/v1",
-                "stegverse.workercoordinator-portable-authority-contract/v1",
-                "stegverse.tvc.sv001-portable-lease-package/v1",
-                "stegverse.tv.stegverse001-bounded-autonomy-request/v1",
-                "stegverse.tvc.stegverse001-bounded-autonomy-lease-policy/v1",
-                "stegverse.tvc.sv001-portable-lease-state/v1"
-              ],
-              "release_surfaces": [
-                "site:stegos-de006-bound-inference-publication"
-              ],
-              "capabilities": [
-                "de006-bound-ios-device-local-inference-publication",
-                "bounded-browser-command-ingress-publication",
-                "current-iphone-kv-persistence-publication",
-                "portable-workercoordinator-checkout-publication",
-                "portable-tvc-sv001-lease-input-publication",
-                "same-device-sv001-invocation-publication"
-              ],
-              "workflows": [],
-              "dependency_surfaces": [
-                "site:stegos-de006-bound-inference-publication"
-              ]
-            }
-          }
-        ],
-        "optional": []
-      },
+      "requirements": {"mandatory": [{"repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "Site", "full_name": "StegVerse-Labs/Site", "default_branch": "main"}, "mode": "scoped_exclusive", "preemptible": true, "scope": {"paths": ["stegos-bootstrap/index.html", "stegos-bootstrap/stegos-bootstrap.js", "stegos-bootstrap/admitted-inference.js", "stegos-bootstrap/service-worker.js", "stegos-bootstrap/command-ingress.js", "stegos-bootstrap/command.html", "stegos-bootstrap/kv-readiness-persistence.js", "stegos-bootstrap/kv-session-persistence.js", "stegos-bootstrap/workercoordinator-portable-checkout.js", "stegos-bootstrap/workercoordinator-portable-adapter.js", "stegos-bootstrap/workercoordinator-portable-sv001.json", "stegos-bootstrap/workercoordinator-portable-authority-contract.json", "stegos-bootstrap/tvc-sv001-portable-lease.js", "stegos-bootstrap/tvc-sv001-portable-lease-package.json", "stegos-bootstrap/tvc-sv001-portable-tv-request.json", "stegos-bootstrap/tvc-sv001-portable-lease-policy.json", "stegos-bootstrap/tvc-sv001-portable-lease-state.schema.json", "docs/STEGOS_DE006_BOUND_INFERENCE_PROJECTION_MIRROR_HANDOFF.md", "scripts/check_stegos_de006_bound_inference_projection.py", "data/tasks/SITE-STEGOS-DE006-BOUND-INFERENCE-932.json"], "contracts": ["stegos.web_command.v1", "stegos.web_execution_binding.v1", "stegos.web_admitted_inference_receipt.v1", "stegverse.workercoordinator-portable-checkout-package/v1", "stegverse.workercoordinator-portable-authority-contract/v1", "stegverse.tvc.sv001-portable-lease-package/v1", "stegverse.tv.stegverse001-bounded-autonomy-request/v1", "stegverse.tvc.stegverse001-bounded-autonomy-lease-policy/v1", "stegverse.tvc.sv001-portable-lease-state/v1"], "release_surfaces": ["site:stegos-de006-bound-inference-publication"], "capabilities": ["de006-bound-ios-device-local-inference-publication", "bounded-browser-command-ingress-publication", "current-iphone-kv-persistence-publication", "portable-workercoordinator-checkout-publication", "portable-tvc-sv001-lease-input-publication", "same-device-sv001-invocation-publication"], "workflows": [], "dependency_surfaces": ["site:stegos-de006-bound-inference-publication"]}}], "optional": []},
       "dependencies": [],
-      "workspace": {
-        "branch": "claim/site-stegos-de006-bound-inference-932-r1",
-        "merge_target": "main",
-        "direct_push_allowed": false,
-        "pull_request_required": true
-      },
+      "workspace": {"branch": "claim/site-stegos-de006-bound-inference-932-r1", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true},
       "supersedes": "TASK-2026-0006"
+    },
+    {
+      "schema": "stegverse.org-task/v0.2",
+      "task_id": "TASK-2026-0009",
+      "organization": "StegVerse-Labs",
+      "goal": "Project the exact released HB31 Ecosystem Chat current-iPhone autostart successor from StegVerse-Labs/StegOS into StegVerse-Labs/Site under a fresh canonical allocator fence, without reactivating TASK-2026-0008/G4 or widening heartbeat, WorkerCoordinator, credential, runtime, publication, or custody authority.",
+      "status": "queued",
+      "requested_at": "2026-09-06T13:25:00Z",
+      "priority_class": "release",
+      "requirements": {"mandatory": [{"repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "Site", "full_name": "StegVerse-Labs/Site", "default_branch": "main"}, "mode": "scoped_exclusive", "preemptible": true, "scope": {"paths": ["stegos-bootstrap/device-local-autostart.js", "scripts/check_stegos_ipod_bootstrap_projection.py", "README.md", "docs/HB31_ECOSYSTEM_CHAT_RUNTIME_OPPORTUNITY_SITE_PROJECTION_MIRROR_HANDOFF.md", "data/tasks/SITE-HB31-ECOSYSTEM-CHAT-RUNTIME-OPPORTUNITY-SUCCESSOR.json", "data/session-work-claims.d/site-hb31-ecosystem-chat-runtime-opportunity-successor.json"], "contracts": ["stegos.current-iphone-site-projection-successor.v1"], "release_surfaces": ["site:hb31-ecosystem-chat-runtime-opportunity-successor"], "capabilities": ["current-iphone-hb31-ecosystem-chat-runtime-opportunity-successor-projection"], "workflows": [], "dependency_surfaces": ["site:hb31-ecosystem-chat-runtime-opportunity-successor"]}}], "optional": []},
+      "dependencies": [],
+      "workspace": {"branch": "claim/site-hb31-ecosystem-chat-runtime-opportunity-successor-r1", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true},
+      "supersedes": null,
+      "predecessor_provenance": {"allocator_task": "TASK-2026-0008", "allocator_fence": 4, "site_projection_pr": 952, "site_projection_merge": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4", "reactivation_allowed": false}
+    },
+    {
+      "schema": "stegverse.org-task/v0.2",
+      "task_id": "TASK-2026-0010",
+      "organization": "StegVerse-Labs",
+      "goal": "Project the exact validated current-iPhone TestFlight static bootstrap successor from StegVerse-Labs/StegOS into StegVerse-Labs/Site under a fresh canonical allocator fence, without reactivating TASK-2026-0008 or widening heartbeat, WorkerCoordinator, TV/TVC credential, runtime, publication, custody, or GitHub authority.",
+      "status": "queued",
+      "requested_at": "2026-09-10T00:59:00Z",
+      "priority_class": "release",
+      "requirements": {"mandatory": [{"repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "Site", "full_name": "StegVerse-Labs/Site", "default_branch": "main"}, "mode": "scoped_exclusive", "preemptible": true, "scope": {"paths": ["stegos-bootstrap/current-iphone-testflight.html", "stegos-bootstrap/current-iphone-testflight-bootstrap.js", "stegos-bootstrap/current-iphone-unsigned-ipa-materializer.js", "stegos-bootstrap/StegOSMobile-unsigned-device.ipa", "stegos-bootstrap/StegOSMobile-unsigned-device-manifest.json", "stegos-bootstrap/StegOSMobile.signing-requirements.json", "stegos-bootstrap/current-iphone-wasm-materializer.js", "stegos-bootstrap/stegos_current_iphone_ipa_signer.js", "stegos-bootstrap/stegos_current_iphone_ipa_signer_bg.wasm", "stegos-bootstrap/current-iphone-wasm-signing-engine.js", "stegos-bootstrap/current-iphone-ipa-signing-executor.js", "stegos-bootstrap/current-iphone-tvc-provider-client.js", "stegos-bootstrap/current-iphone-testflight-signing-action.js", "contracts/current-iphone-ipa-signing-executor.v1.json", "README.md", "docs/CURRENT_IPHONE_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md", "data/tasks/SITE-CURRENT-IPHONE-TESTFLIGHT-STATIC-BOOTSTRAP.json"], "contracts": ["stegos.current-iphone-site-projection-successor.v1", "stegverse.current-iphone-ipa-signing-executor/v1"], "release_surfaces": ["site:current-iphone-testflight-static-bootstrap"], "capabilities": ["current-iphone-testflight-static-bootstrap-projection", "same-device-wasm-ipa-signing-bootstrap", "tvc-provider-operation-bootstrap"], "workflows": [], "dependency_surfaces": ["site:current-iphone-testflight-static-bootstrap"]}}], "optional": []},
+      "dependencies": [],
+      "workspace": {"branch": "claim/current-iphone-testflight-static-bootstrap-r1", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true},
+      "supersedes": null,
+      "predecessor_provenance": {"allocator_task": "TASK-2026-0008", "site_projection_pr": 952, "site_projection_merge": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4", "reactivation_allowed": false},
+      "source_successor": {"repository": "StegVerse-Labs/StegOS", "package": "release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json", "asset_package_commit": "57f32a9e8b9dfbc70e66e0df3cb7de419fc0701b", "wasm_sha256": "699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93", "unsigned_ipa_sha256": "557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35"},
+      "authority": {"heartbeat_grants_claim_authority": false, "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator", "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE", "site_mutation_authority_before_fresh_claim": false, "runtime_execution_inferred": false}
     }
   ],
-  "claims_state": {
-    "schema": "stegverse.org-claims/v1",
-    "generation": 2,
-    "updated_at": "2026-08-06T20:29:00Z",
-    "claims": []
-  },
-  "queue_state": {
-    "schema": "stegverse.org-queue/v1",
-    "generation": 0,
-    "updated_at": "2026-08-06T19:40:00Z",
-    "ordered_task_ids": []
-  },
-  "immediate_target_task_id": "TASK-2026-0008",
-  "immediate_target_dependency_surface": "site:stegos-de006-bound-inference-publication",
+  "claims_state": {"schema": "stegverse.org-claims/v1", "generation": 2, "updated_at": "2026-08-06T20:29:00Z", "claims": []},
+  "queue_state": {"schema": "stegverse.org-queue/v1", "generation": 0, "updated_at": "2026-08-06T19:40:00Z", "ordered_task_ids": []},
+  "immediate_target_task_id": "TASK-2026-0010",
+  "immediate_target_dependency_surface": "site:current-iphone-testflight-static-bootstrap",
   "authority_effect": "CANONICAL_ORGANIZATION_ALLOCATOR_PORTABLE_INPUT"
 }

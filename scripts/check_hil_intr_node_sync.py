@@ -91,7 +91,7 @@ def validate(root: Path = ROOT) -> list[str]:
         _require(needle not in sync, f"sync_forbidden_runtime_authority:{needle}")
 
     required_root_intr = (
-        'profiles:["KV:KnowledgeVaultInterlock","HIL:Ingress"]',
+        'profiles:["KV:KnowledgeVaultInterlock","HIL:Ingress","MasterRecords:SV001Custody"]',
         'HIL_INGRESS_SCHEMA="stegverse.hil-intr-materialization-ingress/v1"',
         'HIL_OWNER="StegVerse-Labs/.github#246"',
         'subsystem:"HIL:Ingress"',

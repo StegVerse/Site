@@ -1,0 +1,71 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-945-20260902",
+      "terminalization_override_of": "canonical_registry",
+      "state": "RELEASED",
+      "pull_request": 946,
+      "release_commit": "9868b62ba2bfaaba0a0164318ac4d1d4f6d235d5",
+      "claim_released_at": "2026-09-03T04:14:14Z",
+      "archive_eligible": false
+    },
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-REFRESH-20260909",
+      "session_worker_id": "chatgpt:site-iphone-org-allocator-bootstrap-refresh-20260909",
+      "task_id": "SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-REFRESH-001",
+      "originating_goal": "Repair the stale current-iPhone organization allocator bootstrap transport so the existing public stegos-node bootstrap carries the current canonical four-task allocator catalog including TASK-2026-0010 without touching task-gated product paths; reconcile the stale HIL sync source validator exposed by the required StegOS Node gate.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/iphone-org-allocator-bootstrap-refresh-001",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "d5fdd8bbf2b7474bdb168cb270e74f072baa851e",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_VALIDATION",
+      "normalized_work_key": "site-iphone-org-allocator-bootstrap-refresh",
+      "dependency_surface_keys": [
+        "site:org-allocator-admission-bootstrap"
+      ],
+      "claimed_paths": [
+        "stegos-node/org-allocator-portable.js",
+        "stegos-node/org-allocator-current-iphone-package.json",
+        "scripts/check_iphone_org_allocator_bootstrap.py",
+        "tests/test_iphone_org_allocator_bootstrap.py",
+        "scripts/check_hil_intr_node_sync.py",
+        "tests/test_hil_intr_node_sync.py",
+        "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-iphone-org-allocator-bootstrap-refresh-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T20:15:00-05:00",
+      "claim_expires_when": "Release after Site PR #1181 passes exact bootstrap, handoff, heartbeat-orchestration, and public-node validation and merges; any TASK-2026-0010 product projection requires its separate authentic current-iPhone allocator claim.",
+      "expected_evidence": [
+        "Site stegos-node allocator JavaScript is byte-identical to merged StegVerse-Labs/.github blob 238c0f9ba4e9952fcd12ab4a5d8bfc7a1ab0c9e5",
+        "Site stegos-node allocator package is byte-identical to merged StegVerse-Labs/.github blob 3eef719830889c41a14f20f30eccc533ce3278b8",
+        "package catalog contains TASK-2026-0007 through TASK-2026-0010 and immediate target TASK-2026-0010",
+        "bootstrap runner remains outside stegos-bootstrap task-gated product paths",
+        "HIL node-sync validation preserves KV and HIL while accepting the already-canonical additive MasterRecords:SV001Custody profile",
+        "Site validation passes without claiming physical current-iPhone TASK-0010 allocation"
+      ],
+      "collision_boundaries": [
+        "Original Site#945 bootstrap claim is terminalized before reusing its dependency surface",
+        "No stegos-bootstrap task-gated product files",
+        "No TASK-2026-0008 reactivation",
+        "No TASK-2026-0010 claim fabrication",
+        "No removal or weakening of MasterRecords:SV001Custody",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or other hosted fallback"
+      ],
+      "next_task_after_release": "Observe the refreshed public bootstrap and allow the established current iPhone to execute the canonical portable allocator; continue TASK-2026-0010 product projection only after authentic fresh claim/fence evidence.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

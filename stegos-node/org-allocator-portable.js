@@ -74,11 +74,24 @@
       queue_git_blob_sha:"6cab961c8750495dab36d1a523980516b1ac3a5e"
     };
     Object.keys(exact).forEach(function(k){if(source[k]!==exact[k]){fail("source binding mismatch: "+k);}});
-    if(!Array.isArray(pkg.tasks)||pkg.tasks.length!==2){fail("portable allocator current task package mismatch");}
+    var successor9Sha=source.task_0009_git_blob_sha;
+    var successor10Sha=source.task_0010_git_blob_sha;
+    if(successor9Sha!==undefined&&successor9Sha!=="eeb661ca59f305ce8a86c2f46adced37056baec8"){fail("source binding mismatch: task_0009_git_blob_sha");}
+    if(successor10Sha!==undefined&&successor10Sha!=="bd67e9e6f289a388e4836e844a5f8ff7eaacccca"){fail("source binding mismatch: task_0010_git_blob_sha");}
+    if(!Array.isArray(pkg.tasks)||(pkg.tasks.length<2||pkg.tasks.length>4)){fail("portable allocator current task package mismatch");}
     var ids=pkg.tasks.map(function(t){return t.task_id;}).sort().join("|");
-    if(ids!=="TASK-2026-0007|TASK-2026-0008"){fail("portable allocator task identities mismatch");}
+    var predecessorIds="TASK-2026-0007|TASK-2026-0008";
+    var successor9Ids="TASK-2026-0007|TASK-2026-0008|TASK-2026-0009";
+    var successor10Ids="TASK-2026-0007|TASK-2026-0008|TASK-2026-0009|TASK-2026-0010";
+    if(ids!==predecessorIds&&ids!==successor9Ids&&ids!==successor10Ids){fail("portable allocator task identities mismatch");}
+    if((ids===successor9Ids||ids===successor10Ids)&&successor9Sha===undefined){fail("TASK-2026-0009 source binding required");}
+    if(ids===successor10Ids&&successor10Sha===undefined){fail("TASK-2026-0010 source binding required");}
+    if(ids!==successor10Ids&&successor10Sha!==undefined){fail("TASK-2026-0010 source binding without task");}
+    if(ids===predecessorIds&&successor9Sha!==undefined){fail("TASK-2026-0009 source binding without task");}
     var task7=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0007";});
     var task8=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0008";});
+    var task9=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0009";});
+    var task10=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0010";});
     function validateTaskFloor(task,requestedAt,surface){
       if(!task||task.organization!=="StegVerse-Labs"||task.status!=="queued"||task.requested_at!==requestedAt||task.priority_class!=="release"){fail("portable allocator task floor mismatch");}
       if((task.dependencies||[]).length!==0){fail("portable allocator task dependency floor mismatch");}
@@ -88,6 +101,8 @@
     }
     validateTaskFloor(task7,"2026-08-22T04:39:00Z","site:unified-conversational-capability-contract");
     validateTaskFloor(task8,"2026-09-03T00:28:00Z","site:stegos-de006-bound-inference-publication");
+    if(task9){validateTaskFloor(task9,"2026-09-06T13:25:00Z","site:hb31-ecosystem-chat-runtime-opportunity-successor");}
+    if(task10){validateTaskFloor(task10,"2026-09-10T00:59:00Z","site:current-iphone-testflight-static-bootstrap");}
     if(pkg.claims_state.schema!=="stegverse.org-claims/v1"||pkg.queue_state.schema!=="stegverse.org-queue/v1"){fail("portable allocator predecessor state schema mismatch");}
     if(pkg.claims_state.generation!==2||!Array.isArray(pkg.claims_state.claims)||pkg.claims_state.claims.length!==0){fail("portable allocator predecessor claim state mismatch");}
     return pkg;

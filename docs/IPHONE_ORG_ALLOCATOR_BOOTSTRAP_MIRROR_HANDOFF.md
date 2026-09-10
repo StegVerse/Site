@@ -1,17 +1,17 @@
 # iPhone Organization Allocator Bootstrap Mirror Handoff
 
-Updated: 2026-09-02
+Updated: 2026-09-09
 Repository: `StegVerse-Labs/Site`
 Issue: #945
-Claim: `SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-945-20260902`
+Original claim: `SITE-IPHONE-ORG-ALLOCATOR-BOOTSTRAP-945-20260902`
 
 ## Purpose
 
-Break the allocator/publication bootstrap circularity without bypassing the organization allocator or TASK-2026-0008.
+Break allocator/publication bootstrap circularity without bypassing the canonical organization allocator or reusing a prior product claim.
 
 Canonical allocator authority:
-- `StegVerse-Labs/.github#884`
-- merge `d3da58e0f6822bde7316ada3f532f15f75a2fdcf`
+- `StegVerse-Labs/.github#884`;
+- current successor-catalog merge `e484be32e5b017a4a6f172635ea80c5d46913d8e`.
 
 Site role is orchestration/bootstrap transport only.
 
@@ -21,6 +21,16 @@ Site role is orchestration/bootstrap transport only.
 - `.github:control/portable-org-allocator/current-iphone-package.json`
 
 The Site copies must remain byte-identical to their merged source blobs.
+
+Current exact projections:
+
+```text
+stegos-node/org-allocator-portable.js
+  blob 238c0f9ba4e9952fcd12ab4a5d8bfc7a1ab0c9e5
+
+stegos-node/org-allocator-current-iphone-package.json
+  blob 3eef719830889c41a14f20f30eccc533ce3278b8
+```
 
 ## Same-device execution
 
@@ -38,17 +48,21 @@ Site, HB, browser shell, static hosting, transport, and source materialization g
 
 ## Bootstrap/product separation
 
-This lane does NOT modify any `stegos-bootstrap/*` path owned by TASK-2026-0008.
+This lane modifies only `stegos-node/` bootstrap transport plus its validation/handoff surfaces. It does not modify any task-gated `stegos-bootstrap/*` product path.
 
-The bootstrap runner lives only under `stegos-node/` orchestration infrastructure. A TASK-0008 claim produced by the canonical allocator is a later runtime predicate; this source publication does not satisfy it.
+The product successor for the current-iPhone TestFlight static assets is separate canonical task `TASK-2026-0010`, with dependency surface:
 
-## Expected first allocations
+`site:current-iphone-testflight-static-bootstrap`
 
-From the exact packaged current state:
-- first uncontended allocation may select TASK-2026-0007 / generation 3;
-- a later invocation may select TASK-2026-0008 / generation 4 because the dependency surfaces are disjoint.
+The product branch `claim/current-iphone-testflight-static-bootstrap-r1` remains untouched until an authentic current-iPhone allocator claim for TASK-0010 is observed.
 
-Those are source-semantic expectations only until the physical iPhone executes them.
+## Retained state and successor catalog
+
+The physical current iPhone previously executed the same portable allocator authority epoch and retained the authentic TASK-0008 G4/fence-4 observation. The current package now contains exact task identities TASK-0007, TASK-0008, TASK-0009, and TASK-0010 while preserving the same authority epoch and seed state.
+
+The allocator does not reset retained state when a new catalog task is absent from persisted `task_statuses`; it falls back to that task's packaged queued state. Existing active claims remain collision inputs.
+
+Source regression proves that a retained G3/G4/G5 state can select TASK-0010 only at monotonic generation/fence 6 when its exact Site scope is non-conflicting. This is source behavior only until the current iPhone actually performs the CAS.
 
 ## Runtime evidence
 
@@ -58,63 +72,29 @@ Authentic evidence is retained as:
 - claim observation;
 - established StegOS node continuity journal entry.
 
-Source/merge/CI never substitute for those receipts.
-
-
-## Implemented source — 2026-09-02
-
-Exact projections:
-
-```text
-stegos-node/org-allocator-portable.js
-  blob 4df48314fa6cebf96d39cb1366a275468f5a3cbc
-
-stegos-node/org-allocator-current-iphone-package.json
-  blob e97411f7c70a9724f6d62f10899fef6ceafaeaae
-```
-
-Runner:
-`stegos-node/org-allocator-bootstrap.html`.
-
-Persistence:
-`IndexedDB stegos-org-allocator-v1 / canonical-portable-state`.
-
-The runner verifies established `stegos-web-bootstrap-v1` node/device continuity, invokes the exact canonical allocator, persists portable state through atomic compare-and-swap, and appends a non-authorizing execution/claim-observation receipt into the established node journal.
-
-Validation:
-- exact upstream blobs: PASS;
-- JavaScript syntax: PASS;
-- no `stegos-bootstrap/*` product-path dependency: PASS;
-- Site/HB/browser claim-authority widening: absent;
-- physical iPhone allocator execution: NOT OBSERVED;
-- TASK-2026-0008 grant: NOT OBSERVED.
-
-The completed older resident-task publication claim `SITE-STEGOS-IPHONE-RESIDENT-TASK-938-20260902` is terminalized to RELEASED on this branch after merged Site PR #940 / commit `13baddb05104729fb85c41e029c675add07a4107`.
-
-
-## Post-merge reconciliation — 2026-09-02
-
-Source implementation merged through Site PR #946:
-
-`9868b62ba2bfaaba0a0164318ac4d1d4f6d235d5`
-
-Exact-head validation succeeded:
-- Site Bootstrap Validate `33714257695`;
-- Site Handoff Orchestrator `33714257500`;
-- Ecosystem Heartbeat Orchestration `33714257631`;
-- StegOS Node Public Observation `33714257528`;
-- StegFin Phone Projection validation `33714257571`;
-- Physical Economics validation `33714257516`.
-
 Current truth:
+
 ```text
-source implementation: MERGED
-repository validation: PASS
-canonical allocator source: MERGED
-public HTTP route observation: NOT OBSERVED
-physical current-iPhone allocator execution: NOT OBSERVED
-TASK-2026-0008 claim: NOT OBSERVED
-claim role/state: VALIDATION / CLAIMED_FOR_VALIDATION
+canonical allocator TASK-0010 source: MERGED
+Site bootstrap allocator bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
+Site bootstrap package bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
+public bootstrap route with refreshed bytes: NOT YET OBSERVED
+physical current-iPhone TASK-0010 allocation: NOT OBSERVED
+G6/fence 6: NOT OBSERVED
+TASK-0010 product branch mutation: NOT STARTED
 ```
 
-No more product/source implementation is authorized by this bootstrap claim unless public/on-device validation exposes a concrete defect.
+## Authority invariants
+
+```text
+canonical organization allocator claim authority: true
+Site claim authority: false
+StegOS claim authority: false
+HeartBeat claim/execution authority: false
+GitHub runtime authority: NONE
+credential authority: TV/TVC
+second user-operated device required: false
+external non-StegVerse machine required: false
+```
+
+The bootstrap refresh exists because public Site was still serving the original two-task allocator/package from September 2 after canonical successor tasks were added. That stale transport was the concrete defect permitted by the original bootstrap handoff's remediation clause. Refreshing these byte-identical bootstrap artifacts does not itself grant TASK-0010 or authorize its product files.

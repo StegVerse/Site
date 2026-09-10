@@ -5,8 +5,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 EXPECTED={
- "stegos-node/org-allocator-portable.js":"4df48314fa6cebf96d39cb1366a275468f5a3cbc",
- "stegos-node/org-allocator-current-iphone-package.json":"e97411f7c70a9724f6d62f10899fef6ceafaeaae",
+ "stegos-node/org-allocator-portable.js":"238c0f9ba4e9952fcd12ab4a5d8bfc7a1ab0c9e5",
+ "stegos-node/org-allocator-current-iphone-package.json":"3eef719830889c41a14f20f30eccc533ce3278b8",
 }
 
 def git_blob_sha(path:Path)->str:
@@ -42,7 +42,7 @@ def verify()->dict:
         if marker not in html:
             raise RuntimeError(f"bootstrap invariant missing: {marker}")
     if "stegos-bootstrap/" in html:
-        raise RuntimeError("bootstrap runner may not reference TASK-0008 gated product paths")
+        raise RuntimeError("bootstrap runner may not reference task-gated product paths")
     pkg=json.loads((ROOT/"stegos-node/org-allocator-current-iphone-package.json").read_text(encoding="utf-8"))
     if pkg.get("canonical_authority_owner")!="StegVerse-Labs/.github organization allocator":
         raise RuntimeError("canonical allocator owner drift")
@@ -50,14 +50,23 @@ def verify()->dict:
         raise RuntimeError("execution surface drift")
     if pkg.get("stegos_grants_claim_authority") is not False:
         raise RuntimeError("StegOS claim authority widening")
+    ids=[task.get("task_id") for task in pkg.get("tasks",[])]
+    if ids != ["TASK-2026-0007","TASK-2026-0008","TASK-2026-0009","TASK-2026-0010"]:
+        raise RuntimeError("portable allocator task catalog stale")
+    if pkg.get("immediate_target_task_id") != "TASK-2026-0010":
+        raise RuntimeError("portable allocator immediate target stale")
+    if pkg.get("immediate_target_dependency_surface") != "site:current-iphone-testflight-static-bootstrap":
+        raise RuntimeError("portable allocator target surface stale")
     return {
       "schema":"stegverse.site.iphone-org-allocator-bootstrap-validation/v1",
       "state":"PASS",
       "exact_allocator_blob":EXPECTED["stegos-node/org-allocator-portable.js"],
       "exact_package_blob":EXPECTED["stegos-node/org-allocator-current-iphone-package.json"],
+      "task_catalog":["TASK-2026-0007","TASK-2026-0008","TASK-2026-0009","TASK-2026-0010"],
+      "immediate_target_task_id":"TASK-2026-0010",
       "site_product_authority":False,
       "canonical_allocator_remains_claim_authority":True,
-      "task_0008_claim_observed":False,
+      "task_0010_claim_observed":False,
       "physical_iphone_execution_observed":False,
       "authority_effect":"NONE_VALIDATION_ONLY",
     }

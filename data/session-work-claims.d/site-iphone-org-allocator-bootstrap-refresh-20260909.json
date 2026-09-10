@@ -20,8 +20,8 @@
       "branch": "fix/iphone-org-allocator-bootstrap-refresh-001",
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
       "handoff_revision": "d5fdd8bbf2b7474bdb168cb270e74f072baa851e",
-      "role": "IMPLEMENTATION_REPAIR",
-      "state": "CLAIMED_FOR_VALIDATION",
+      "role": "RELEASED_REPAIR",
+      "state": "RELEASED",
       "normalized_work_key": "site-iphone-org-allocator-bootstrap-refresh",
       "dependency_surface_keys": [
         "site:org-allocator-admission-bootstrap"
@@ -65,7 +65,10 @@
       "render_required": false,
       "authority_effect": false,
       "activation_effect": false,
-      "archive_eligible": false
+      "archive_eligible": false,
+      "pull_request": 1181,
+      "release_commit": "7d52ff8b6cf60b62adcd18aed493b8f6a61b1107",
+      "claim_released_at": "2026-09-10T01:18:34Z"
     }
   ]
 }

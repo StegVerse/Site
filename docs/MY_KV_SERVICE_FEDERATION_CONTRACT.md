@@ -73,6 +73,45 @@ all eligible bindings across a user-defined workspace
 
 An `ALL` or unified view is a projection only. It MUST NOT erase the provider account that owns each object.
 
+## Account onboarding contract
+
+Adding an account SHOULD require the least possible user interaction. The preferred MyKV flow is:
+
+```text
+MyKV -> Add account
+-> select or discover provider/account type
+-> owner supplies only the provider-required credential or completes the provider-required authorization challenge
+-> credential material is sealed into SKAP under the applicable TV/TVC credential class
+-> MyKV receives only a non-secret account/service binding reference
+-> provider capabilities are discovered
+-> eligible service classes are presented for selection
+-> Interlock/InTr governs requested service bindings and relationship states
+-> MyKV materializes the approved account/service projections
+-> exact provider/account provenance and mutation routes are retained
+```
+
+The user SHOULD NOT have to separately configure Mail, Calendar, Contacts, Notes, Files, Tasks, or other services when one provider account exposes several eligible service classes. After successful credential/authorization custody, MyKV SHOULD discover those capabilities and offer or materialize them according to the user's explicit account-level defaults and governance policy.
+
+One provider account MAY therefore yield several independently governed bindings, for example:
+
+```text
+MICROSOFT365 account
+-> MAIL
+-> CALENDAR
+-> CONTACTS
+-> FILES / ONEDRIVE
+-> TASKS
+-> NOTES where provider capability exists
+```
+
+Each resulting binding retains its own relationship state. Supplying an account credential does not automatically authorize synchronization, AI interaction, destructive mutations, publication, sharing, or other higher-consequence operations.
+
+SKAP stores or resolves credential capability; ordinary KV records MUST NOT contain plaintext passwords, OAuth refresh tokens, API secrets, session tokens, or equivalent reusable credential material. MyKV receives non-secret provider/account references and operation capabilities only after the applicable TV/TVC and Interlock/InTr boundaries admit them.
+
+Where a provider uses OAuth, passkeys, device approval, MFA, magic links, or another challenge instead of a reusable password, `Add account` MUST use that provider-native authorization flow rather than requiring the user to manufacture or expose a password. The UX objective remains the same: one owner-initiated account-add operation, after which SKAP/TVC/provider adapters and MyKV complete the discover/bind/project sequence without redundant manual setup.
+
+Adding a second or later account uses the same contract. Account identity and provider provenance remain distinct even when multiple accounts expose identical service classes.
+
 ## Provenance requirement
 
 Every projected object MUST remain traceable to its originating binding. At minimum the projection MUST preserve:

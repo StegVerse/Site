@@ -12,7 +12,7 @@
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
       "handoff_revision": "11339ebba797280ec23d523620866e8574796779",
       "role": "IMPLEMENTATION_REPAIR",
-      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "state": "RELEASED",
       "normalized_work_key": "site-stegos-node-auto-allocator-carrier",
       "dependency_surface_keys": ["site:org-allocator-admission-bootstrap"],
       "claimed_paths": [
@@ -46,6 +46,9 @@
       "render_required": false,
       "authority_effect": false,
       "activation_effect": false,
+      "pull_request": 1190,
+      "release_commit": "06efd3b16298b079fcb6147aaa71896683853533",
+      "claim_released_at": "2026-09-10T03:56:22Z",
       "archive_eligible": false
     }
   ]

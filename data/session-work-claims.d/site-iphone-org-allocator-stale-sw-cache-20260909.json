@@ -1,0 +1,55 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-IPHONE-ORG-ALLOCATOR-STALE-SW-CACHE-20260909",
+      "session_worker_id": "chatgpt:site-iphone-org-allocator-stale-sw-cache-20260909",
+      "task_id": "SITE-IPHONE-ORG-ALLOCATOR-STALE-SW-CACHE-001",
+      "originating_goal": "Ensure the established current iPhone executes the corrected TASK-2026-0010 allocator package rather than a stale service-worker-cached allocator HTML/JS/package pair.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "fix/iphone-org-allocator-stale-sw-cache",
+      "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "e4b1403daf8e56c79040c2e8878131ae2fd531d8",
+      "role": "IMPLEMENTATION_REPAIR",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-iphone-org-allocator-stale-sw-cache",
+      "dependency_surface_keys": ["site:org-allocator-admission-bootstrap"],
+      "claimed_paths": [
+        "stegos-node/service-worker.js",
+        "stegos-node/org-allocator-bootstrap.html",
+        "scripts/check_iphone_org_allocator_bootstrap.py",
+        "tests/test_iphone_org_allocator_bootstrap.py",
+        "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-iphone-org-allocator-stale-sw-cache-20260909.json"
+      ],
+      "claim_created_at": "2026-09-09T21:10:00-05:00",
+      "claim_expires_when": "Release after cache-bypass source validation, Site validation, public-node observation, merge, and post-merge live observation complete.",
+      "expected_evidence": [
+        "allocator HTML, JS, and package are not served from persistent cache-first service-worker storage",
+        "allocator HTML uses a versioned release token for JS and package requests",
+        "exported allocator evidence contains the exact portable package source binding used by the phone",
+        "retained IndexedDB allocator state is preserved",
+        "no TASK-0010 product path is modified"
+      ],
+      "collision_boundaries": [
+        "No stegos-bootstrap task-gated product files",
+        "No allocator IndexedDB reset",
+        "No TASK-0009 claim release or mutation",
+        "No second allocator or WorkerCoordinator",
+        "No HeartBeat claim/execution authority",
+        "No GitHub runtime authority",
+        "No Render or other hosted fallback"
+      ],
+      "next_task_after_release": "After merge and post-merge live observation, open the versioned allocator bootstrap on the established current iPhone, run one canonical allocation from retained generation 5, export evidence, and require allocator_release g5-cachefix-20260909-1 plus TASK-0010 source binding 248bed8cf5428c3ba759ee0d34db5fec8949a835 before interpreting any G6 result. Do not reset allocator state or mutate TASK-0010 product paths before authentic G6/fence-6 claim evidence.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

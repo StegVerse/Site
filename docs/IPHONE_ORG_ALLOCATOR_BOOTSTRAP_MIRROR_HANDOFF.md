@@ -57,7 +57,7 @@ The product successor for the current-iPhone TestFlight static assets is separat
 
 The product branch `claim/current-iphone-testflight-static-bootstrap-r1` remains untouched until an authentic current-iPhone allocator claim for TASK-0010 is observed.
 
-## Authentic G5 failure evidence and remediation
+## Authentic G5 failure evidence and source remediation
 
 The physical current iPhone retained the authentic allocator lineage and advanced through:
 
@@ -68,9 +68,27 @@ TASK-2026-0009 -> generation/fence 5
 next allocation -> selected null / generation 5 / only TASK-2026-0010 queued
 ```
 
-The G5 null-selection was correct fail-closed behavior. Inspection found two accidental scoped-exclusive collisions between the retained TASK-0009 G5 claim and TASK-0010: shared `README.md` path ownership and the generic `stegos.current-iphone-site-projection-successor.v1` contract. `.github#1308` removed both shared coordination surfaces from TASK-0010 while preserving its unique TestFlight product/runtime paths, signing-executor contract, release surface, capabilities and dependency surface.
+The original G5 null-selection exposed two accidental scoped-exclusive collisions between TASK-0009 and TASK-0010: shared `README.md` ownership and shared `stegos.current-iphone-site-projection-successor.v1` contract ownership. `.github#1308` removed both and source validation proved retained G3/G4/G5 can select TASK-0010 at generation/fence 6.
 
-A proper `unittest.TestCase` regression now reconstructs the retained G3/G4/G5 claim topology and requires TASK-0010 to select at generation/fence 6. The full deterministic repository suite and Heartbeat validation both passed before #1308 merged.
+## Authentic post-remediation G5 evidence and stale-cache defect
+
+A second physical current-iPhone execution at `2026-09-10T02:09:07.725Z` still returned selected `null`, generation 5, only TASK-0010 queued, and the same allocator receipt hash as the pre-remediation null run while appending a new node-journal entry. This demonstrated that execution occurred but the browser-visible allocator inputs had not changed.
+
+Root cause: `stegos-node/service-worker.js` used cache-first handling for every GET. Although the allocator package loader requested `cache:"no-store"`, the active service worker intercepted the request first and returned `caches.match(event.request)` when an older allocator HTML/JS/package response existed. The allocator artifacts were not in the static SHELL list, but the generic fetch handler cached every successful GET, so the old pair could persist across source updates while `CACHE_NAME` remained unchanged.
+
+Remediation on `fix/iphone-org-allocator-stale-sw-cache`:
+
+```text
+service-worker cache epoch -> stegos-node-shell-v10-org-allocator-fresh-v1
+allocator HTML path -> network-only
+allocator JS path -> network-only
+allocator package path -> network-only
+allocator JS request -> versioned with g5-cachefix-20260909-1
+allocator package request -> versioned with g5-cachefix-20260909-1
+exported execution evidence -> includes allocator_release + portable_package_source_binding
+```
+
+The versioned request pair is intentional defense-in-depth: even a still-active predecessor cache-first service worker has no cached match for the new query-qualified allocator JS/package URLs, while the v10 worker permanently excludes the allocator bootstrap assets from persistent cache-first storage.
 
 ## Runtime evidence
 
@@ -78,15 +96,18 @@ Authentic evidence is retained as:
 - canonical allocator portable state in dedicated IndexedDB;
 - allocator receipt;
 - claim observation;
-- established StegOS node continuity journal entry.
+- established StegOS node continuity journal entry;
+- exact portable package source binding used by the execution after cache-fix deployment.
 
 Current truth:
 
 ```text
 canonical allocator TASK-0010 collision remediation: MERGED / VALIDATED
-Site bootstrap allocator bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
-Site bootstrap package bytes: REFRESHED_ON_BRANCH / VALIDATION_PENDING
-public bootstrap route with corrected G5-collision bytes: NOT YET OBSERVED
+Site corrected allocator/package source projection: MERGED
+physical current-iPhone post-source-fix retry: OBSERVED / STILL G5 NULL
+stale service-worker cache root cause: IDENTIFIED
+cache-bypass remediation: IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
+physical current-iPhone execution with allocator_release g5-cachefix-20260909-1: NOT OBSERVED
 physical current-iPhone TASK-0010 allocation: NOT OBSERVED
 G6/fence 6: NOT OBSERVED
 TASK-0010 product branch mutation: NOT STARTED
@@ -105,4 +126,4 @@ second user-operated device required: false
 external non-StegVerse machine required: false
 ```
 
-This bootstrap refresh transports the corrected byte-identical canonical allocator after an authentic current-iPhone collision exposed a source-scope defect. It does not grant TASK-0010, reset retained allocator state, release TASK-0009, or authorize any TASK-0010 product file.
+The cache fix changes transport freshness only. It does not reset retained allocator state, grant TASK-0010, release TASK-0009, authorize task-gated product files, or create any alternate runtime/claim authority.

@@ -1,7 +1,8 @@
 "use strict";
 
-// predecessor cache lineage: stegos-node-shell-v8-source-package-bootstrap-v1
-var CACHE_NAME = "stegos-node-shell-v9-bootstrap-intr-delivery-v1";
+// cache lineage retained for validator/reconstruction continuity:
+// stegos-node-shell-v8-source-package-bootstrap-v1 -> stegos-node-shell-v9-bootstrap-intr-delivery-v1 -> stegos-node-shell-v10-org-allocator-fresh-v1
+var CACHE_NAME = "stegos-node-shell-v10-org-allocator-fresh-v1";
 var SHELL = [
   "./",
   "./index.html",
@@ -18,6 +19,11 @@ var SHELL = [
   "./bootstrap-bundle-v1.schema.json",
   "./manifest.webmanifest"
 ];
+var NETWORK_ONLY_PATHS = {
+  "/stegos-node/org-allocator-bootstrap.html": true,
+  "/stegos-node/org-allocator-portable.js": true,
+  "/stegos-node/org-allocator-current-iphone-package.json": true
+};
 
 self.addEventListener("install", function (event) {
   event.waitUntil(caches.open(CACHE_NAME).then(function (cache) { return cache.addAll(SHELL); }));
@@ -33,6 +39,11 @@ self.addEventListener("activate", function (event) {
 
 self.addEventListener("fetch", function (event) {
   if (event.request.method !== "GET") return;
+  var url = new URL(event.request.url);
+  if (url.origin === self.location.origin && NETWORK_ONLY_PATHS[url.pathname]) {
+    event.respondWith(fetch(event.request, {cache: "no-store"}));
+    return;
+  }
   event.respondWith(caches.match(event.request).then(function (cached) {
     if (cached) return cached;
     return fetch(event.request).then(function (response) {

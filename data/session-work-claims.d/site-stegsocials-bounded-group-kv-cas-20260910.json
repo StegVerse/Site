@@ -1,0 +1,62 @@
+{
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-STEGSOCIALS-BOUNDED-GROUP-KV-CAS-20260910",
+      "session_worker_id": "chatgpt:site-stegsocials-bounded-group-kv-cas-20260910",
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "originating_goal": "Project the bounded StegSocials post-group use-state compare-and-swap contract into the existing Personal-KV/DEVICE_KV lane without granting Site publication, credential, or transition authority.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "ss-bounded-group-kv-conditional-write-001",
+      "role": "INTEGRATION",
+      "state": "CLAIMED_FOR_INTEGRATION",
+      "normalized_work_key": "site-stegsocials-bounded-group-kv-cas",
+      "dependency_surface_keys": [
+        "stegsocials:bounded-post-group-use-state",
+        "kv:personal-conditional-write",
+        "site:stegsocials-provider-neutral-cas-projection"
+      ],
+      "claimed_paths": [
+        "assets/stegsocials-bounded-group-kv-conditional-write.js",
+        "tests/stegsocials-bounded-group-kv-conditional-write.test.cjs",
+        ".github/workflows/stegsocials-post-preparation.yml",
+        "docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md",
+        "data/session-work-claims.d/site-stegsocials-bounded-group-kv-cas-20260910.json"
+      ],
+      "handoff": "docs/STEGSOCIALS_BOUNDED_GROUP_KV_CAS_MIRROR_HANDOFF.md",
+      "handoff_revision": "PERSONAL_KV_CONDITIONAL_WRITE_CONTRACT_IMPLEMENTED_VALIDATION_IN_PROGRESS_20260910",
+      "claim_created_at": "2026-09-10T16:09:00-05:00",
+      "claim_expires_when": "CURRENT_INTEGRATION_PR_MERGED_OR_CLOSED",
+      "expected_evidence": [
+        "bounded group current-state SHA-256 etag is required before mutation request",
+        "exactly one successful publication use is added per transition",
+        "stale expected etag fails closed",
+        "publication proof and exact final-content hash are required before use-state commit",
+        "terminal StegBrowser session_state_destroyed evidence is required before use-state commit",
+        "credential-like fields are rejected from state and transition objects",
+        "conditional-write result must prove expected previous etag, persisted next etag, and exact readback",
+        "StegSocials Post Preparation workflow PASS",
+        "SESSION_WORK_CLAIMS_PASS",
+        "Site Handoff Orchestrator PASS",
+        "Site Bootstrap Validate PASS",
+        "Ecosystem Heartbeat Orchestration PASS"
+      ],
+      "collision_boundaries": [
+        "Do not create a second Personal-KV or DEVICE_KV runtime",
+        "Do not grant Site publication authority",
+        "Do not grant Site transition or InTr authority",
+        "Do not admit or persist social-provider credential material",
+        "Do not claim provider-backed or current-iPhone mutation until authentic resident evidence exists",
+        "Do not widen bounded-group participant authority beyond the canonical StegSocials grant"
+      ],
+      "next_task_after_release": "Bind the validated conditional-write request to the existing resident DEVICE_KV transaction so expected-etag comparison and exact state write/readback occur inside one native transaction, then connect authentic publication evidence and Master Records custody.",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_SITE_KV_STATE_PROJECTION",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}

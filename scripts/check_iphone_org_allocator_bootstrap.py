@@ -8,6 +8,7 @@ EXPECTED={
  "stegos-node/org-allocator-portable.js":"af4ada6b50647ffab0061960e7e4a153dbd83b68",
  "stegos-node/org-allocator-current-iphone-package.json":"f244f4cbc792a3bce1dc6486654be9a47fac6dec",
 }
+RELEASE="g5-cachefix-20260909-1"
 
 def git_blob_sha(path:Path)->str:
     data=path.read_bytes()
@@ -37,12 +38,27 @@ def verify()->dict:
       'requires_other_machine:false',
       'credential_authority:"TV/TVC"',
       'github_token_runtime_authority:"NONE"',
+      f'org-allocator-portable.js?v={RELEASE}',
+      f'ORG_ALLOCATOR_RELEASE="{RELEASE}"',
+      'portable_package_source_binding:sourceBinding',
+      'task_0010_source_binding:sourceBinding.task_0010_git_blob_sha||null',
     ]
     for marker in required:
         if marker not in html:
             raise RuntimeError(f"bootstrap invariant missing: {marker}")
     if "stegos-bootstrap/" in html:
         raise RuntimeError("bootstrap runner may not reference task-gated product paths")
+    worker=(ROOT/"stegos-node/service-worker.js").read_text(encoding="utf-8")
+    for marker in [
+      'stegos-node-shell-v10-org-allocator-fresh-v1',
+      '"/stegos-node/org-allocator-bootstrap.html": true',
+      '"/stegos-node/org-allocator-portable.js": true',
+      '"/stegos-node/org-allocator-current-iphone-package.json": true',
+      'NETWORK_ONLY_PATHS[url.pathname]',
+      'fetch(event.request, {cache: "no-store"})',
+    ]:
+        if marker not in worker:
+            raise RuntimeError(f"allocator cache-bypass invariant missing: {marker}")
     pkg=json.loads((ROOT/"stegos-node/org-allocator-current-iphone-package.json").read_text(encoding="utf-8"))
     if pkg.get("canonical_authority_owner")!="StegVerse-Labs/.github organization allocator":
         raise RuntimeError("canonical allocator owner drift")
@@ -71,6 +87,9 @@ def verify()->dict:
       "state":"PASS",
       "exact_allocator_blob":EXPECTED["stegos-node/org-allocator-portable.js"],
       "exact_package_blob":EXPECTED["stegos-node/org-allocator-current-iphone-package.json"],
+      "allocator_release":RELEASE,
+      "service_worker_cache_epoch":"stegos-node-shell-v10-org-allocator-fresh-v1",
+      "allocator_assets_network_only":True,
       "task_catalog":["TASK-2026-0007","TASK-2026-0008","TASK-2026-0009","TASK-2026-0010"],
       "immediate_target_task_id":"TASK-2026-0010",
       "g5_collision_removed":True,

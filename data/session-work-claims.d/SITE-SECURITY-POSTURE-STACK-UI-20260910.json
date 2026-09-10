@@ -14,13 +14,14 @@
       "normalized_work_key": "federal-health-pii-exceedance-hardening-001-site-posture-ui",
       "dependency_surface_keys": ["site:my-kv-security-posture", "site:organizational-kv-security-posture"],
       "claimed_paths": [
-        "my-kv.html",
+        "assets/my-kv-personal-form-profile.js",
         "organizational-kv.html",
-        "assets/security-posture-selector.js",
         "scripts/check_security_posture_ui.py",
+        "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
         "data/session-work-claims.d/SITE-SECURITY-POSTURE-STACK-UI-20260910.json"
       ],
       "handoff": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+      "handoff_revision": "d698ba55a4d2c0e816f42451c5857cf53ed36236",
       "claim_created_at": "2026-09-10T13:12:00-05:00",
       "claim_expires_when": "Release after the UI displays automatic, selected, and effective posture provenance, rejects selection below the automatic floor, and binds to canonical task-specific posture state without granting Site policy or transition authority.",
       "expected_evidence": [

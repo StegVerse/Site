@@ -6,20 +6,27 @@ okv = (root / "organizational-kv.html").read_text()
 
 for marker in [
     'id="kv-security-posture"',
-    'Automatic: <strong>HIGH</strong>',
-    'SECURE — below automatic floor',
-    'HIGHEST',
-    'cannot lower it',
+    'Automatic: <strong id="kv-automatic-posture">Awaiting InTr</strong>',
+    'Selected: <strong id="kv-selected-posture">SECURE</strong>',
+    'Authority: <strong id="kv-posture-authority">Pending</strong>',
+    'stegverse:security-posture-selected',
+    'stegverse:security-posture-resolution',
+    'resolution_authority!=="INTERLOCK_INTR"',
+    'authority_effect:"NONE_REQUEST_INPUT_ONLY"',
+    'Interlock/InTr computes the non-downgradable automatic floor',
 ]:
     assert marker in mykv, f"MyKV posture UI missing: {marker}"
 
 for marker in [
     'id="okv-security-posture"',
-    'Automatic: <strong>SECURE</strong>',
-    'id="okv-posture-select"',
-    '<option value="HIGH">HIGH</option>',
-    '<option value="HIGHEST">HIGHEST</option>',
-    'cannot lower it below that floor',
+    'id="okv-automatic-posture">Awaiting InTr',
+    'id="okv-selected-posture">SECURE',
+    'id="okv-posture-authority">Pending',
+    'stegverse:security-posture-selected',
+    'stegverse:security-posture-resolution',
+    "r.resolution_authority!=='INTERLOCK_INTR'",
+    "authority_effect:'NONE_REQUEST_INPUT_ONLY'",
+    'Site cannot lower, grant, or reinterpret it',
 ]:
     assert marker in okv, f"Organizational KV posture UI missing: {marker}"
 

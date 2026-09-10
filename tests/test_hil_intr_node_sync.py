@@ -58,7 +58,7 @@ class HILInTrNodeSyncTests(unittest.TestCase):
         self.assertIn('fetch("/intr/profile"', sync)
         self.assertIn('profile.profiles.indexOf("HIL:Ingress")', sync)
         self.assertIn('return loadDeviceLocalTarget().catch(loadRemoteTarget);', sync)
-        self.assertIn('profiles:["KV:KnowledgeVaultInterlock","HIL:Ingress"]', worker)
+        self.assertIn('profiles:["KV:KnowledgeVaultInterlock","HIL:Ingress","MasterRecords:SV001Custody"]', worker)
         self.assertIn('HIL_INGRESS_SCHEMA="stegverse.hil-intr-materialization-ingress/v1"', worker)
         self.assertIn('HIL_OWNER="StegVerse-Labs/.github#246"', worker)
 

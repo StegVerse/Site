@@ -10,6 +10,7 @@
       "repository": "StegVerse-Labs/Site",
       "branch": "fix/iphone-org-allocator-stale-sw-cache",
       "handoff": "docs/IPHONE_ORG_ALLOCATOR_BOOTSTRAP_MIRROR_HANDOFF.md",
+      "handoff_revision": "e4b1403daf8e56c79040c2e8878131ae2fd531d8",
       "role": "IMPLEMENTATION_REPAIR",
       "state": "CLAIMED_FOR_IMPLEMENTATION",
       "normalized_work_key": "site-iphone-org-allocator-stale-sw-cache",
@@ -40,6 +41,7 @@
         "No GitHub runtime authority",
         "No Render or other hosted fallback"
       ],
+      "next_task_after_release": "After merge and post-merge live observation, open the versioned allocator bootstrap on the established current iPhone, run one canonical allocation from retained generation 5, export evidence, and require allocator_release g5-cachefix-20260909-1 plus TASK-0010 source binding 248bed8cf5428c3ba759ee0d34db5fec8949a835 before interpreting any G6 result. Do not reset allocator state or mutate TASK-0010 product paths before authentic G6/fence-6 claim evidence.",
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE",
       "non_tv_tvc_secret_or_token_used": false,

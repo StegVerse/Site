@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/Site",
+  "claims": [
+    {
+      "claim_id": "SITE-MY-KV-SKAP-ACCOUNT-TRANSFER-001-20260910",
+      "session_worker_id": "chatgpt:ss-skap-authentic-account-metadata-population-001:site-20260910",
+      "task_id": "SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001",
+      "originating_goal": "Bind the My KV Connected Accounts selector to the exact non-secret KV-to-SKAP account metadata packet and canonical InTr profile without exposing provider identifiers or secrets.",
+      "repository": "StegVerse-Labs/Site",
+      "branch": "task/my-kv-skap-account-transfer-20260910",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "site-my-kv-skap-account-transfer-001",
+      "dependency_surface_keys": ["site:my-kv-connected-accounts", "site:kv-skap-account-metadata-transfer"],
+      "governing_dependency_keys": ["site:kv-skap-account-metadata-transfer"],
+      "incidental_dependency_keys": ["cvk:kv-skap-account-metadata-transfer", "tvc:skap-account-metadata-ingress", "stegos:kv-skap-account-metadata-profile"],
+      "claimed_paths": [
+        "assets/my-kv-connected-accounts.js",
+        "assets/my-kv-skap-account-transfer.js",
+        "my-kv-connected-accounts.html",
+        "tests/my-kv-connected-accounts.test.cjs",
+        "tests/fixtures/kv_skap_account_metadata_conformance_v1.json",
+        "docs/MY_KV_CONNECTED_ACCOUNTS_MIRROR_HANDOFF.md",
+        "README.md",
+        "data/session-work-claims.d/site-my-kv-skap-account-transfer-001-20260910.json"
+      ],
+      "handoff": "docs/MY_KV_CONNECTED_ACCOUNTS_MIRROR_HANDOFF.md",
+      "handoff_revision": "KV_SKAP_EXACT_TRANSFER_BINDING_IN_PROGRESS",
+      "claim_created_at": "2026-09-10T16:40:00Z",
+      "claim_expires_when": "Release only after exact packet/request/envelope conformance, structured SKAP receipt validation, Site validation, merge evidence, and claim terminalization.",
+      "expected_evidence": [
+        "shared CVK/TVC conformance vector consumed by Site",
+        "exact non-secret packet/request/envelope regenerated in browser source",
+        "only kv-skap-account-metadata profile accepted for SKAP transfer",
+        "raw provider identifiers and credentials rejected",
+        "boolean-only accepted response no longer sufficient",
+        "exact admitted SKAP account metadata receipt required before success"
+      ],
+      "collision_boundaries": [
+        "Do not widen device-kv, kv-skap, or kv-skap-custody semantics",
+        "Do not expose raw provider account IDs or credentials",
+        "Do not claim runtime admission from source or CI",
+        "Do not create a second InTr runtime or SKAP vault"
+      ],
+      "canonical_task_marks_render_critical": false,
+      "distinct_support_role": false,
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "render_required": false,
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false
+    }
+  ]
+}

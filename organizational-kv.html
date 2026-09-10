@@ -13,6 +13,9 @@
     .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px}
     .state{display:inline-block;border:1px solid var(--border2);border-radius:999px;padding:5px 9px;font:11px var(--mono);color:var(--muted)}
     .boundary{margin-top:16px;border-left:3px solid #f0c36a;padding:10px 12px;background:#17150f;color:#e7d7ad}
+    .posture{margin:12px 0 18px;padding:12px 14px;border:1px solid var(--border2);border-radius:14px;background:#0b1420;display:grid;gap:8px}
+    .posture-head,.posture-detail{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.posture-detail{color:var(--muted);font:11px var(--mono)}
+    .posture select{min-height:42px;border:1px solid var(--border2);border-radius:10px;background:#080d16;color:var(--text);padding:8px}
   </style>
 </head>
 <body>
@@ -24,6 +27,18 @@
 
     <section class="card">
       <span class="state">NOT CONNECTED</span>
+      <div class="posture" id="okv-security-posture" aria-label="Organizational KV security posture">
+        <div class="posture-head"><strong>Security posture</strong><span id="okv-effective-posture">SECURE</span></div>
+        <div class="posture-detail"><span>Automatic: <strong>SECURE</strong></span><span>Selected: <strong id="okv-selected-posture">SECURE</strong></span></div>
+        <label>Select a stronger posture
+          <select id="okv-posture-select" aria-label="Select Organizational KV security posture">
+            <option value="SECURE" selected>SECURE</option>
+            <option value="HIGH">HIGH</option>
+            <option value="HIGHEST">HIGHEST</option>
+          </select>
+        </label>
+        <small>The ecosystem selects the automatic floor for the current task. A member may strengthen it, but cannot lower it below that floor.</small>
+      </div>
       <h1>Organizational KV</h1>
       <p>An Organizational KnowledgeVault is the governed shared-vault entry point for an organization and its authorized members.</p>
       <p>This Site surface does not currently claim that an organization KV is installed or connected for you.</p>
@@ -31,5 +46,11 @@
       <p><a class="sv-btn sv-btn-secondary" href="index.html">Return to Ecosystem Chat</a></p>
     </section>
   </main>
+<script>
+(function(){
+ var select=document.getElementById('okv-posture-select');
+ select.addEventListener('change',function(){document.getElementById('okv-selected-posture').textContent=select.value;document.getElementById('okv-effective-posture').textContent=select.value;});
+}());
+</script>
 </body>
 </html>
